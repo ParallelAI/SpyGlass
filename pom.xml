@@ -1,20 +1,19 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
                              http://maven.apache.org/maven-v4_0_0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+	<modelVersion>4.0.0</modelVersion>
 
 	<organization>
 		<name>Parallel AI</name>
 		<url>http://www.parallelai.com</url>
 	</organization>
 
-	
-    <name>Cascading and Scalding wrapper for HBase with advanced features</name>
-    <groupId>parallelai</groupId>
-    <artifactId>parallelai.spyglass</artifactId>
-    <version>1.0.2</version>
-    <packaging>jar</packaging>
+
+	<name>Cascading and Scalding wrapper for HBase with advanced features</name>
+	<groupId>parallelai</groupId>
+	<artifactId>parallelai.spyglass</artifactId>
+	<version>1.0.2</version>
+	<packaging>jar</packaging>
 
 	<properties>
 		<!-- Java compilation level -->
@@ -44,7 +43,7 @@
 		<sqoop.version>1.4.2-cdh4.2.0</sqoop.version>
 		<whirr.version>0.8.0-cdh4.2.0</whirr.version>
 		<zookeeper.version>3.4.5-cdh4.2.0</zookeeper.version>
-		
+
 		<!-- Scala/Scalding/Cascading properties -->
 		<scala.version>2.9.2</scala.version>
 		<scalding.version>0.8.3</scalding.version>
@@ -56,7 +55,7 @@
 		<maple.version>0.2.8</maple.version>
 		<specs2.version>1.12.4.1</specs2.version>
 		<typesafe.config.version>1.0.0</typesafe.config.version>
-		
+
 		<!-- Other libraries properties -->
 		<junit.version>4.10</junit.version>
 		<slf4j.version>1.7.2</slf4j.version>
@@ -135,136 +134,37 @@
 
 
 	<dependencies>
-	    
+
 		<!-- Hadoop -->
 		<dependency>
 			<groupId>org.apache.hadoop</groupId>
 			<artifactId>hadoop-mapreduce-client-core</artifactId>
 			<version>${hadoop.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>org.apache.hadoop</groupId>
-			<artifactId>hadoop-annotations</artifactId>
-			<version>${hadoop.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.hadoop</groupId>
-			<artifactId>hadoop-archives</artifactId>
-			<version>${hadoop.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.hadoop</groupId>
-			<artifactId>hadoop-assemblies</artifactId>
-			<version>${hadoop.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.hadoop</groupId>
-			<artifactId>hadoop-auth</artifactId>
-			<version>${hadoop.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.hadoop</groupId>
-			<artifactId>hadoop-client</artifactId>
-			<version>${mapreduce.version}</version>
-		</dependency>
+
 		<dependency>
 			<groupId>org.apache.hadoop</groupId>
 			<artifactId>hadoop-common</artifactId>
 			<version>${hadoop.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>org.apache.hadoop</groupId>
-			<artifactId>hadoop-datajoin</artifactId>
-			<version>${hadoop.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.hadoop</groupId>
-			<artifactId>hadoop-dist</artifactId>
-			<version>${hadoop.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.hadoop</groupId>
-			<artifactId>hadoop-distcp</artifactId>
-			<version>${hadoop.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.hadoop</groupId>
-			<artifactId>hadoop-extras</artifactId>
-			<version>${hadoop.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.hadoop</groupId>
-			<artifactId>hadoop-gridmix</artifactId>
-			<version>${hadoop.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.hadoop</groupId>
-			<artifactId>hadoop-hdfs</artifactId>
-			<version>${hadoop.version}</version>
-		</dependency>
-		<!-- Hadoop MRv1 -->
-		<dependency>
-			<groupId>org.apache.hadoop</groupId>
-			<artifactId>hadoop-core</artifactId>
-			<version>${mapreduce.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.hadoop</groupId>
-			<artifactId>hadoop-tools</artifactId>
-			<version>${mapreduce.version}</version>
-		</dependency>
-		<!-- Mahout dependencies -->
-		<dependency>
-			<groupId>org.apache.mahout</groupId>
-			<artifactId>mahout-core</artifactId>
-			<version>${mahout.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>jfree</groupId>
-					<artifactId>jfreechart</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
+
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 			<version>${slf4j.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-jcl</artifactId>
-			<version>${slf4j.version}</version>
-		</dependency>
-		<!-- Gnue Trove Java lib -->
-		<dependency>
-			<groupId>net.sf.trove4j</groupId>
-			<artifactId>trove4j</artifactId>
-			<version>${trove4j.version}</version>
-		</dependency>
-		<dependency>
 			<groupId>com.twitter</groupId>
 			<artifactId>scalding_${scala.version}</artifactId>
 			<version>${scalding.version}</version>
-	      	<exclusions>
-	        	<exclusion>  <!-- Declare exclusion, in order to use custom maple build -->
-	          		<groupId>com.twitter</groupId>
-	          		<artifactId>maple</artifactId>
-	        	</exclusion>
-	      	</exclusions>
+			<exclusions>
+				<exclusion>  <!-- Declare exclusion, in order to use custom maple build -->
+					<groupId>com.twitter</groupId>
+					<artifactId>maple</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
-		<!--  scalding-commons Contains Checkpoints -->
- 		<dependency>
-			<groupId>com.twitter</groupId>
-			<artifactId>scalding-commons_${scala.version}</artifactId>
-			<version>${scalding-commons.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.specs2</groupId>
-			<artifactId>specs2_${scala.version}</artifactId>
-			<version>${specs2.version}</version>
-			<scope>test</scope>
-		</dependency>
 		<dependency>
 			<groupId>org.apache.hbase</groupId>
 			<artifactId>hbase</artifactId>
@@ -277,32 +177,9 @@
 			<version>${scala.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.scalatest</groupId>
-			<artifactId>scalatest_${scala.version}</artifactId>
-			<version>${scalatest.version}</version>
-			<!--  <scope>test</scope>  -->
-		</dependency>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>${junit.version}</version>
-			<!--  <scope>test</scope>  -->
-		</dependency>
-		<dependency>
 			<groupId>com.typesafe</groupId>
 			<artifactId>config</artifactId>
 			<version>${typesafe.config.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.uncommons.maths</groupId>
-			<artifactId>uncommons-maths</artifactId>
-			<version>${uncommons-maths.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>jfree</groupId>
-					<artifactId>jfreechart</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 
 	</dependencies>
@@ -311,54 +188,55 @@
 
 	<build>
 		<sourceDirectory>src/main/java</sourceDirectory>
-	    <testSourceDirectory>src/test/scala</testSourceDirectory> 
+		<testSourceDirectory>src/test/scala</testSourceDirectory>
 		<plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <version>2.4</version>
-        <configuration>
-          <includes>
-            <include>**/*</include>
-          </includes>
-        </configuration>
-      </plugin>
-		<!-- This plugin is not supported by Eclipse, so maybe we shouldn't be using it -->
-		<plugin>
-			<groupId>org.scala-tools</groupId>
-			<artifactId>maven-scala-plugin</artifactId>
-			<executions>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.4</version>
+				<configuration>
+					<includes>
+						<include>**/*</include>
+					</includes>
+				</configuration>
+			</plugin>
+			<!-- This plugin is not supported by Eclipse, so maybe we shouldn't be 
+				using it -->
+			<plugin>
+				<groupId>org.scala-tools</groupId>
+				<artifactId>maven-scala-plugin</artifactId>
+				<executions>
 
-				<execution>
-					<id>compile</id>
-					<goals>
-						<goal>compile</goal>
-					</goals>
-					<phase>compile</phase>
-				</execution>
-				<execution>
-					<id>test-compile</id>
-					<goals>
-						<goal>testCompile</goal>
-					</goals>
-					<phase>test-compile</phase>
-				</execution>
-                <execution>
-                   <phase>process-resources</phase>
-                   <goals>
-                     <goal>compile</goal>
-                   </goals>
-                </execution>
-			</executions>
-		</plugin>
-		<plugin>
-			<artifactId>maven-compiler-plugin</artifactId>
-			<version>${maven-compiler-plugin.version}</version>
-			<configuration>
-				<source>${maven.compiler.source}</source>
-				<target>${maven.compiler.target}</target>
-			</configuration>
-		</plugin>
+					<execution>
+						<id>compile</id>
+						<goals>
+							<goal>compile</goal>
+						</goals>
+						<phase>compile</phase>
+					</execution>
+					<execution>
+						<id>test-compile</id>
+						<goals>
+							<goal>testCompile</goal>
+						</goals>
+						<phase>test-compile</phase>
+					</execution>
+					<execution>
+						<phase>process-resources</phase>
+						<goals>
+							<goal>compile</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>${maven-compiler-plugin.version}</version>
+				<configuration>
+					<source>${maven.compiler.source}</source>
+					<target>${maven.compiler.target}</target>
+				</configuration>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>
