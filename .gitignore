@@ -1,6 +1,16 @@
 *.class
 *.log
 
+.classpath
+.project
+.settings
+.cache
+/target
+/outputs
+/bin
+/alternateLocation
+*.iml
+
 # sbt specific
 dist/*
 target/

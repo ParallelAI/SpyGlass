@@ -1,12 +1,3 @@
-SpyGlass
-========
-
-Cascading and Scalding wrapper for HBase with advanced read features
-
-
-Example
-=======
-
 package parallelai.spyglass.hbase.example
 
 import org.apache.hadoop.conf.Configuration
@@ -106,4 +97,3 @@ class HBaseExample(args: Args) extends JobBase(args) {
     .write(Tsv(output.format("scan_range_between")))
 
 } 
-
