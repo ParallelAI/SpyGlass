@@ -16,7 +16,7 @@ Building
 1. Read Mode Features
 =====================
 
-HBaseSource supports modes namely GET_LIST, SCAN_RANGE and SCAN_ALL. Use the *sourceMode* parameter to select the source mode.
+HBaseSource supports modes namely **GET_LIST**, **SCAN_RANGE** and **SCAN_ALL**. Use the **_sourceMode_** parameter to select the source mode.
 
   - **GET_LIST** -> Provide a list of keys to retrieve from the HBase table
   - **SCAN_RANGE** -> Provide a start and stop key (inclusive) to get out of the HBase table.
@@ -24,7 +24,7 @@ HBaseSource supports modes namely GET_LIST, SCAN_RANGE and SCAN_ALL. Use the *so
   
 GET_LIST
 --------
-Requires the *keyList* parameter to be specified as well.
+Requires the **keyList** parameter to be specified as well.
 
 (e.g.)
 
@@ -37,7 +37,7 @@ Requires the *keyList* parameter to be specified as well.
 	    sourceMode = SourceMode.GET_LIST, keyList = List("5003914", "5000687", "5004897"))
 	    
 	    
-Additionally, the *versions* parameter can be used to retrieve more than one version of the row. 
+Additionally, the _versions_ parameter can be used to retrieve more than one version of the row. 
 
 (e.g.)
 
@@ -152,7 +152,8 @@ Setting the *useSalt* parameter to *true* enables this functionality
 		"quorum_name:2181", 'key,  
 	      TABLE_SCHEMA.tail.map((x: Symbol) => "data").toArray, 
 	      TABLE_SCHEMA.tail.map((x: Symbol) => new Fields(x.name)).toArray,
-	      sourceMode = SourceMode.SCAN_RANGE, startKey = "11445", stopKey = "11455", useSalt = true, prefixList = "0123456789" )
+	      sourceMode = SourceMode.SCAN_RANGE, startKey = "11445", stopKey = "11455", 
+	      useSalt = true, prefixList = "0123456789" )
 	  .read
 	  
 	  // Convert from ImmutableBytesWritable to String 
@@ -189,7 +190,8 @@ Add the trait to the job class and start using the conversions in the pipe direc
     	"quorum_name:2181", 'key,  
           TABLE_SCHEMA.tail.map((x: Symbol) => "data").toArray, 
           TABLE_SCHEMA.tail.map((x: Symbol) => new Fields(x.name)).toArray,
-          sourceMode = SourceMode.SCAN_RANGE, startKey = "11445", stopKey = "11455", useSalt = true, prefixList = "0123456789" )
+          sourceMode = SourceMode.SCAN_RANGE, startKey = "11445", stopKey = "11455", 
+          useSalt = true, prefixList = "0123456789" )
 	  .read
 	  
 	  // Convert from ImmutableBytesWritable to String 
