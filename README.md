@@ -27,6 +27,7 @@ GET_LIST
 Requires the *keyList* parameter to be specified as well.
 
 (e.g.)
+
 	val hbs2 = new HBaseSource(
 	    "table_name",
 	    "quorum_name:2181",
@@ -39,6 +40,7 @@ Requires the *keyList* parameter to be specified as well.
 Additionally, the *versions* parameter can be used to retrieve more than one version of the row. 
 
 (e.g.)
+
 	val hbs2 = new HBaseSource(
 	    "table_name",
 	    "quorum_name:2181",
@@ -60,35 +62,36 @@ if:
  - Neither provided -> All rows in table are returned.
  
 (e.g.)
-	 val hbs4 = new HBaseSource(
-    "table_name",
-    "quorum_name:2181",
-    'key,
-    Array("column_family"),
-    Array('column_name),
-    sourceMode = SourceMode.SCAN_RANGE, stopKey = "5003914")
-    .read
-    .write(Tsv(output.format("scan_range_to_end")))
 
-  val hbs5 = new HBaseSource(
-    "table_name",
-    "quorum_name:2181",
-    'key,
-    Array("column_family"),
-    Array('column_name),
-    sourceMode = SourceMode.SCAN_RANGE, startKey = "5003914")
-    .read
-    .write(Tsv(output.format("scan_range_from_start")))
-
-  val hbs6 = new HBaseSource(
-    "table_name",
-    "quorum_name:2181",
-    'key,
-    Array("column_family"),
-    Array('column_name),
-    sourceMode = SourceMode.SCAN_RANGE, startKey = "5003914", stopKey = "5004897")
-    .read
-    .write(Tsv(output.format("scan_range_between")))
+	  val hbs4 = new HBaseSource(
+	    "table_name",
+	    "quorum_name:2181",
+	    'key,
+	    Array("column_family"),
+	    Array('column_name),
+	    sourceMode = SourceMode.SCAN_RANGE, stopKey = "5003914")
+	    .read
+	    .write(Tsv(output.format("scan_range_to_end")))
+	
+	  val hbs5 = new HBaseSource(
+	    "table_name",
+	    "quorum_name:2181",
+	    'key,
+	    Array("column_family"),
+	    Array('column_name),
+	    sourceMode = SourceMode.SCAN_RANGE, startKey = "5003914")
+	    .read
+	    .write(Tsv(output.format("scan_range_from_start")))
+	
+	  val hbs6 = new HBaseSource(
+	    "table_name",
+	    "quorum_name:2181",
+	    'key,
+	    Array("column_family"),
+	    Array('column_name),
+	    sourceMode = SourceMode.SCAN_RANGE, startKey = "5003914", stopKey = "5004897")
+	    .read
+	    .write(Tsv(output.format("scan_range_between")))
  
  
 SCAN_ALL
@@ -96,6 +99,7 @@ SCAN_ALL
 Returns all rows in the table
 
 (e.g.)
+
 	val hbs2 = new HBaseSource(
 	    "table_name",
 	    "quorum_name:2181",
@@ -112,13 +116,14 @@ HBaseSource supports writing at a particular time stamp i.e. a version.
 
 The time dimension can be added to the row by using the *timestamp* parameter. If the parameter is not present the current time is used.
 
-(e.g.)   
-	.write(new HBaseSource( "table_name",
-    	"quorum_name:2181",
-    	'key,  
-       TABLE_SCHEMA.tail.map((x: Symbol) => "data").toArray, 
-       TABLE_SCHEMA.tail.map((x: Symbol) => new Fields(x.name)).toArray,
-       timestamp = Platform.currentTime ))
+(e.g.)
+   
+	pipe.write(new HBaseSource( "table_name",
+		"quorum_name:2181",
+		'key,  
+	   TABLE_SCHEMA.tail.map((x: Symbol) => "data").toArray, 
+	   TABLE_SCHEMA.tail.map((x: Symbol) => new Fields(x.name)).toArray,
+	   timestamp = Platform.currentTime ))
 	
 
 3. Region Hot Spot Prevention
@@ -128,9 +133,10 @@ Region hot spotting is a common problem with HBase. Spy Glass uses key prefix sa
 The row key is prefixed with the last byte followed by a '_' (underscore) character.
 
 (e.g.)
-Original Row Key   ->  Becomes
-SPYGLASS           ->  S_SPYGLASS
-12345678           ->  8_12345678
+
+	Original Row Key   ->  Becomes
+	SPYGLASS           ->  S_SPYGLASS
+	12345678           ->  8_12345678
 
 Conversion to and from salted keys is done automatically.
 
@@ -138,14 +144,15 @@ Setting the *useSalt* parameter to *true* enables this functionality
 
 
 (e.g.)
-	  val TABLE_SCHEMA = List('key, 'salted, 'unsalted)
 
+	  val TABLE_SCHEMA = List('key, 'salted, 'unsalted)
+	
 	  val hbase07 = 
-      new HBaseSource( "table_name",
-    	"quorum_name:2181", 'key,  
-          TABLE_SCHEMA.tail.map((x: Symbol) => "data").toArray, 
-          TABLE_SCHEMA.tail.map((x: Symbol) => new Fields(x.name)).toArray,
-          sourceMode = SourceMode.SCAN_RANGE, startKey = "11445", stopKey = "11455", useSalt = true, prefixList = "0123456789" )
+	  new HBaseSource( "table_name",
+		"quorum_name:2181", 'key,  
+	      TABLE_SCHEMA.tail.map((x: Symbol) => "data").toArray, 
+	      TABLE_SCHEMA.tail.map((x: Symbol) => new Fields(x.name)).toArray,
+	      sourceMode = SourceMode.SCAN_RANGE, startKey = "11445", stopKey = "11455", useSalt = true, prefixList = "0123456789" )
 	  .read
 	  
 	  // Convert from ImmutableBytesWritable to String 
