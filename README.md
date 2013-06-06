@@ -24,7 +24,7 @@ HBaseSource supports modes namely **GET_LIST**, **SCAN_RANGE** and **SCAN_ALL**.
   
 GET_LIST
 --------
-Requires the **keyList** parameter to be specified as well.
+Requires the **_keyList_** parameter to be specified as well.
 
 (e.g.)
 
@@ -37,7 +37,7 @@ Requires the **keyList** parameter to be specified as well.
 	    sourceMode = SourceMode.GET_LIST, keyList = List("5003914", "5000687", "5004897"))
 	    
 	    
-Additionally, the _versions_ parameter can be used to retrieve more than one version of the row. 
+Additionally, the **_versions_** parameter can be used to retrieve more than one version of the row. 
 
 (e.g.)
 
@@ -54,11 +54,11 @@ Additionally, the _versions_ parameter can be used to retrieve more than one ver
 	    
 SCAN_RANGE
 ----------
-Scan range uses the optional *startKey* and *stopKey* parameters to specify the range of keys to extract; both keys are inclusive. 
+Scan range uses the optional **_startKey_** and **_stopKey_** parameters to specify the range of keys to extract; both keys are inclusive. 
 
 if:
- - Only *startKey* provided -> All rows from *startKey* till *END OF TABLE* are returned
- - Only *stopKey* provided -> All rows from *START OF TABLE* till *stopKey* are returned
+ - Only **_startKey_** provided -> All rows from **_startKey_** till **END OF TABLE** are returned
+ - Only **_stopKey_** provided -> All rows from **START OF TABLE** till **_stopKey_** are returned
  - Neither provided -> All rows in table are returned.
  
 (e.g.)
@@ -114,7 +114,7 @@ Returns all rows in the table
 
 HBaseSource supports writing at a particular time stamp i.e. a version. 
 
-The time dimension can be added to the row by using the *timestamp* parameter. If the parameter is not present the current time is used.
+The time dimension can be added to the row by using the **_timestamp_** parameter. If the parameter is not present the current time is used.
 
 (e.g.)
    
@@ -140,7 +140,7 @@ The row key is prefixed with the last byte followed by a '_' (underscore) charac
 
 Conversion to and from salted keys is done automatically.
 
-Setting the *useSalt* parameter to *true* enables this functionality
+Setting the **_useSalt_** parameter to **true** enables this functionality
 
 
 (e.g.)
@@ -171,12 +171,12 @@ Setting the *useSalt* parameter to *true* enables this functionality
 	          useSalt = true ))
 	          
 	
-Setting the *prefixList* parameter to the available prefixes can increase the read performance quite a bit. 
+Setting the **_prefixList_** parameter to the available prefixes can increase the read performance quite a bit. 
 
 4. Pipe Conversion Implicits
 ============================
 
-HBaseSource will always read or write fields of type *ImmutableBytesWritable*. The supplied *HBasePipeConversions* trait is used to convert to and from *String* to *ImmutableBytesWritable*
+HBaseSource will always read or write fields of type **_ImmutableBytesWritable_**. The supplied **_HBasePipeConversions_** trait is used to convert to and from **_String_** to **_ImmutableBytesWritable_**
 
 Add the trait to the job class and start using the conversions in the pipe directly
 
