@@ -17,7 +17,7 @@ To use SpyGlass as a dependency use the following repository
 	<repositories>
 	    <repository>
 	        <id>parallelai-releases</id>
-	        <url>https://github.com/crajah/mvn-repo/raw/master/releases</url>
+	        <url>https://github.com/ParallelAI/mvn-repo/raw/master/releases</url>
 	    </repository>
 	</repositories>
 	
