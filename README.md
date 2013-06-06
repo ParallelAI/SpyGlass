@@ -12,6 +12,24 @@ Building
 	
 	Requires Maven 3.x.x
 	
+To use SpyGlass as a dependency use the following repository
+
+	<repositories>
+	    <repository>
+	        <id>parallelai-releases</id>
+	        <url>https://github.com/crajah/mvn-repo/raw/master/releases</url>
+	    </repository>
+	</repositories>
+	
+	<dependencies>
+		<dependency>
+			<groupId>parallelai</groupId>
+			<artifactId>parallelai.spyglass</artifactId>
+			<version>2.0.3</version>
+		</dependency>
+	</dependencies>
+
+	
 
 1. Read Mode Features
 =====================
