@@ -14,7 +14,8 @@ class HBasePipeWrapper (pipe: Pipe) {
 	  asList(f)
      .foldLeft(pipe){ (p, f) => {
 	    p.map(f.toString -> f.toString){ from: String => {
-	      new ImmutableBytesWritable(Bytes.toBytes(from))
+	      new ImmutableBytesWritable(Bytes.toBytes(
+	          if (from == null) "" else from))
 	    }}
 	  }} 
 	}

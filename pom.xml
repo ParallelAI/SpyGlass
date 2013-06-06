@@ -66,6 +66,13 @@
 
 	</properties>
 
+	<distributionManagement>
+	    <repository>
+	        <id>repo</id>
+	        <url>https://github.com/crajah/mvn-repo/raw/master/releases</url>
+	    </repository>
+	</distributionManagement>
+
 	<!-- Repositories -->
 	<repositories>
 		<repository>
