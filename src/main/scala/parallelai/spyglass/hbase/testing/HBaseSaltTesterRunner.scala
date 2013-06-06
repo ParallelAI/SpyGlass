@@ -6,13 +6,24 @@ object HBaseSaltTesterRunner extends App {
   
 //  if( args.length < 2 ) { throw new Exception("Not enough Args")}
   
-  val appConfig = "/home/crajah/tmp/application.conf"
-  val libPath = "/home/crajah/Dropbox/_WORK_/_SKY_/_BIG_DATA_/_SOURCES_/big_data/commons/commons.hbase.skybase/alternateLocation"
+  val appPath = System.getenv("BIGDATA_APPCONF_PATH") 
+  assert  (appPath != null, {"Environment Variable BIGDATA_APPCONF_PATH is undefined or Null"})
+  println( "Application Path is [%s]".format(appPath) )
+  
+  val jobLibPath = System.getenv("BIGDATA_JOB_LIB_PATH") 
+  assert  (jobLibPath != null, {"Environment Variable BIGDATA_JOB_LIB_PATH is undefined or Null"})
+  println( "Job Library Path Path is [%s]".format(jobLibPath) )
+
+  val quorum = System.getenv("BIGDATA_QUORUM_NAMES")
+  assert  (quorum != null, {"Environment Variable BIGDATA_QUORUM_NAMES is undefined or Null"})
+  println( "Quorum is [%s]".format(quorum) )
+
 
   JobRunner.main(Array(classOf[HBaseSaltTester].getName, 
       "--hdfs", 
-      "--app.conf.path", appConfig, 
-      "--job.lib.path", libPath,
+      "--app.conf.path", appPath, 
+      "--job.lib.path", jobLibPath,
+      "--quorum", quorum,
       "--debug", "true"
   ))
 }

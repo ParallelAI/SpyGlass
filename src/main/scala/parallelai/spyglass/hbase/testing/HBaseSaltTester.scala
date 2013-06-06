@@ -22,61 +22,55 @@ class HBaseSaltTester (args: Args) extends JobBase(args) with HBasePipeConversio
   val TABLE_SCHEMA = List('key, 'salted, 'unsalted)
   
   val prefix = "0123456789"
+    
+  val quorum = args("quorum")
   
-//  val hbase01 = CommonFunctors.fromBytesWritable(
-//      new HBaseSource( "_TEST.SALT.01", "cldmgr.prod.bigdata.bskyb.com,cldnode01.prod.bigdata.bskyb.com,cldnode02.prod.bigdata.bskyb.com:2181", 'key,  
-//          TABLE_SCHEMA.tail.map((x: Symbol) => "data").toArray, 
-//          TABLE_SCHEMA.tail.map((x: Symbol) => new Fields(x.name)).toArray,
-//          sourceMode = SourceMode.SCAN_ALL ).read,       
-//        TABLE_SCHEMA )
-//  .write(TextLine("saltTesting/ScanAllNoSalt01"))
+  val hbase01 = new HBaseSource( "_TEST.SALT.01", quorum, 'key,  
+          TABLE_SCHEMA.tail.map((x: Symbol) => "data").toArray, 
+          TABLE_SCHEMA.tail.map((x: Symbol) => new Fields(x.name)).toArray,
+          sourceMode = SourceMode.SCAN_ALL ).read
+          .fromBytesWritable( TABLE_SCHEMA )
+  .write(TextLine("saltTesting/ScanAllNoSalt01"))
 
-//  val hbase02 = CommonFunctors.fromBytesWritable(
-//      new HBaseSource( "_TEST.SALT.01", "cldmgr.prod.bigdata.bskyb.com,cldnode01.prod.bigdata.bskyb.com,cldnode02.prod.bigdata.bskyb.com:2181", 'key,  
-//          TABLE_SCHEMA.tail.map((x: Symbol) => "data").toArray, 
-//          TABLE_SCHEMA.tail.map((x: Symbol) => new Fields(x.name)).toArray,
-//          sourceMode = SourceMode.SCAN_ALL, useSalt = true ).read,       
-//        TABLE_SCHEMA )
-//  .write(TextLine("saltTesting/ScanAllPlusSalt01"))
+  val hbase02 = new HBaseSource( "_TEST.SALT.01", quorum, 'key,  
+          TABLE_SCHEMA.tail.map((x: Symbol) => "data").toArray, 
+          TABLE_SCHEMA.tail.map((x: Symbol) => new Fields(x.name)).toArray,
+          sourceMode = SourceMode.SCAN_ALL, useSalt = true ).read       
+        .fromBytesWritable( TABLE_SCHEMA )
+  .write(TextLine("saltTesting/ScanAllPlusSalt01"))
 
-//  val hbase03 = CommonFunctors.fromBytesWritable(
-//      new HBaseSource( "_TEST.SALT.01", "cldmgr.prod.bigdata.bskyb.com,cldnode01.prod.bigdata.bskyb.com,cldnode02.prod.bigdata.bskyb.com:2181", 'key,  
-//          TABLE_SCHEMA.tail.map((x: Symbol) => "data").toArray, 
-//          TABLE_SCHEMA.tail.map((x: Symbol) => new Fields(x.name)).toArray,
-//          sourceMode = SourceMode.SCAN_RANGE, startKey = "8_1728", stopKey = "1_1831" ).read,       
-//        TABLE_SCHEMA )
-//  .write(TextLine("saltTesting/ScanRangeNoSalt01"))
+  val hbase03 = new HBaseSource( "_TEST.SALT.01", quorum, 'key,  
+          TABLE_SCHEMA.tail.map((x: Symbol) => "data").toArray, 
+          TABLE_SCHEMA.tail.map((x: Symbol) => new Fields(x.name)).toArray,
+          sourceMode = SourceMode.SCAN_RANGE, startKey = "8_1728", stopKey = "1_1831" ).read     
+        .fromBytesWritable(TABLE_SCHEMA )
+  .write(TextLine("saltTesting/ScanRangeNoSalt01"))
 
-//  val hbase04 = CommonFunctors.fromBytesWritable(
-//      new HBaseSource( "_TEST.SALT.01", "cldmgr.prod.bigdata.bskyb.com,cldnode01.prod.bigdata.bskyb.com,cldnode02.prod.bigdata.bskyb.com:2181", 'key,  
-//          TABLE_SCHEMA.tail.map((x: Symbol) => "data").toArray, 
-//          TABLE_SCHEMA.tail.map((x: Symbol) => new Fields(x.name)).toArray,
-//          sourceMode = SourceMode.SCAN_RANGE, startKey = "1728", stopKey = "1831", useSalt = true ).read,       
-//        TABLE_SCHEMA )
-//  .write(TextLine("saltTesting/ScanRangePlusSalt01"))
+  val hbase04 = new HBaseSource( "_TEST.SALT.01", quorum, 'key,  
+          TABLE_SCHEMA.tail.map((x: Symbol) => "data").toArray, 
+          TABLE_SCHEMA.tail.map((x: Symbol) => new Fields(x.name)).toArray,
+          sourceMode = SourceMode.SCAN_RANGE, startKey = "1728", stopKey = "1831", useSalt = true ).read       
+        .fromBytesWritable(TABLE_SCHEMA )
+  .write(TextLine("saltTesting/ScanRangePlusSalt01"))
 
-//  val hbase05bytes = new HBaseSource( "_TEST.SALT.01", "cldmgr.prod.bigdata.bskyb.com,cldnode01.prod.bigdata.bskyb.com,cldnode02.prod.bigdata.bskyb.com:2181", 'key,  
-//          TABLE_SCHEMA.tail.map((x: Symbol) => "data").toArray, 
-//          TABLE_SCHEMA.tail.map((x: Symbol) => new Fields(x.name)).toArray,
-//          sourceMode = SourceMode.GET_LIST, keyList = List("1_1681", "6_1456") ).read
-//          
-//  val hbase05 = CommonFunctors.fromBytesWritable(
-//      hbase05bytes,       
-//        TABLE_SCHEMA )
-//  .write(TextLine("saltTesting/GetListNoSalt01"))
-//
-//  val hbase06bytes = new HBaseSource( "_TEST.SALT.01", "cldmgr.prod.bigdata.bskyb.com,cldnode01.prod.bigdata.bskyb.com,cldnode02.prod.bigdata.bskyb.com:2181", 'key,  
-//          TABLE_SCHEMA.tail.map((x: Symbol) => "data").toArray, 
-//          TABLE_SCHEMA.tail.map((x: Symbol) => new Fields(x.name)).toArray,
-//          sourceMode = SourceMode.GET_LIST, keyList = List("1681", "1456"), useSalt = true).read
-//          
-//  val hbase06 = CommonFunctors.fromBytesWritable(
-//      hbase06bytes,       
-//        TABLE_SCHEMA )
-//  .write(TextLine("saltTesting/GetListPlusSalt01"))
+  val hbase05bytes = new HBaseSource( "_TEST.SALT.01", quorum, 'key,  
+          TABLE_SCHEMA.tail.map((x: Symbol) => "data").toArray, 
+          TABLE_SCHEMA.tail.map((x: Symbol) => new Fields(x.name)).toArray,
+          sourceMode = SourceMode.GET_LIST, keyList = List("1_1681", "6_1456") ).read
+          
+          .fromBytesWritable(TABLE_SCHEMA )
+  .write(TextLine("saltTesting/GetListNoSalt01"))
+
+  val hbase06bytes = new HBaseSource( "_TEST.SALT.01", quorum, 'key,  
+          TABLE_SCHEMA.tail.map((x: Symbol) => "data").toArray, 
+          TABLE_SCHEMA.tail.map((x: Symbol) => new Fields(x.name)).toArray,
+          sourceMode = SourceMode.GET_LIST, keyList = List("1681", "1456"), useSalt = true).read
+          
+          .fromBytesWritable(TABLE_SCHEMA )
+  .write(TextLine("saltTesting/GetListPlusSalt01"))
 
   val hbase07 = 
-      new HBaseSource( "_TEST.SALT.03", "cldmgr.prod.bigdata.bskyb.com,cldnode01.prod.bigdata.bskyb.com,cldnode02.prod.bigdata.bskyb.com:2181", 'key,  
+      new HBaseSource( "_TEST.SALT.03", quorum, 'key,  
           TABLE_SCHEMA.tail.map((x: Symbol) => "data").toArray, 
           TABLE_SCHEMA.tail.map((x: Symbol) => new Fields(x.name)).toArray,
           sourceMode = SourceMode.SCAN_RANGE, startKey = "11445", stopKey = "11455", useSalt = true, prefixList = prefix )
@@ -84,13 +78,13 @@ class HBaseSaltTester (args: Args) extends JobBase(args) with HBasePipeConversio
   .fromBytesWritable( TABLE_SCHEMA )
   .write(TextLine("saltTesting/ScanRangePlusSalt10"))
   .toBytesWritable( TABLE_SCHEMA )
-  .write(new HBaseSource( "_TEST.SALT.04", "cldmgr.prod.bigdata.bskyb.com,cldnode01.prod.bigdata.bskyb.com,cldnode02.prod.bigdata.bskyb.com:2181", 'key,  
+  .write(new HBaseSource( "_TEST.SALT.04", quorum, 'key,  
           TABLE_SCHEMA.tail.map((x: Symbol) => "data").toArray, 
           TABLE_SCHEMA.tail.map((x: Symbol) => new Fields(x.name)).toArray,
           useSalt = true ))
 
 //  val hbase08 = 
-//      new HBaseSource( "_TEST.SALT.01", "cldmgr.prod.bigdata.bskyb.com,cldnode01.prod.bigdata.bskyb.com,cldnode02.prod.bigdata.bskyb.com:2181", 'key,  
+//      new HBaseSource( "_TEST.SALT.01", quorum, 'key,  
 //          TABLE_SCHEMA.tail.map((x: Symbol) => "data").toArray, 
 //          TABLE_SCHEMA.tail.map((x: Symbol) => new Fields(x.name)).toArray,
 //          sourceMode = SourceMode.SCAN_RANGE, startKey = "1445", stopKey = "1455", useSalt = true, prefixList = prefix )

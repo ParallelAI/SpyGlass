@@ -42,7 +42,7 @@ class HBaseSourceShouldRead (args: Args) extends JobBase(args) with HBasePipeCon
   }
   
   // Set HBase host
-  val hbaseHost = "cldmgr.prod.bigdata.bskyb.com:2181" 
+  val hbaseHost = args("quorum") 
 
   // -----------------------------
   // ----- Tests for TABLE_01 ----

@@ -25,10 +25,14 @@ object HBaseExampleRunner extends App {
     }
     case _ => ""
   }
+  
+  val quorum = System.getenv("BIGDATA_QUORUM_NAMES")
+  assert  (quorum != null, {"Environment Variable BIGDATA_QUORUM_NAMES is undefined or Null"})
+  println( "Quorum is [%s]".format(quorum) )
 
   val output = "HBaseTest.%s.tsv"
 
   Tool.main(Array(classOf[HBaseExample].getName, modeString, "--app.conf.path", appPath,
-    "--output", output, "--debug", "true", "--job.lib.path", jobLibPath ))
+    "--output", output, "--debug", "true", "--job.lib.path", jobLibPath, "--quorum", quorum ))
  
 }
