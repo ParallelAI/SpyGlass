@@ -1,7 +1,7 @@
 SpyGlass
 ========
 
-Cascading and Scalding wrapper for HBase with advanced read and write features.
+Cascading and Scalding wrapper for HBase/JDBC with advanced read and write features.
 
 Prevent Hot Spotting by the use of transparent key prefixes.
 
