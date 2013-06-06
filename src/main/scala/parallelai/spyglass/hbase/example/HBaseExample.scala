@@ -27,7 +27,7 @@ class HBaseExample(args: Args) extends JobBase(args) {
 
   val jobConf = getJobConf
 
-  val quorumNames = "cldmgr.prod.bigdata.bskyb.com:2181"
+  val quorumNames = args("quorum")
 
   case class HBaseTableStore(
       conf: Configuration,

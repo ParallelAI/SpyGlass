@@ -1,11 +1,9 @@
 package parallelai.spyglass.hbase;
 
-import java.awt.event.KeyListener;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.Set;
 import java.util.TreeSet;
 
 import org.apache.commons.logging.Log;
@@ -14,8 +12,9 @@ import org.apache.hadoop.hbase.HConstants;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.apache.hadoop.mapred.InputSplit;
 
-import parallelai.spyglass.hbase.HBaseConstants.SourceMode;
+import com.sun.tools.javac.resources.version;
 
+import parallelai.spyglass.hbase.HBaseConstants.SourceMode;
 
 public class HBaseTableSplit implements InputSplit, Comparable<HBaseTableSplit>, Serializable {
 
@@ -28,11 +27,13 @@ public class HBaseTableSplit implements InputSplit, Comparable<HBaseTableSplit>,
   private TreeSet<String> m_keyList = null;
   private SourceMode m_sourceMode = SourceMode.EMPTY;
   private boolean m_endRowInclusive = true;
+  private int m_versions = 1;
+  private boolean m_useSalt = false;
 
   /** default constructor */
   public HBaseTableSplit() {
     this(HConstants.EMPTY_BYTE_ARRAY, HConstants.EMPTY_BYTE_ARRAY,
-      HConstants.EMPTY_BYTE_ARRAY, "", SourceMode.EMPTY);
+      HConstants.EMPTY_BYTE_ARRAY, "", SourceMode.EMPTY, false);
   }
 
   /**
@@ -43,19 +44,22 @@ public class HBaseTableSplit implements InputSplit, Comparable<HBaseTableSplit>,
    * @param location
    */
   public HBaseTableSplit(final byte [] tableName, final byte [] startRow, final byte [] endRow,
-      final String location, final SourceMode sourceMode) {
+      final String location, final SourceMode sourceMode, final boolean useSalt) {
     this.m_tableName = tableName;
     this.m_startRow = startRow;
     this.m_endRow = endRow;
     this.m_regionLocation = location;
     this.m_sourceMode = sourceMode;
+    this.m_useSalt = useSalt;
   }
   
-  public HBaseTableSplit( final byte [] tableName, final TreeSet<String> keyList, final String location, final SourceMode sourceMode ) {
+  public HBaseTableSplit( final byte [] tableName, final TreeSet<String> keyList, int versions, final String location, final SourceMode sourceMode, final boolean useSalt ) {
     this.m_tableName = tableName;
     this.m_keyList = keyList;
+    this.m_versions = versions;
     this.m_sourceMode = sourceMode;
     this.m_regionLocation = location;
+    this.m_useSalt = useSalt;
   }
 
   /** @return table name */
@@ -86,20 +90,28 @@ public class HBaseTableSplit implements InputSplit, Comparable<HBaseTableSplit>,
     return m_keyList;
   }
   
+  public int getVersions() {
+	  return m_versions;
+  }
+
   /** @return get the source mode */
   public SourceMode getSourceMode() {
     return m_sourceMode;
   }
+  
+  public boolean getUseSalt() {
+    return m_useSalt;
+  }
 
   /** @return the region's hostname */
   public String getRegionLocation() {
-    LOG.info("REGION GETTER : " + m_regionLocation);
+    LOG.debug("REGION GETTER : " + m_regionLocation);
     
     return this.m_regionLocation;
   }
 
   public String[] getLocations() {
-    LOG.info("REGION ARRAY : " + m_regionLocation);
+    LOG.debug("REGION ARRAY : " + m_regionLocation);
 
     return new String[] {this.m_regionLocation};
   }
@@ -112,11 +124,12 @@ public class HBaseTableSplit implements InputSplit, Comparable<HBaseTableSplit>,
 
   @Override
   public void readFields(DataInput in) throws IOException {
-    LOG.info("READ ME : " + in.toString());
+    LOG.debug("READ ME : " + in.toString());
 
     this.m_tableName = Bytes.readByteArray(in);
     this.m_regionLocation = Bytes.toString(Bytes.readByteArray(in));
     this.m_sourceMode = SourceMode.valueOf(Bytes.toString(Bytes.readByteArray(in)));
+    this.m_useSalt = Bytes.toBoolean(Bytes.readByteArray(in));
     
     switch(this.m_sourceMode) {
       case SCAN_RANGE:
@@ -126,6 +139,7 @@ public class HBaseTableSplit implements InputSplit, Comparable<HBaseTableSplit>,
         break;
         
       case GET_LIST:
+    	this.m_versions = Bytes.toInt(Bytes.readByteArray(in));
         this.m_keyList = new TreeSet<String>();
         
         int m = Bytes.toInt(Bytes.readByteArray(in));
@@ -136,16 +150,17 @@ public class HBaseTableSplit implements InputSplit, Comparable<HBaseTableSplit>,
         break;
     }
     
-    LOG.info("READ and CREATED : " + this);
+    LOG.debug("READ and CREATED : " + this);
   }
 
   @Override
   public void write(DataOutput out) throws IOException {
-    LOG.info("WRITE : " + this);
+    LOG.debug("WRITE : " + this);
 
     Bytes.writeByteArray(out, this.m_tableName);
     Bytes.writeByteArray(out, Bytes.toBytes(this.m_regionLocation));
     Bytes.writeByteArray(out, Bytes.toBytes(this.m_sourceMode.name()));
+    Bytes.writeByteArray(out, Bytes.toBytes(this.m_useSalt));
     
     switch( this.m_sourceMode ) {
       case SCAN_RANGE:
@@ -155,6 +170,7 @@ public class HBaseTableSplit implements InputSplit, Comparable<HBaseTableSplit>,
         break;
         
       case GET_LIST:
+    	Bytes.writeByteArray(out, Bytes.toBytes(m_versions));
         Bytes.writeByteArray(out, Bytes.toBytes(this.m_keyList.size()));
         
         for( String k: this.m_keyList ) {
@@ -163,13 +179,14 @@ public class HBaseTableSplit implements InputSplit, Comparable<HBaseTableSplit>,
         break;
     }
 
-    LOG.info("WROTE : " + out.toString());
+    LOG.debug("WROTE : " + out.toString());
   }
 
   @Override
   public String toString() {
-    return "".format("Table Name (%s) Region (%s) Source Mode (%s) Start Key (%s) Stop Key (%s) Key List (%s)", 
-        Bytes.toString(m_tableName), m_regionLocation, m_sourceMode, Bytes.toString(m_startRow), Bytes.toString(m_endRow), m_keyList);
+    return String.format("Table Name (%s) Region (%s) Source Mode (%s) Start Key (%s) Stop Key (%s) Key List Size (%s) Versions (%s) Use Salt (%s)", 
+        Bytes.toString(m_tableName), m_regionLocation, m_sourceMode, Bytes.toString(m_startRow), Bytes.toString(m_endRow), 
+        (m_keyList != null) ? m_keyList.size() : "EMPTY", m_versions, m_useSalt);
   }
 
   @Override
