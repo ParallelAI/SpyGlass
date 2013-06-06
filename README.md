@@ -173,6 +173,7 @@ HBaseSource will always read or write fields of type *ImmutableBytesWritable*. T
 Add the trait to the job class and start using the conversions in the pipe directly
 
 (e.g.)
+
 	class HBaseSaltTester (args: Args) extends JobBase(args) with HBasePipeConversions {
 	  val TABLE_SCHEMA = List('key, 'salted, 'unsalted)
 
