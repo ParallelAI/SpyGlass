@@ -247,10 +247,10 @@ e.g.
 
 **Processing the rows**
 
-The mapper function gets from HBaseRawSource a tuple containing two fields: (rowkey, row). 
-The first field is the row key, the second is the row Result object. You can then process the row as needed. 
-The sink will write the output fields as columns under the provided family and field name as the column name. 
-You can also provide the field name as a full qualifier (family:column) to specify a different family than was declared in the source.
+The mapper function gets from HBaseRawSource a tuple containing two fields: (rowkey, row).   
+The first field is the row key, the second is the row Result object. You can then process the row as needed.   
+The sink will write the output fields as columns under the provided family and field name as the column name.   
+You can also provide the field name as a full qualifier (family:column) to specify a different family than was declared in the source.  
 e.g.
 	
 	val hbaseOut = new HBaseRawSource("MY_RESULTS", "hbase-local", Array("out-family"), writeNulls=false, sinkMode = SinkMode.REPLACE)
