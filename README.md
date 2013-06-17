@@ -236,6 +236,7 @@ HBaseRawSource is an alternative HBase source implementation that provides two m
 **Passing a scan object**
 HBaseRawSource object provides a helper function to encode a scan object as a base64 string, which you can pass to the source.
 e.g.
+	
 	val scan = new Scan
 	val key = "my_key_prefix"
 	scan.setStartRow(Bytes.toBytes(key))
@@ -249,6 +250,7 @@ The first field is the row key, the second is the row Result object. You can the
 The sink will write the output fields as columns under the provided family and field name as the column name. 
 You can also provide the field name as a full qualifier (family:column) to specify a different family than was declared in the source.
 e.g.
+	
 	val hbaseOut = new HBaseRawSource("MY_RESULTS", "hbase-local", Array("out-family"), writeNulls=false, sinkMode = SinkMode.REPLACE)
 	hbaseSource.read
 		.mapTo(('rowkey, 'row) -> ('rowkey, "different_family:col1", 'col2)) {
