@@ -262,5 +262,5 @@ e.g.
 					(rowkey, col1Times2, col2)
 				}
 		}
-		.write(out)
+		.write(hbaseOut)
 
