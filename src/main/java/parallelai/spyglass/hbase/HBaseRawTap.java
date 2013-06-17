@@ -131,11 +131,11 @@ public class HBaseRawTap extends Tap<JobConf, RecordReader, OutputCollector> {
 	/**
 	 * Constructor HBaseTap creates a new HBaseTap instance.
 	 * 
-	 * @param quorumNames
-	 * @param tableName
+	 * @param quorumNames		HBase quorum
+	 * @param tableName			The name of the HBase table to read
 	 * @param HBaseFullScheme
-	 * @param base64Scan
-	 * @param sinkMode
+	 * @param base64Scan		An optional base64 encoded scan object
+	 * @param sinkMode			If REPLACE the output table will be deleted before writing to
 	 */
 	public HBaseRawTap(String quorumNames, String tableName, HBaseRawScheme HBaseFullScheme, String base64Scan, SinkMode sinkMode) {
 		super(HBaseFullScheme, sinkMode);
