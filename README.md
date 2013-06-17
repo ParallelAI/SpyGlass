@@ -230,8 +230,8 @@ Add the trait to the job class and start using the conversions in the pipe direc
 5. Raw HBase Tap and Source
 ===========================
 HBaseRawSource is an alternative HBase source implementation that provides two main features:
-1. Ability to provide a custom scan object.
-2. Passing the row object to the mapper to allow full customized processing (without the need to declare in advance the read columns).
+* Ability to provide a custom scan object.
+* Passing the row object to the mapper to allow full customized processing (without the need to declare in advance the read columns).
 
 **Passing a scan object**
 HBaseRawSource object provides a helper function to encode a scan object as a base64 string, which you can pass to the source.
