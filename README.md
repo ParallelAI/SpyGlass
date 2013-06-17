@@ -234,6 +234,7 @@ HBaseRawSource is an alternative HBase source implementation that provides two m
 * Passing the row object to the mapper to allow full customized processing (without the need to declare in advance the read columns).
 
 **Passing a scan object**
+
 HBaseRawSource object provides a helper function to encode a scan object as a base64 string, which you can pass to the source.
 e.g.
 	
@@ -245,6 +246,7 @@ e.g.
 	val hbaseSource = new HBaseRawSource("MY-TABLE", "hbase-local", Array("col-family"), base64Scan = scanner)
 
 **Processing the rows**
+
 The mapper function gets from HBaseRawSource a tuple containing two fields: (rowkey, row). 
 The first field is the row key, the second is the row Result object. You can then process the row as needed. 
 The sink will write the output fields as columns under the provided family and field name as the column name. 
