@@ -249,7 +249,7 @@ e.g.
 
 The mapper function gets from HBaseRawSource a tuple containing two fields: (rowkey, row).   
 The first field is the row key, the second is the row Result object. You can then process the row as needed.   
-The sink expects a rowkey field in the tuple it gets to use as a row key (it doesn't have to be the same as the one emitted by the source)).
+The sink expects a rowkey field in the tuple it gets to use as a row key (it doesn't have to be the same as the one emitted by the source).
 It will then write the output fields (except the rowkey) as columns under the provided family and field name as the column name.   
 You can also provide the field name as a full qualifier (family:column) to specify a different family than was declared in the source.  
 e.g.
