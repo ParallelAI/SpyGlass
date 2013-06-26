@@ -149,16 +149,21 @@ public class HBaseSalter {
 
   public static byte[][] getAllKeysWithStop(byte[] originalKey, String prefixList, byte stopKey) throws IOException {
 	  char[] prefixArray = prefixList.toCharArray();
-	  
-	  return getAllKeysWithStartStop(originalKey, prefixList, (byte)prefixArray[0], (byte)(stopKey - 1));
+
+      return getAllKeysWithStartStop(originalKey, prefixList, (byte)prefixArray[0], stopKey);
+//	  return getAllKeysWithStartStop(originalKey, prefixList, (byte)prefixArray[0], (byte)(stopKey - 1));
   }
 
   public static byte[][] getAllKeysInRange(byte[] originalKey, String prefixList, byte startPrefix, byte stopPrefix) {
-	  return getAllKeysWithStartStop(originalKey, prefixList, startPrefix, (byte)(stopPrefix - 1));
+      return getAllKeysWithStartStop(originalKey, prefixList, startPrefix, stopPrefix);
+//	  return getAllKeysWithStartStop(originalKey, prefixList, startPrefix, (byte)(stopPrefix - 1));
   }
   
   private static byte[][] getAllKeysWithStartStop(byte[] originalKey, String prefixList, byte startPrefix, byte stopPrefix) {
-	  char[] prefixArray = prefixList.toCharArray();
+      LOG.info("".format("getAllKeysWithStartStop: OKEY (%s) PLIST (%s) PSRT (%s) PSTP (%s)",
+              Bytes.toString(originalKey), prefixList, startPrefix, stopPrefix));
+
+      char[] prefixArray = prefixList.toCharArray();
 	  TreeSet<Byte> prefixSet = new TreeSet<Byte>();
 	  
 	  for( char c : prefixArray ) {
