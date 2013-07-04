@@ -55,20 +55,22 @@ class HBaseSourceShouldRead (args: Args) extends JobBase(args) with HBasePipeCon
   var testName01 = "Scan_Test_01_Huge_Key_Range"
   println("---- Running : " + testName01)
   // Get everything from HBase testing table into a Pipe
-  val hbase01 = new HBaseSource( tableName1, hbaseHost, 'key,  
-  		    Array("data"), 
-  		    Array('column1),
-  		    sourceMode = SourceMode.SCAN_RANGE, startKey = "2000-01-01 00:00:00", stopKey = "2000-01-02 00:00:00")
-  		  	.read  	    
-  	    .fromBytesWritable(
-  		TABLE_01_SCHEMA)
-  .groupAll { group => 
-  	   group.toList[String]('key -> 'key)
-  	   group.toList[String]('column1 -> 'column1)
-  }
-  .mapTo(('key, 'column1) -> 'hbasedata) { x:(String,String) =>
-	     x._1 + " " + x._2
-  }
+  val hbase01 = new HBaseSource(tableName1, hbaseHost, 'key,
+    List("data"),
+    List('column1),
+    sourceMode = SourceMode.SCAN_RANGE, startKey = "2000-01-01 00:00:00", stopKey = "2000-01-02 00:00:00")
+    .read
+    .fromBytesWritable(
+    TABLE_01_SCHEMA)
+    .groupAll {
+      group =>
+        group.toList[String]('key -> 'key)
+        group.toList[String]('column1 -> 'column1)
+    }
+    .mapTo(('key, 'column1) -> 'hbasedata) {
+      x: (String, String) =>
+        x._1 + " " + x._2
+    }
 
   // Calculate expected result for Test 01
   var list01 = List(("2000-01-01 10:00:10", "1"),
@@ -79,60 +81,66 @@ class HBaseSourceShouldRead (args: Args) extends JobBase(args) with HBasePipeCon
   val testName02 = "Scan_Test_02_Borders_Range"
   println("---- Running : " + testName02)
   // Get everything from HBase testing table into a Pipe
-  val hbase02 = new HBaseSource( tableName1, hbaseHost, 'key,  
-  		    Array("data"), 
-  		    Array('column1),
-  		    sourceMode = SourceMode.SCAN_RANGE, startKey = "2000-01-01 10:00:10", stopKey = "2000-01-01 10:10:00")
-  		  	.read
-  		  	.fromBytesWritable(TABLE_01_SCHEMA)
-  .groupAll { group => 
-  	   group.toList[String]('key -> 'key)
-  	   group.toList[String]('column1 -> 'column1)
-  }
-  .mapTo(('key, 'column1) -> 'hbasedata) { x:(String,String) =>
-	     x._1 + " " + x._2
-  }
+  val hbase02 = new HBaseSource(tableName1, hbaseHost, 'key,
+    List("data"),
+    List('column1),
+    sourceMode = SourceMode.SCAN_RANGE, startKey = "2000-01-01 10:00:10", stopKey = "2000-01-01 10:10:00")
+    .read
+    .fromBytesWritable(TABLE_01_SCHEMA)
+    .groupAll {
+      group =>
+        group.toList[String]('key -> 'key)
+        group.toList[String]('column1 -> 'column1)
+    }
+    .mapTo(('key, 'column1) -> 'hbasedata) {
+      x: (String, String) =>
+        x._1 + " " + x._2
+    }
   // Calculate expected result for Test 02
   var list02 = List(("2000-01-01 10:00:10", "1"), ("2000-01-01 10:05:00", "2"), ("2000-01-01 10:10:00", "3"))
 
   // -------------------- Test 03 --------------------
   val testName03 = "Scan_Test_03_Inner_Range"
   // Get everything from HBase testing table into a Pipe
-  val hbase03 = new HBaseSource( tableName1, hbaseHost, 'key,  
-  		    Array("data"), 
-  		    Array('column1),
-  		    sourceMode = SourceMode.SCAN_RANGE, startKey = "2000-01-01 10:00:55", stopKey = "2000-01-01 10:07:00")
-  		  	.read  	    
-  	    .fromBytesWritable(
-  		TABLE_01_SCHEMA)
-  .groupAll { group => 
-  	   group.toList[String]('key -> 'key)
-  	   group.toList[String]('column1 -> 'column1)
-  }
-  .mapTo(('key, 'column1) -> 'hbasedata) { x:(String,String) =>
-	     x._1 + " " + x._2
-  }
-  
+  val hbase03 = new HBaseSource(tableName1, hbaseHost, 'key,
+    List("data"),
+    List('column1),
+    sourceMode = SourceMode.SCAN_RANGE, startKey = "2000-01-01 10:00:55", stopKey = "2000-01-01 10:07:00")
+    .read
+    .fromBytesWritable(
+    TABLE_01_SCHEMA)
+    .groupAll {
+      group =>
+        group.toList[String]('key -> 'key)
+        group.toList[String]('column1 -> 'column1)
+    }
+    .mapTo(('key, 'column1) -> 'hbasedata) {
+      x: (String, String) =>
+        x._1 + " " + x._2
+    }
+
   // Calculate expected result for Test 03
   var list03 = List(("2000-01-01 10:05:00", "2"))
 
   // -------------------- Test 04 --------------------
   val testName04 = "Scan_Test_04_Out_Of_Range_And_Unordered"
   // Get everything from HBase testing table into a Pipe
-  val hbase04 = new HBaseSource( tableName1, hbaseHost, 'key,  
-  		    Array("data"), 
-  		    Array('column1),
-  		    sourceMode = SourceMode.SCAN_RANGE, startKey = "9", stopKey = "911000000")
-  		  	.read  	    
-  	    .fromBytesWritable(
-  		TABLE_01_SCHEMA)
-  .groupAll { group => 
-  	   group.toList[String]('key -> 'key)
-  	   group.toList[String]('column1 -> 'column1)
-  }
-  .mapTo(('key, 'column1) -> 'hbasedata) { x:(String,String) =>
-	     x._1 + " " + x._2
-  }
+  val hbase04 = new HBaseSource(tableName1, hbaseHost, 'key,
+    List("data"),
+    List('column1),
+    sourceMode = SourceMode.SCAN_RANGE, startKey = "9", stopKey = "911000000")
+    .read
+    .fromBytesWritable(
+    TABLE_01_SCHEMA)
+    .groupAll {
+      group =>
+        group.toList[String]('key -> 'key)
+        group.toList[String]('column1 -> 'column1)
+    }
+    .mapTo(('key, 'column1) -> 'hbasedata) {
+      x: (String, String) =>
+        x._1 + " " + x._2
+    }
   
   // -------------------- Test 0 - TODO scan multiple versions .. --------------------
 //  val testName04 = "Scan_Test_04_One_Version"
@@ -160,42 +168,46 @@ class HBaseSourceShouldRead (args: Args) extends JobBase(args) with HBasePipeCon
   // -------------------- Test 05 --------------------
   val testName05 = "Get_Test_01_One_Existing_Some_Nonexisting_Keys_1_Versions"
   // Get everything from HBase testing table into a Pipe
-  val hbase05 = new HBaseSource( tableName2, hbaseHost, 'key,  
-  		    Array("data"), 
-  		    Array('column1),
-            sourceMode = SourceMode.GET_LIST, keyList = List("5003914", "2000-01-01 11:00:00", "5004897"),
-            versions = 1 )
-            .read  	    
-  	    .fromBytesWritable(
-  		TABLE_01_SCHEMA)
-  .groupAll { group => 
-  	   group.toList[String]('key -> 'key)
-  	   group.toList[String]('column1 -> 'column1)
-  }
-  .mapTo(('key, 'column1) -> 'hbasedata) { x:(String,String) =>
-	     x._1 + " " + x._2
-  }
+  val hbase05 = new HBaseSource(tableName2, hbaseHost, 'key,
+    List("data"),
+    List('column1),
+    sourceMode = SourceMode.GET_LIST, keyList = List("5003914", "2000-01-01 11:00:00", "5004897"),
+    versions = 1)
+    .read
+    .fromBytesWritable(
+    TABLE_01_SCHEMA)
+    .groupAll {
+      group =>
+        group.toList[String]('key -> 'key)
+        group.toList[String]('column1 -> 'column1)
+    }
+    .mapTo(('key, 'column1) -> 'hbasedata) {
+      x: (String, String) =>
+        x._1 + " " + x._2
+    }
 
   // Calculate expected result for Test 04
   var list05 = List(("2000-01-01 11:00:00", "6"))
 
   // -------------------- Test 6 --------------------
   val testName06 = "Get_Test_02_One_Existing_Some_Nonexisting_Keys_2_Versions"
-  val hbase06 = new HBaseSource( tableName2, hbaseHost, 'key,  
-  		    Array("data"), 
-  		    Array('column1),
-            sourceMode = SourceMode.GET_LIST, keyList = List("a", "5003914", "2000-01-01 10:00:00"),
-            versions = 2 )
-            .read  	    
-  	    .fromBytesWritable(
-  		TABLE_01_SCHEMA)
-  .groupAll { group =>
-  	   group.toList[String]('key -> 'key)
-  	   group.toList[String]('column1 -> 'column1)
-  }
-  .mapTo(('key, 'column1) -> 'hbasedata) { x:(String,String) =>
-	     x._1 + " " + x._2
-  }
+  val hbase06 = new HBaseSource( tableName2, hbaseHost, 'key,
+    List("data"),
+    List('column1),
+    sourceMode = SourceMode.GET_LIST, keyList = List("a", "5003914", "2000-01-01 10:00:00"),
+    versions = 2)
+    .read
+    .fromBytesWritable(
+    TABLE_01_SCHEMA)
+    .groupAll {
+      group =>
+        group.toList[String]('key -> 'key)
+        group.toList[String]('column1 -> 'column1)
+    }
+    .mapTo(('key, 'column1) -> 'hbasedata) {
+      x: (String, String) =>
+        x._1 + " " + x._2
+    }
 
   // Calculate expected result for Test 05
   var list06 = List(("2000-01-01 10:00:00", "3"),("2000-01-01 10:00:00","2"))
@@ -203,21 +215,23 @@ class HBaseSourceShouldRead (args: Args) extends JobBase(args) with HBasePipeCon
   // -------------------- Test 7 --------------------
   val testName07 = "Get_Test_03_One_Existing_Some_Nonexisting_Keys_3_Versions"
   // Get everything from HBase testing table into a Pipe
-  val hbase07 = new HBaseSource( tableName2, hbaseHost, 'key,  
-  		    Array("data"), 
-  		    Array('column1),
-            sourceMode = SourceMode.GET_LIST, keyList = List("2000", "2000-01", "2000-01-01 11:00:00", "zz"),
-            versions = 3 )
-            .read  	    
-  	    .fromBytesWritable(
-  		TABLE_01_SCHEMA)
-  .groupAll { group => 
-  	   group.toList[String]('key -> 'key)
-  	   group.toList[String]('column1 -> 'column1)
-  }
-  .mapTo(('key, 'column1) -> 'hbasedata) { x:(String,String) =>
-	     x._1 + " " + x._2
-  }
+  val hbase07 = new HBaseSource( tableName2, hbaseHost, 'key,
+    List("data"),
+    List('column1),
+    sourceMode = SourceMode.GET_LIST, keyList = List("2000", "2000-01", "2000-01-01 11:00:00", "zz"),
+    versions = 3)
+    .read
+    .fromBytesWritable(
+    TABLE_01_SCHEMA)
+    .groupAll {
+      group =>
+        group.toList[String]('key -> 'key)
+        group.toList[String]('column1 -> 'column1)
+    }
+    .mapTo(('key, 'column1) -> 'hbasedata) {
+      x: (String, String) =>
+        x._1 + " " + x._2
+    }
 
   // Calculate expected result for Test 07
   var list07 = List(("2000-01-01 11:00:00", "6"),("2000-01-01 11:00:00","5"),("2000-01-01 11:00:00","4"))
@@ -225,21 +239,23 @@ class HBaseSourceShouldRead (args: Args) extends JobBase(args) with HBasePipeCon
   // -------------------- Test 08 --------------------
   val testName08 = "Get_Test_04_One_Existing_Some_Nonexisting_Keys_4_Versions"
   // Get everything from HBase testing table into a Pipe
-  val hbase08 = new HBaseSource( tableName2, hbaseHost, 'key,  
-  		    Array("data"), 
-  		    Array('column1),
-            sourceMode = SourceMode.GET_LIST, keyList = List("2000", "2000-01-01 11:00:00", "2000-01-01 10:00:00", "zz"),
-            versions = 4 )
-            .read  	    
-  	    .fromBytesWritable(
-  		TABLE_01_SCHEMA)
-  .groupAll { group => 
-  	   group.toList[String]('key -> 'key)
-  	   group.toList[String]('column1 -> 'column1)
-  }
-  .mapTo(('key, 'column1) -> 'hbasedata) { x:(String,String) =>
-	     x._1 + " " + x._2
-  }
+  val hbase08 = new HBaseSource(tableName2, hbaseHost, 'key,
+    List("data"),
+    List('column1),
+    sourceMode = SourceMode.GET_LIST, keyList = List("2000", "2000-01-01 11:00:00", "2000-01-01 10:00:00", "zz"),
+    versions = 4)
+    .read
+    .fromBytesWritable(
+    TABLE_01_SCHEMA)
+    .groupAll {
+      group =>
+        group.toList[String]('key -> 'key)
+        group.toList[String]('column1 -> 'column1)
+    }
+    .mapTo(('key, 'column1) -> 'hbasedata) {
+      x: (String, String) =>
+        x._1 + " " + x._2
+    }
 
   var list08 = List(("2000-01-01 10:00:00", "3"),("2000-01-01 10:00:00","2"),("2000-01-01 10:00:00","1"),
                     ("2000-01-01 11:00:00", "6"),("2000-01-01 11:00:00","5"),("2000-01-01 11:00:00","4"))
@@ -247,21 +263,23 @@ class HBaseSourceShouldRead (args: Args) extends JobBase(args) with HBasePipeCon
   // -------------------- Test 09 --------------------
   val testName09 = "Get_Test_05_Get_Same_Key_Multiple_Times_4_versions"
   // Get everything from HBase testing table into a Pipe
-  val hbase09 = new HBaseSource( tableName2, hbaseHost, 'key,  
-  		    Array("data"), 
-  		    Array('column1),
-            sourceMode = SourceMode.GET_LIST, keyList = List("2000", "2000-01-01 11:00:00", "avdvf", "2000-01-01 11:00:00"),
-            versions = 4 )
-            .read  	    
-  	    .fromBytesWritable(
-  		TABLE_01_SCHEMA)
-  .groupAll { group => 
-  	   group.toList[String]('key -> 'key)
-  	   group.toList[String]('column1 -> 'column1)
-  }
-  .mapTo(('key, 'column1) -> 'hbasedata) { x:(String,String) =>
-	     x._1 + " " + x._2
-  }
+  val hbase09 = new HBaseSource( tableName2, hbaseHost, 'key,
+    List("data"),
+    List('column1),
+    sourceMode = SourceMode.GET_LIST, keyList = List("2000", "2000-01-01 11:00:00", "avdvf", "2000-01-01 11:00:00"),
+    versions = 4)
+    .read
+    .fromBytesWritable(
+    TABLE_01_SCHEMA)
+    .groupAll {
+      group =>
+        group.toList[String]('key -> 'key)
+        group.toList[String]('column1 -> 'column1)
+    }
+    .mapTo(('key, 'column1) -> 'hbasedata) {
+      x: (String, String) =>
+        x._1 + " " + x._2
+    }
 
   var list09 = List(("2000-01-01 11:00:00", "6"),("2000-01-01 11:00:00","5"),("2000-01-01 11:00:00","4"))
 
@@ -273,21 +291,23 @@ class HBaseSourceShouldRead (args: Args) extends JobBase(args) with HBasePipeCon
   var bigList = ((bigList1 ::: List("2000-01-01 11:00:00")) ::: bigList2) ::: List("2000-01-01 10:00:00")   
 
   // Get everything from HBase testing table into a Pipe
-  val hbase10 = new HBaseSource( tableName2, hbaseHost, 'key,  
-  		    Array("data"), 
-  		    Array('column1),
-  		    sourceMode = SourceMode.GET_LIST, keyList = bigList,
-            versions = 2 ) // 
-            .read  	    
-  	    .fromBytesWritable(
-  		TABLE_01_SCHEMA)
-  .groupAll { group => 
-  	   group.toList[String]('key -> 'key)
-  	   group.toList[String]('column1 -> 'column1)
-  }
-  .mapTo(('key, 'column1) -> 'hbasedata) { x:(String,String) =>
-	     x._1 + " " + x._2
-  }
+  val hbase10 = new HBaseSource( tableName2, hbaseHost, 'key,
+    List("data"),
+    List('column1),
+    sourceMode = SourceMode.GET_LIST, keyList = bigList,
+    versions = 2) //
+    .read
+    .fromBytesWritable(
+    TABLE_01_SCHEMA)
+    .groupAll {
+    group =>
+        group.toList[String]('key -> 'key)
+        group.toList[String]('column1 -> 'column1)
+    }
+    .mapTo(('key, 'column1) -> 'hbasedata) {
+      x: (String, String) =>
+        x._1 + " " + x._2
+    }
 
   
   var list10 = List(("2000-01-01 10:00:00", "3"),("2000-01-01 10:00:00","2"),
@@ -297,58 +317,64 @@ class HBaseSourceShouldRead (args: Args) extends JobBase(args) with HBasePipeCon
   // -------------------- Test 11 --------------------
   val testName11 = "Get_Test_07_EmptyList"
   // Get everything from HBase testing table into a Pipe
-  val hbase11 = new HBaseSource( tableName2, hbaseHost, 'key,  
-  		    Array("data"), 
-  		    Array('column1),
-  		    sourceMode = SourceMode.GET_LIST, keyList = List(),
-            versions = 1 ) // 
-            .read  	    
-  	    .fromBytesWritable(
-  		TABLE_01_SCHEMA)
-  .groupAll { group => 
-  	   group.toList[String]('key -> 'key)
-  	   group.toList[String]('column1 -> 'column1)
-  }
-  .mapTo(('key, 'column1) -> 'hbasedata) { x:(String,String) =>
-	     x._1 + " " + x._2
-  }
+  val hbase11 = new HBaseSource( tableName2, hbaseHost, 'key,
+    List("data"),
+    List('column1),
+    sourceMode = SourceMode.GET_LIST, keyList = List(),
+    versions = 1) //
+    .read
+    .fromBytesWritable(
+    TABLE_01_SCHEMA)
+    .groupAll {
+      group =>
+        group.toList[String]('key -> 'key)
+        group.toList[String]('column1 -> 'column1)
+    }
+    .mapTo(('key, 'column1) -> 'hbasedata) {
+      x: (String, String) =>
+        x._1 + " " + x._2
+    }
 
   
   // -------------------- Test 11 --------------------
   val testName12 = "Get_Test_08_Three_Nonexistingkeys_1_Versions"
   // Get everything from HBase testing table into a Pipe
-  val hbase12 = new HBaseSource( tableName2, hbaseHost, 'key,  
-  		    Array("data"), 
-  		    Array('column1),
-  		    sourceMode = SourceMode.GET_LIST, keyList = List("5003914", "5000687", "5004897"),
-            versions = 1 )  
-            .read  	    
-  	    .fromBytesWritable(
-  		TABLE_01_SCHEMA)
-  .groupAll { group => 
-  	   group.toList[String]('key -> 'key)
-  	   group.toList[String]('column1 -> 'column1)
-  }
-  .mapTo(('key, 'column1) -> 'hbasedata) { x:(String,String) =>
-	     x._1 + " " + x._2
-  }
+  val hbase12 = new HBaseSource(tableName2, hbaseHost, 'key,
+    List("data"),
+    List('column1),
+    sourceMode = SourceMode.GET_LIST, keyList = List("5003914", "5000687", "5004897"),
+    versions = 1)
+    .read
+    .fromBytesWritable(
+    TABLE_01_SCHEMA)
+    .groupAll {
+      group =>
+        group.toList[String]('key -> 'key)
+        group.toList[String]('column1 -> 'column1)
+    }
+    .mapTo(('key, 'column1) -> 'hbasedata) {
+      x: (String, String) =>
+        x._1 + " " + x._2
+    }
   
   // --------------------- TEST 13 -----------------------------
   val testName13 = "Some "
-  val hbase13 = new HBaseSource( tableName2, hbaseHost, 'key,  
-          Array("data"), 
-          Array('column1),
-          sourceMode = SourceMode.SCAN_RANGE, startKey = "", stopKey="", useSalt = true )  
-            .read       
-        .fromBytesWritable(
-      TABLE_01_SCHEMA)
-  .groupAll { group => 
-       group.toList[String]('key -> 'key)
-       group.toList[String]('column1 -> 'column1)
-  }
-  .mapTo(('key, 'column1) -> 'hbasedata) { x:(String,String) =>
-       x._1 + " " + x._2
-  } 
+  val hbase13 = new HBaseSource(tableName2, hbaseHost, 'key,
+    List("data"),
+    List('column1),
+    sourceMode = SourceMode.SCAN_RANGE, startKey = "", stopKey = "", useSalt = true)
+    .read
+    .fromBytesWritable(
+    TABLE_01_SCHEMA)
+    .groupAll {
+      group =>
+        group.toList[String]('key -> 'key)
+        group.toList[String]('column1 -> 'column1)
+    }
+    .mapTo(('key, 'column1) -> 'hbasedata) {
+      x: (String, String) =>
+        x._1 + " " + x._2
+    }
 
   var list13 = List(("2000-01-01 10:00:00", "3"),("2000-01-01 10:00:00","2"),
             ("2000-01-01 11:00:00", "6"),("2000-01-01 11:00:00","5")

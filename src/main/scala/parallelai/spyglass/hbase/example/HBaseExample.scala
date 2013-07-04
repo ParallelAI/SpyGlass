@@ -19,13 +19,13 @@ class HBaseExample(args: Args) extends JobBase(args) {
 
   val isDebug: Boolean = args("debug").toBoolean
 
-  if (isDebug) Logger.getRootLogger().setLevel(Level.DEBUG)
+  if (isDebug) Logger.getRootLogger.setLevel(Level.DEBUG)
 
   val output = args("output")
 
   println(output)
 
-  val jobConf = getJobConf
+  val jobConf = getJobConf()
 
   val quorumNames = args("quorum")
 
@@ -38,20 +38,20 @@ class HBaseExample(args: Args) extends JobBase(args) {
     val connection = HConnectionManager.getConnection(conf)
     val maxThreads = conf.getInt("hbase.htable.threads.max", 1)
 
-    conf.set("hbase.zookeeper.quorum", quorumNames);
+    conf.set("hbase.zookeeper.quorum", quorumNames)
 
     val htable = new HTable(HBaseConfiguration.create(conf), tableName)
 
   }
 
-  val hTableStore = HBaseTableStore(getJobConf, quorumNames, "skybet.test.tbet")
+  val hTableStore = HBaseTableStore(getJobConf(), quorumNames, "skybet.test.tbet")
 
   val hbs2 = new HBaseSource(
     "table_name",
     "quorum_name:2181",
     'key,
-    Array("column_family"),
-    Array('column_name),
+    List("column_family"),
+    List('column_name),
     sourceMode = SourceMode.GET_LIST, keyList = List("5003914", "5000687", "5004897"))
     .read
     .write(Tsv(output.format("get_list")))
@@ -60,8 +60,8 @@ class HBaseExample(args: Args) extends JobBase(args) {
     "table_name",
     "quorum_name:2181",
     'key,
-    Array("column_family"),
-    Array('column_name),
+    List("column_family"),
+    List('column_name),
     sourceMode = SourceMode.SCAN_ALL) //, stopKey = "99460693")
     .read
     .write(Tsv(output.format("scan_all")))
@@ -70,8 +70,8 @@ class HBaseExample(args: Args) extends JobBase(args) {
     "table_name",
     "quorum_name:2181",
     'key,
-    Array("column_family"),
-    Array('column_name),
+    List("column_family"),
+    List('column_name),
     sourceMode = SourceMode.SCAN_RANGE, stopKey = "5003914")
     .read
     .write(Tsv(output.format("scan_range_to_end")))
@@ -80,8 +80,8 @@ class HBaseExample(args: Args) extends JobBase(args) {
     "table_name",
     "quorum_name:2181",
     'key,
-    Array("column_family"),
-    Array('column_name),
+    List("column_family"),
+    List('column_name),
     sourceMode = SourceMode.SCAN_RANGE, startKey = "5003914")
     .read
     .write(Tsv(output.format("scan_range_from_start")))
@@ -90,8 +90,8 @@ class HBaseExample(args: Args) extends JobBase(args) {
     "table_name",
     "quorum_name:2181",
     'key,
-    Array("column_family"),
-    Array('column_name),
+    List("column_family"),
+    List('column_name),
     sourceMode = SourceMode.SCAN_RANGE, startKey = "5003914", stopKey = "5004897")
     .read
     .write(Tsv(output.format("scan_range_between")))

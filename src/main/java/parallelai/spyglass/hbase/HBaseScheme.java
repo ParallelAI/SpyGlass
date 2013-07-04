@@ -238,12 +238,17 @@ public class HBaseScheme
     OutputCollector outputCollector = sinkCall.getOutput();
     Tuple key = tupleEntry.selectTuple(keyField);
     ImmutableBytesWritable keyBytes = (ImmutableBytesWritable) key.getObject(0);
-    
-    if( useSalt ) {
-    	keyBytes = HBaseSalter.addSaltPrefix(keyBytes);
+
+    if (useSalt) {
+      keyBytes = HBaseSalter.addSaltPrefix(keyBytes);
     }
-    
-    Put put = new Put(keyBytes.get(), this.timeStamp);
+
+    Put put;
+    if (this.timeStamp == 0L) {
+      put = new Put(keyBytes.get());
+    } else {
+      put = new Put(keyBytes.get(), this.timeStamp);
+    }
     
     for (int i = 0; i < valueFields.length; i++) {
       Fields fieldSelector = valueFields[i];

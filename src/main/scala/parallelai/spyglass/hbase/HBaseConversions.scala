@@ -36,8 +36,8 @@ class HBasePipeWrapper (pipe: Pipe) {
 	      }
 	    }
 	  }
-	}	
-	
+	}
+
 //	def fromBytesWritable : Pipe = {
 //	  asList(Fields.ALL.asInstanceOf[TupleEntry].getFields()).foldLeft(pipe) { (p, fld) =>
 //	    p.map(fld.toString -> fld.toString) { from: ImmutableBytesWritable => {

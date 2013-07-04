@@ -50,14 +50,15 @@
 		<scalding.version>0.8.5</scalding.version>
 		<cascading.version>2.1.6</cascading.version>
 		<scalding-commons.version>0.1.1</scalding-commons.version>
-		<scalatest.version>1.7.1</scalatest.version>
+		<scalatest.version>1.9.1</scalatest.version>
 
 		<trove4j.version>3.0.3</trove4j.version>
 		<maple.version>0.2.8</maple.version>
 		<specs2.version>1.12.4.1</specs2.version>
 		<typesafe.config.version>1.0.0</typesafe.config.version>
+        <specs2.version>2.0</specs2.version>
 
-		<!-- Other libraries properties -->
+        <!-- Other libraries properties -->
 		<junit.version>4.10</junit.version>
 		<slf4j.version>1.7.2</slf4j.version>
 		<trove4j.version>3.0.3</trove4j.version>
@@ -165,12 +166,12 @@
 			<groupId>com.twitter</groupId>
 			<artifactId>scalding-core_${scalding.scala.version}</artifactId>
 			<version>${scalding.version}</version>
-			<exclusions>
-				<exclusion>  <!-- Declare exclusion, in order to use custom build -->
-					<groupId>com.twitter</groupId>
-					<artifactId>maple</artifactId>
-				</exclusion>
-			</exclusions>
+			<!--<exclusions>-->
+				<!--<exclusion>-->
+					<!--<groupId>com.twitter</groupId>-->
+					<!--<artifactId>maple</artifactId>-->
+				<!--</exclusion>-->
+			<!--</exclusions>-->
 		</dependency>
 
 		<dependency>
@@ -200,6 +201,26 @@
 			<artifactId>elephant-bird-hadoop-compat</artifactId>
 			<version>4.1</version>
 		</dependency>
+
+        <!-- Testing dependencies (ScalaSpec / ScalaTest / JUnit) -->
+        <dependency>
+            <groupId>org.specs2</groupId>
+            <artifactId>specs2_${scalding.scala.version}</artifactId>
+            <version>${specs2.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.scalatest</groupId>
+            <artifactId>scalatest_${scalding.scala.version}</artifactId>
+            <version>${scalatest.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
 	</dependencies>
 	<!-- From https://wiki.scala-lang.org/display/SIW/ScalaEclipseMaven -->
 

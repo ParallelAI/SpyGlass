@@ -38,9 +38,9 @@ class HdfsToJdbc (args: Args) extends JobBase(args) {
 		"jdbc:mysql://<hostname>:<port>/<db_name>?zeroDateTimeBehavior=convertToNull",
 		"user",
 		"password",
-		Array[String]("KEY_ID", "COL1", "COL2", "COL3"),
-		Array[String]( "bigint(20)" ,  "varchar(45)"  ,  "varchar(45)"  ,  "bigint(20)"),
-		Array[String]("key_id"),
+    List("KEY_ID", "COL1", "COL2", "COL3"),
+    List( "bigint(20)" ,  "varchar(45)"  ,  "varchar(45)"  ,  "bigint(20)"),
+    List("key_id"),
 		new Fields("key_id",    "col1",    "col2",    "col3")
 	)
   
