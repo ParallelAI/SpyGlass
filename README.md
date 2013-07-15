@@ -1,7 +1,7 @@
 SpyGlass
 ========
 
-Cascading and Scalding wrapper for HBase with advanced read and write features. JDBC wrapper is recently added to support SQL in taps. Insert/Update/Update on Duplicates are supported.
+Cascading and Scalding wrapper for HBase with advanced read and write features. JDBC wrapper is recently added to support SQL in taps. Insert/Update/Upserts (Update on Duplicates) are supported with MultiRowInserts & Batch Modes.
 
 Prevent Hot Spotting by the use of transparent key prefixes.
 

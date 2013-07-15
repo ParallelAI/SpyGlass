@@ -13,7 +13,11 @@ public class JDBCConstants {
   public enum JdbcSinkMode {
 	INSERT,
 	UPDATE,
-	UPSERT;
+	UPSERT,
+	BATCH_INSERT,
+	BATCH_UPSERT,
+	MULTI_ROW_INSERT,
+	MULTI_ROW_UPSERT;
   }
   
   public static final String START_KEY = "jdbc.%s.startkey";
