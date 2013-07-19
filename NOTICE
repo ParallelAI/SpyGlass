@@ -1,0 +1,18 @@
+SpyGlass is a Scalding Source and Cascading Tap framework
+Copyright 2013 Parallel AI LTD
+
+Third Party Dependencies:
+
+Scalding 2.x
+Apache Public License 2.0
+https://github.com/twitter/scalding
+
+Cascading 2.0
+Apache Public License 2.0
+http://www.cascading.org
+
+Hadoop 0.20.2
+Apache Public License 2.0
+http://hadoop.apache.org
+
+
