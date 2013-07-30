@@ -8,13 +8,6 @@
 		<url>http://www.parallelai.com</url>
 	</organization>
 
-
-	<name>Cascading and Scalding wrapper for HBase with advanced features</name>
-	<groupId>parallelai</groupId>
-	<artifactId>parallelai.spyglass</artifactId>
-	<version>2.9.3_2.2.0</version>
-	<packaging>jar</packaging>
-
 	<properties>
 		<!-- Java compilation level -->
 		<maven.compiler.source>1.6</maven.compiler.source>
@@ -28,32 +21,32 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-        <datafu.version>0.0.4-cdh4.2.0</datafu.version>
-        <flume.version>1.3.0-cdh4.2.0</flume.version>
-        <hadoop.version>2.0.0-cdh4.2.0</hadoop.version>
-        <hbase.version>0.94.2-cdh4.2.0</hbase.version>
-        <hive.version>0.10.0-cdh4.2.0</hive.version>
-        <mahout.version>0.7-cdh4.2.0</mahout.version>
-        <mapreduce.version>2.0.0-mr1-cdh4.2.0</mapreduce.version>
-        <oozie.version>3.3.0-cdh4.2.0</oozie.version>
-        <oozie-hadoop.version>2.0.0-cdh4.2.0.oozie-3.3.0-cdh4.2.0</oozie-hadoop.version>
-        <oozie-sharelib.version>3.3.0-cdh4.2.0</oozie-sharelib.version>
-        <pig.version>0.10.0-cdh4.2.0</pig.version>
-        <sqoop.version>1.4.2-cdh4.2.0</sqoop.version>
-        <whirr.version>0.8.0-cdh4.2.0</whirr.version>
-        <zookeeper.version>3.4.5-cdh4.2.0</zookeeper.version>
+        <datafu.version>0.0.4-cdh4.3.0</datafu.version>
+        <flume.version>1.3.0-cdh4.3.0</flume.version>
+        <hadoop.version>2.0.0-cdh4.3.0</hadoop.version>
+        <hbase.version>0.94.6-cdh4.3.0</hbase.version>
+        <hive.version>0.10.0-cdh4.3.0</hive.version>
+        <mahout.version>0.7-cdh4.3.0</mahout.version>
+        <mapreduce.version>2.0.0-mr1-cdh4.3.0</mapreduce.version>
+        <oozie.version>3.3.2-cdh4.3.0</oozie.version>
+        <oozie-hadoop.version>2.0.0-cdh4.2.0.oozie-3.3.2-cdh4.3.0</oozie-hadoop.version>
+        <oozie-sharelib.version>3.3.2-cdh4.3.0</oozie-sharelib.version>
+        <pig.version>0.11.0-cdh4.3.0</pig.version>
+        <sqoop.version>1.4.3-cdh4.3.0</sqoop.version>
+        <whirr.version>0.8.2-cdh4.3.0</whirr.version>
+        <zookeeper.version>3.4.5-cdh4.3.0</zookeeper.version>
 
 		<!-- Scala/Scalding/Cascading properties -->
-        <scala.version>2.9.3</scala.version>
-        <scalding.scala.version>2.9.3</scalding.scala.version>
+        <scala.version>2.10.2</scala.version>
+        <scalding.scala.version>2.10</scalding.scala.version>
         <scalding.version>0.8.6</scalding.version>
-		<cascading.version>2.1.0</cascading.version>
+		<cascading.version>2.1.6</cascading.version>
 		<scalding-commons.version>0.2.0</scalding-commons.version>
 		<scalatest.version>1.9.1</scalatest.version>
 
 		<trove4j.version>3.0.3</trove4j.version>
 		<maple.version>0.2.8</maple.version>
-		<specs2.version>1.12.4.1</specs2.version>
+		<specs2.version>2.1</specs2.version>
 		<typesafe.config.version>1.0.0</typesafe.config.version>
 
         <!-- Other libraries properties -->
@@ -66,7 +59,13 @@
 
 	</properties>
 
-	<distributionManagement>
+    <name>Cascading and Scalding wrapper for HBase with advanced features</name>
+    <groupId>parallelai</groupId>
+    <artifactId>parallelai.spyglass</artifactId>
+    <version>${scala.version}_2.3.0</version>
+    <packaging>jar</packaging>
+
+    <distributionManagement>
 	    <repository>
 	        <id>repo</id>
 	        <url>https://github.com/ParallelAI/mvn-repo/raw/master/releases</url>
@@ -90,6 +89,10 @@
 			<name>Con Jars</name>
 			<url>http://conjars.org/repo</url>
 		</repository>
+        <repository>
+            <id>mvnrepository</id>
+            <url>http://repo1.maven.org/maven2</url>
+        </repository>
 	</repositories>
 
 	<!-- Profiles -->
@@ -237,7 +240,7 @@
 					</includes>
 				</configuration>
 			</plugin>
-			<!-- This plugin is not supported by Eclipse, so maybe we shouldn't be 
+			<!-- This plugin is not supported by Eclipse, so maybe we shouldn't be
 				using it -->
 			<plugin>
 				<groupId>org.scala-tools</groupId>
