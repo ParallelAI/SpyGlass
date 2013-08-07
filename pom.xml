@@ -9,12 +9,6 @@
 	</organization>
 
 
-	<name>Cascading and Scalding wrapper for HBase with advanced features</name>
-	<groupId>parallelai</groupId>
-	<artifactId>parallelai.spyglass</artifactId>
-	<version>2.9.3_3.0.0</version>
-	<packaging>jar</packaging>
-
 	<properties>
 		<!-- Java compilation level -->
 		<maven.compiler.source>1.6</maven.compiler.source>
@@ -69,7 +63,13 @@
 
 	</properties>
 
-	<distributionManagement>
+    <name>Cascading and Scalding wrapper for HBase with advanced features</name>
+    <groupId>parallelai</groupId>
+    <artifactId>parallelai.spyglass</artifactId>
+    <version>${scala.version}_3.0.0</version>
+    <packaging>jar</packaging>
+
+    <distributionManagement>
 	    <repository>
 	        <id>repo</id>
 	        <url>https://github.com/ParallelAI/mvn-repo/raw/master/releases</url>
