@@ -12,7 +12,7 @@
 	<name>Cascading and Scalding wrapper for HBase with advanced features</name>
 	<groupId>parallelai</groupId>
 	<artifactId>parallelai.spyglass</artifactId>
-	<version>2.9.3_2.2.0</version>
+	<version>2.9.3_2.2.1</version>
 	<packaging>jar</packaging>
 
 	<properties>
