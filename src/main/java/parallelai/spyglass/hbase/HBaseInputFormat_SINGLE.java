@@ -37,10 +37,10 @@ import org.apache.hadoop.util.StringUtils;
 
 import parallelai.spyglass.hbase.HBaseConstants.SourceMode;
 
-public class HBaseInputFormat implements
+public class HBaseInputFormat_SINGLE implements
 		InputFormat<ImmutableBytesWritable, Result>, JobConfigurable {
 
-	private final Log LOG = LogFactory.getLog(HBaseInputFormat.class);
+	private final Log LOG = LogFactory.getLog(HBaseInputFormat_SINGLE.class);
 
 	private final String id = UUID.randomUUID().toString();
 
@@ -56,41 +56,9 @@ public class HBaseInputFormat implements
 
 	// private Scan scan = null;
 
-	private HBaseMultiInputSplit[] convertToMultiSplitArray(
-			List<HBaseTableSplit> splits) throws IOException {
-
-		if (splits == null)
-			throw new IOException("The list of splits is null => " + splits);
-
-		HashMap<String, HBaseMultiInputSplit> regionSplits = new HashMap<String, HBaseMultiInputSplit>();
-
-		for (HBaseTableSplit hbt : splits) {
-			HBaseMultiInputSplit mis = null;
-			if (regionSplits.containsKey(hbt.getRegionLocation())) {
-				mis = regionSplits.get(hbt.getRegionLocation());
-			} else {
-				regionSplits.put(hbt.getRegionLocation(), new HBaseMultiInputSplit(
-						hbt.getRegionLocation()));
-				mis = regionSplits.get(hbt.getRegionLocation());
-			}
-
-			mis.addSplit(hbt);
-			regionSplits.put(hbt.getRegionLocation(), mis);
-		}
-
-		Collection<HBaseMultiInputSplit> outVals = regionSplits.values();
-
-		LOG.debug("".format("Returning array of splits : %s", outVals));
-
-		if (outVals == null)
-			throw new IOException("The list of multi input splits were null");
-
-		return outVals.toArray(new HBaseMultiInputSplit[outVals.size()]);
-	}
-
 	@SuppressWarnings("deprecation")
 	@Override
-	public HBaseMultiInputSplit[] getSplits(JobConf job, int numSplits) throws IOException {
+	public InputSplit[] getSplits(JobConf job, int numSplits) throws IOException {
 		if (this.table == null) {
 			throw new IOException("No table was provided");
 		}
@@ -99,7 +67,7 @@ public class HBaseInputFormat implements
 			throw new IOException("Expecting at least one column");
 		}
 
-		final Pair<byte[][], byte[][]> keys = table.getStartEndKeys();
+		Pair<byte[][], byte[][]> keys = table.getStartEndKeys();
 
 		if (keys == null || keys.getFirst() == null
 				|| keys.getFirst().length == 0) {
@@ -110,7 +78,7 @@ public class HBaseInputFormat implements
 				throw new IOException("Expecting at least one region.");
 			}
 
-			final List<HBaseTableSplit> splits = new ArrayList<HBaseTableSplit>();
+			List<HBaseTableSplit> splits = new ArrayList<HBaseTableSplit>(1);
 			HBaseTableSplit split = new HBaseTableSplit(table.getTableName(),
 					HConstants.EMPTY_BYTE_ARRAY, HConstants.EMPTY_BYTE_ARRAY, regLoc
 							.getHostnamePort().split(
@@ -119,8 +87,7 @@ public class HBaseInputFormat implements
 
 			splits.add(split);
 
-			// TODO: Change to HBaseMultiSplit
-			return convertToMultiSplitArray(splits);
+			return splits.toArray(new HBaseTableSplit[splits.size()]);
 		}
 
 		if (keys.getSecond() == null || keys.getSecond().length == 0) {
@@ -232,7 +199,7 @@ public class HBaseInputFormat implements
 				// stopRow = (Bytes.compareTo(stopRow, maxKey) > 0) ? maxKey :
 				// stopRow;
 
-				final List<HBaseTableSplit> splits = new ArrayList<HBaseTableSplit>();
+				List<HBaseTableSplit> splits = new ArrayList<HBaseTableSplit>();
 
 				if (!useSalt) {
 
@@ -303,7 +270,7 @@ public class HBaseInputFormat implements
 										regStartKeys[i], regStopKeys[i], prefixList);
 
 						for (Pair<byte[], byte[]> pair : intervals) {
-							LOG.debug("".format(
+							LOG.info("".format(
 									"Using SALT, Region (%s) Start (%s) Stop (%s)",
 									regions[i], Bytes.toString(pair.getFirst()),
 									Bytes.toString(pair.getSecond())));
@@ -319,10 +286,12 @@ public class HBaseInputFormat implements
 					}
 				}
 
-				LOG.debug("RETURNED NO OF SPLITS: split -> " + splits.size());
+				LOG.info("RETURNED NO OF SPLITS: split -> " + splits.size());
+				for (HBaseTableSplit s : splits) {
+					LOG.info("RETURNED SPLITS: split -> " + s);
+				}
 
-				// TODO: Change to HBaseMultiSplit
-				return convertToMultiSplitArray(splits);
+				return splits.toArray(new HBaseTableSplit[splits.size()]);
 			}
 
 			case GET_LIST: {
@@ -342,9 +311,9 @@ public class HBaseInputFormat implements
 					keyList = tempKeyList;
 				}
 
-				LOG.info("".format("Splitting Key List (%s)", keyList));
+				LOG.debug("".format("Splitting Key List (%s)", keyList));
 
-				final List<HBaseTableSplit> splits = new ArrayList<HBaseTableSplit>();
+				List<HBaseTableSplit> splits = new ArrayList<HBaseTableSplit>();
 
 				for (int i = 0; i < keys.getFirst().length; i++) {
 
@@ -356,7 +325,7 @@ public class HBaseInputFormat implements
 					LOG.debug(String.format(
 							"Getting region (%s) subset (%s) to (%s)", regions[i],
 							Bytes.toString(regStartKeys[i]),
-							Bytes.toString(regStopKeys[i])));
+							Bytes.toString(regStartKeys[i])));
 
 					Set<String> regionsSubSet = null;
 
@@ -404,32 +373,9 @@ public class HBaseInputFormat implements
 					splits.add(split);
 				}
 
-				// if (splits.isEmpty()) {
-				// LOG.info("GOT EMPTY SPLITS");
+				LOG.debug("RETURNED SPLITS: split -> " + splits);
 
-				// throw new IOException(
-				// "".format("Key List NOT found in any region"));
-
-				// HRegionLocation regLoc = table.getRegionLocation(
-				// HConstants.EMPTY_BYTE_ARRAY, false);
-				//
-				// if (null == regLoc) {
-				// throw new IOException("Expecting at least one region.");
-				// }
-				//
-				// HBaseTableSplit split = new HBaseTableSplit(
-				// table.getTableName(), HConstants.EMPTY_BYTE_ARRAY,
-				// HConstants.EMPTY_BYTE_ARRAY, regLoc.getHostnamePort()
-				// .split(Addressing.HOSTNAME_PORT_SEPARATOR)[0],
-				// SourceMode.EMPTY, false);
-				//
-				// splits.add(split);
-				// }
-
-				LOG.info("RETURNED SPLITS: split -> " + splits);
-
-				// TODO: Change to HBaseMultiSplit
-				return convertToMultiSplitArray(splits);
+				return splits.toArray(new HBaseTableSplit[splits.size()]);
 			}
 
 			default:
@@ -451,19 +397,50 @@ public class HBaseInputFormat implements
 	public RecordReader<ImmutableBytesWritable, Result> getRecordReader(
 			InputSplit split, JobConf job, Reporter reporter) throws IOException {
 
-		if (!(split instanceof HBaseMultiInputSplit))
-			throw new IOException("Table Split is not type HBaseMultiInputSplit");
+		if (!(split instanceof HBaseTableSplit))
+			throw new IOException("Table Split is not type HBaseTableSplit");
 
-		HBaseMultiInputSplit tSplit = (HBaseMultiInputSplit) split;
+		HBaseTableSplit tSplit = (HBaseTableSplit) split;
 
-		HBaseRecordReader trr = new HBaseRecordReader(tSplit);
+		HBaseRecordReader_SINGLE trr = new HBaseRecordReader_SINGLE();
 
+		switch (tSplit.getSourceMode()) {
+			case SCAN_ALL:
+			case SCAN_RANGE: {
+				LOG.debug(String.format(
+						"For split [%s] we have start key (%s) and stop key (%s)",
+						tSplit, tSplit.getStartRow(), tSplit.getEndRow()));
+
+				trr.setStartRow(tSplit.getStartRow());
+				trr.setEndRow(tSplit.getEndRow());
+				trr.setEndRowInclusive(tSplit.getEndRowInclusive());
+				trr.setUseSalt(useSalt);
+			}
+
+			break;
+
+			case GET_LIST: {
+				LOG.debug(String.format("For split [%s] we have key list (%s)",
+						tSplit, tSplit.getKeyList()));
+
+				trr.setKeyList(tSplit.getKeyList());
+				trr.setVersions(tSplit.getVersions());
+				trr.setUseSalt(useSalt);
+			}
+
+			break;
+
+			default:
+				throw new IOException("Unknown source mode : "
+						+ tSplit.getSourceMode());
+		}
+
+		trr.setSourceMode(tSplit.getSourceMode());
 		trr.setHTable(this.table);
 		trr.setInputColumns(this.inputColumns);
 		trr.setRowFilter(this.rowFilter);
-		trr.setUseSalt(useSalt);
 
-		trr.setNextSplit();
+		trr.init();
 
 		return trr;
 	}

@@ -96,7 +96,7 @@ public class HBaseSalterTester {
 	public void getAllKeysWithPrefixAndRange() throws IOException {
 		String keyStr = "1021";
 		byte [] keyBytes = Bytes.toBytes(keyStr);
-		String prefix = "1234";
+		String prefix = "12345";
 		String fullPrefix = "0123456789";
 		
 		char [] prefixArr = prefix.toCharArray();
@@ -163,7 +163,7 @@ public class HBaseSalterTester {
 	public void getAllKeysWithPrefixWithStop() throws IOException {
 		String keyStr = "1021";
 		byte [] keyBytes = Bytes.toBytes(keyStr);
-		String prefix = "01234";
+		String prefix = "012345";
 		String fullPrefix = "0123456789";
 		
 		char [] prefixArr = prefix.toCharArray();
@@ -276,7 +276,7 @@ public class HBaseSalterTester {
 		byte [] regionStart = Bytes.toBytes("1");
 		byte [] regionsStop = Bytes.toBytes("4");
 
-		String expectedPrefix = "123";
+		String expectedPrefix = "1234";
 		char [] prefixArr = expectedPrefix.toCharArray();
 		
 		byte [][] expectedStart = new byte[prefixArr.length][];
@@ -312,7 +312,7 @@ public class HBaseSalterTester {
 		getDistributedIntervalsWithRegionsStartStopWithPrefix(
 		    "1020", "1021",
 		    "1_1021", "3_1023",
-		    "12", "012345"
+		    "123", "012345"
 				);
 
 		System.out.println("------------ TEST 21 --------------");
@@ -326,7 +326,7 @@ public class HBaseSalterTester {
 		getDistributedIntervalsWithRegionsStartStopWithPrefix(
 			    "1020", "1021",
 			    Bytes.toString(HConstants.EMPTY_START_ROW), "3_1023",
-			    "012", "012345"
+			    "0123", "012345"
 					);
 
 		System.out.println("------------ TEST 23 --------------");
@@ -340,42 +340,42 @@ public class HBaseSalterTester {
 		getDistributedIntervalsWithRegionsStartStopWithPrefix(
 			Bytes.toString(HConstants.EMPTY_START_ROW), "1021",
 		    "1_1021", "3_1023",
-		    "12", "012345"
+		    "123", "012345"
 				);
 
 		System.out.println("------------ TEST 25 --------------");
 		getDistributedIntervalsWithRegionsStartStopWithPrefix(
 			"1020", Bytes.toString(HConstants.EMPTY_END_ROW),
 		    "1_1021", "3_1023",
-		    "12", "012345"
+		    "123", "012345"
 				);
 
 		System.out.println("------------ TEST 26 --------------");
 		getDistributedIntervalsWithRegionsStartStopWithPrefix(
 				Bytes.toString(HConstants.EMPTY_START_ROW), Bytes.toString(HConstants.EMPTY_END_ROW),
 		    "1_1021", "3_1023",
-		    "12", "012345"
+		    "123", "012345"
 				);
 
 		System.out.println("------------ TEST 27 --------------");
 		getDistributedIntervalsWithRegionsStartStopWithPrefix(
 			Bytes.toString(HConstants.EMPTY_START_ROW), "1021",
 			Bytes.toString(HConstants.EMPTY_START_ROW), "3_1023",
-		    "012", "012345"
+		    "0123", "012345"
 				);
 
 		System.out.println("------------ TEST 28 --------------");
 		getDistributedIntervalsWithRegionsStartStopWithPrefix(
 			"1020", Bytes.toString(HConstants.EMPTY_END_ROW),
 			Bytes.toString(HConstants.EMPTY_START_ROW), "3_1023",
-		    "012", "012345"
+		    "0123", "012345"
 				);
 
 		System.out.println("------------ TEST 29 --------------");
 		getDistributedIntervalsWithRegionsStartStopWithPrefix(
 			Bytes.toString(HConstants.EMPTY_START_ROW), Bytes.toString(HConstants.EMPTY_END_ROW),
 			Bytes.toString(HConstants.EMPTY_START_ROW), "3_1023",
-		    "012", "012345"
+		    "0123", "012345"
 				);
 
 		System.out.println("------------ TEST 30 --------------");

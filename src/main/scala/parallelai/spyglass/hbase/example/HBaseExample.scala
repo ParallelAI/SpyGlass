@@ -30,29 +30,6 @@ class HBaseExample(args: Args) extends JobBase(args) {
    println("Output : " + output)
    println("Quorum : " + quorumNames)
 
-   case class HBaseTableStore(
-      conf: Configuration,
-      quorum: String,
-      tableName: String) {
-
-      val tableBytes = Bytes.toBytes(tableName)
-      val connection = HConnectionManager.getConnection(conf)
-      val maxThreads = conf.getInt("hbase.htable.threads.max", 1)
-
-      conf.set("hbase.zookeeper.quorum", quorumNames)
-
-      val htable = new HTable(HBaseConfiguration.create(conf), tableName)
-
-      def makeN(n: Int) {
-         (0 to n - 1).map(x => "%015d".format(x.toLong)).foreach(x => {
-            val put = new Put(HBaseSalter.addSaltPrefix(Bytes.toBytes(x)))
-            put.add(Bytes.toBytes("data"), Bytes.toBytes("data"), Bytes.toBytes(x))
-         })
-      }
-
-   }
-
-   HBaseTableStore(jobConf, quorumNames, "_TEST.SALT.01").makeN(100000)
 
    val hbs2 = new HBaseSource(
       "_TEST.SALT.01",
