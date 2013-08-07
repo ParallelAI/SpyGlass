@@ -62,7 +62,7 @@
     <name>Cascading and Scalding wrapper for HBase with advanced features</name>
     <groupId>parallelai</groupId>
     <artifactId>parallelai.spyglass</artifactId>
-    <version>${scala.version}_2.3.0</version>
+    <version>${scala.version}_2.4.0</version>
     <packaging>jar</packaging>
 
     <distributionManagement>

@@ -219,10 +219,7 @@ public class HBaseScheme
         String fieldName = (String) fields.get(k);
         byte[] fieldNameBytes = Bytes.toBytes(fieldName);
         byte[] cellValue = row.getValue(familyNameBytes, fieldNameBytes);
-        if (cellValue == null) {
-            cellValue = new byte[0];
-        }
-        result.add(new ImmutableBytesWritable(cellValue));
+        result.add(cellValue != null ? new ImmutableBytesWritable(cellValue) : null);
       }
     }
 
@@ -259,7 +256,8 @@ public class HBaseScheme
         Tuple tuple = values.getTuple();
 
         ImmutableBytesWritable valueBytes = (ImmutableBytesWritable) tuple.getObject(j);
-        put.add(Bytes.toBytes(familyNames[i]), Bytes.toBytes((String) fields.get(j)), valueBytes.get());
+        if (valueBytes != null)
+            put.add(Bytes.toBytes(familyNames[i]), Bytes.toBytes((String) fields.get(j)), valueBytes.get());
       }
     }
 
