@@ -154,7 +154,7 @@ public class HBaseTap extends Tap<JobConf, RecordReader, OutputCollector> {
     if (isReplace() && conf.get("mapred.task.partition") == null) {
       try {
         deleteResource(conf);
-
+        conf.set(String.format(HBaseConstants.SINK_MODE, tableName), SinkMode.REPLACE.toString());
       } catch (IOException e) {
         throw new RuntimeException("could not delete resource: " + e);
       }
@@ -163,6 +163,7 @@ public class HBaseTap extends Tap<JobConf, RecordReader, OutputCollector> {
     else if (isUpdate()) {
       try {
           createResource(conf);
+          conf.set( String.format(HBaseConstants.SINK_MODE, tableName), SinkMode.UPDATE.toString());
       } catch (IOException e) {
           throw new RuntimeException(tableName + " does not exist !", e);
       }
@@ -220,8 +221,13 @@ public class HBaseTap extends Tap<JobConf, RecordReader, OutputCollector> {
 
   @Override
   public boolean deleteResource(JobConf jobConf) throws IOException {
-    // TODO: for now we don't do anything just to be safe
-    return true;
+      HBaseAdmin hBaseAdmin = getHBaseAdmin(jobConf);
+
+      if (hBaseAdmin.tableExists(tableName)) {
+          return true;
+      } else {
+          throw new IOException("DELETE records: " + tableName + " does NOT EXIST!!!");
+      }
   }
 
   @Override

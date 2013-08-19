@@ -19,4 +19,5 @@ public class HBaseConstants {
   public static final String USE_SALT = "hbase.%s.use.salt";
   public static final String SALT_PREFIX = "hbase.%s.salt.prefix";
 
+  public static final String SINK_MODE = "hbase.%s.sink.mode";
 }

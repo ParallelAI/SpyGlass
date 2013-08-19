@@ -39,7 +39,8 @@ case class HBaseSource(
     keyList: List[String] = null,
     versions: Int = 1,
     useSalt: Boolean = false,
-    prefixList: String = null
+    prefixList: String = null,
+    sinkMode: SinkMode = SinkMode.UPDATE
   ) extends Source {
     
   override val hdfsScheme = new HBaseScheme(keyFields, timestamp, familyNames.toArray, valueFields.toArray)
@@ -79,7 +80,7 @@ case class HBaseSource(
           hbt.asInstanceOf[Tap[_,_,_]]
         }
         case Write => {
-          val hbt = new HBaseTap(quorumNames, tableName, hBaseScheme, SinkMode.UPDATE)
+          val hbt = new HBaseTap(quorumNames, tableName, hBaseScheme, sinkMode)
           
           hbt.setUseSaltInSink(useSalt)
           
