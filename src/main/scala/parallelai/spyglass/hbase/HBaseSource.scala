@@ -27,11 +27,11 @@ object Conversions {
 }
 
 case class HBaseSource(
-    tableName: String = null,
+    tableName: String,
     quorumNames: String = "localhost",
-    keyFields: Fields = null,
-    familyNames: List[String] = null,
-    valueFields: List[Fields] = null,
+    keyFields: Fields,
+    familyNames: List[String] = List(),
+    valueFields: List[Fields] = List(),
     timestamp: Long = 0L,
     sourceMode: SourceMode = SourceMode.SCAN_ALL,
     startKey: String = null,
