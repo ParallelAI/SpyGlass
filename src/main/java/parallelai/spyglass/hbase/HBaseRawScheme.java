@@ -278,7 +278,7 @@ public class HBaseRawScheme extends Scheme<JobConf, RecordReader, OutputCollecto
 
 		public void copyValue(Result oldValue, Result newValue) {
 			if (null != oldValue && null != newValue) {
-//				oldValue.copyFrom(newValue);
+				oldValue.copyFrom(newValue);
 			}
 		}
 

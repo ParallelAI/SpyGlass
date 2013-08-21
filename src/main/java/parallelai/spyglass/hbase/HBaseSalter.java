@@ -171,15 +171,26 @@ public class HBaseSalter {
 	  }
 	  
 	  SortedSet<Byte> subSet = prefixSet.subSet(startPrefix, true, stopPrefix, true);
+
+      LOG.info("".format("Prefix subset (%s)", subSet));
 	  
 	  return getAllKeys(originalKey, subSet.toArray(new Byte[]{}));
   }
   
   public static byte[][] getAllKeys(byte[] originalKey, Byte [] prefixArray) {
+    LOG.info("".format("getAllKeys: OKEY (%s) PARRAY (%s)",
+              Bytes.toString(originalKey), prefixArray ));
+
 	byte[][] keys = new byte[prefixArray.length][];
 	
     for (byte i = 0; i < prefixArray.length; i++) {
       keys[i] = Bytes.add(new byte[] {prefixArray[i].byteValue()}, Bytes.add( Bytes.toBytes("_"), originalKey));
+    }
+
+    for(int i = 0; i < keys.length; i ++) {
+        for(int j = 0; j < keys[i].length; j++) {
+            LOG.info("" + i + " : " + j + " : " + keys[i][j]);
+        }
     }
 
     return keys;
