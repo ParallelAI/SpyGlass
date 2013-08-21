@@ -50,6 +50,7 @@
 		<cascading.version>2.1.0</cascading.version>
 		<scalding-commons.version>0.2.0</scalding-commons.version>
 		<scalatest.version>1.9.1</scalatest.version>
+        <cascading.version>2.1.6</cascading.version>
 
 		<trove4j.version>3.0.3</trove4j.version>
 		<maple.version>0.2.8</maple.version>
@@ -141,13 +142,23 @@
 
 
 	<dependencies>
+        <dependency>
+            <groupId>cascading</groupId>
+            <artifactId>cascading-core</artifactId>
+            <version>${cascading.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>cascading</groupId>
+            <artifactId>cascading-hadoop</artifactId>
+            <version>${cascading.version}</version>
+        </dependency>
 
 		<!-- Hadoop -->
 		<dependency>
 			<groupId>org.apache.hadoop</groupId>
-			<artifactId>hadoop-mapreduce-client-core</artifactId>
-			<version>${hadoop.version}</version>
-		</dependency>
+			<artifactId>hadoop-core</artifactId>
+			<version>${mapreduce.version}</version>
+        </dependency>
 
 		<dependency>
 			<groupId>org.apache.hadoop</groupId>
