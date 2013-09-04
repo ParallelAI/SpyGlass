@@ -16,6 +16,7 @@ Building
 ========
 
 	$ mvn clean install -U
+	$ mvn deploy 
 	
 	Requires Maven 3.x.x
 	
