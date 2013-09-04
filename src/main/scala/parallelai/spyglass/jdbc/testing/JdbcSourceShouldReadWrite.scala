@@ -29,9 +29,9 @@ class JdbcSourceShouldReadWrite (args: Args) extends JobBase(args) {
     LOG.info("Setting logging to Level.DEBUG")
   }
   
-  val url = "mysql01.prod.bigdata.bskyb.com"
-  val dbName = "skybet_db" 
-  val tableName = "skybet_hbase_betdetail_jdbc_test"
+  val url = "mysql01.domain"
+  val dbName = "db"
+  val tableName = "table"
 
   val jdbcSourceRead = new JDBCSource(
     "TABLE_01",

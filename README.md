@@ -5,6 +5,13 @@ Cascading and Scalding wrapper for HBase with advanced read and write features. 
 
 Prevent Hot Spotting by the use of transparent key prefixes.
 
+Changes
+=======
+- Added JDBC Tap Functionality
+- Added Delete Functionality
+- Added Region grouping of splits
+- Migrated maven repo to local subdirectory. See below.
+
 Building
 ========
 
@@ -17,7 +24,7 @@ To use SpyGlass as a dependency use the following repository
 	<repositories>
 	    <repository>
 	        <id>parallelai-releases</id>
-	        <url>https://github.com/ParallelAI/mvn-repo/raw/master/releases</url>
+	        <url>https://github.com/ParallelAI/SpyGlass/raw/master/releases</url>
 	    </repository>
 	</repositories>
 	
@@ -271,3 +278,67 @@ e.g.
 ===========================
 
 To be added soon.
+
+e.g.
+  val jdbcSourceRead = new JDBCSource(
+    "TABLE_01",
+    "com.mysql.jdbc.Driver",
+    "jdbc:mysql://localhost:3306/sky_db?zeroDateTimeBehavior=convertToNull",
+    "root",
+    "password",
+    List("ID", "TEST_COLUMN1", "TEST_COLUMN2", "TEST_COLUMN3"),
+    List("bigint(20)", "varchar(45)", "varchar(45)", "bigint(20)"),
+    List("id"),
+    new Fields("key", "column1", "column2", "column3"),
+    null, null, null
+  )
+
+  val jdbcSourceWrite = new JDBCSource(
+    "TABLE_01",
+    "com.mysql.jdbc.Driver",
+    "jdbc:mysql://localhost:3306/sky_db?zeroDateTimeBehavior=convertToNull",
+    "root",
+    "password",
+    List("ID", "TEST_COLUMN1", "TEST_COLUMN2", "TEST_COLUMN3"),
+    List("bigint(20)", "varchar(45)", "varchar(45)", "bigint(20)"),
+    List("id"),
+    new Fields("key", "column1", "column2", "column3"),
+    null, null, null
+  )
+
+
+7. HBase Delete Functionality
+=============================
+
+Delete functionality has been added to SpyGlass version 4.1.0 onwards. Below is an example of how to use it.
+
+The feature can be enable by using the parameter sinkMode = SinkMode.REPLACE in the HBaseSource
+You can use sinkMode = SinkMode.UPDATE to add to the HBaseTable as usual.
+
+e.g.
+  val eraser = toIBW(input, TABLE_SCHEMA)
+    .write(new HBaseSource( "_TEST.SALT.01", quorum, 'key,
+      TABLE_SCHEMA.tail.map((x: Symbol) => "data"),
+      TABLE_SCHEMA.tail.map((x: Symbol) => new Fields(x.name)), sinkMode = SinkMode.REPLACE ))
+
+All rows with the key will be deleted. This includes all versions too.
+
+8. Regional Split Group in Scan and Get
+=======================================
+
+This functionality reduces the number of mappers significantly when using hot spot prevention with prefixes.
+
+This feature can be activated by using inputSplitType = SplitType.REGIONAL
+You can use inputSplitType = SplitType.GRANULAR to use the previous functionality as is.
+
+e.g.
+  val hbase04 = new HBaseSource( "_TEST.SALT.01", quorum, 'key,
+          TABLE_SCHEMA.tail.map((x: Symbol) => "data"),
+          TABLE_SCHEMA.tail.map((x: Symbol) => new Fields(x.name)),
+          sourceMode = SourceMode.SCAN_RANGE, startKey = sttKeyP, stopKey = stpKeyP,
+          inputSplitType = splitType).read
+          .fromBytesWritable(TABLE_SCHEMA )
+          .map(('key, 'salted, 'unsalted) -> 'testData) {x: (String, String, String) => List(x._1, x._2, x._3)}
+          .project('testData)
+          .write(TextLine("saltTesting/ScanRangeNoSalt01"))
+          .groupAll(group => group.toList[List[List[String]]]('testData -> 'testData))

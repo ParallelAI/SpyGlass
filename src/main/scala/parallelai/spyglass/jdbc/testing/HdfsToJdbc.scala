@@ -27,9 +27,9 @@ class HdfsToJdbc (args: Args) extends JobBase(args) {
 		  'key_id,    'col1, 'col2, 'col3
     )  
     	
-	val url = "mysql01.prod.bigdata.bskyb.com"
-	val dbName = "skybet_db" 
-	val tableName = "skybet_hbase_betdetail_jdbc_test"
+	val url = "mysql01.domain"
+	val dbName = "db"
+	val tableName = "table"
 	
 	  
 	val jdbcSource2 = new JDBCSource(
