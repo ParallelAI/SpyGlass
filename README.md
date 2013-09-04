@@ -280,6 +280,7 @@ e.g.
 To be added soon.
 
 e.g.
+	
 	val jdbcSourceRead = new JDBCSource(
 		"TABLE_01",
 		"com.mysql.jdbc.Driver",
@@ -292,7 +293,7 @@ e.g.
 		new Fields("key", "column1", "column2", "column3"),
 		null, null, null
 		)
-
+	
 	val jdbcSourceWrite = new JDBCSource(
 		"TABLE_01",
 		"com.mysql.jdbc.Driver",
@@ -305,7 +306,7 @@ e.g.
 		new Fields("key", "column1", "column2", "column3"),
 		null, null, null
 		)
-
+	
 
 7. HBase Delete Functionality
 =============================
@@ -316,10 +317,12 @@ The feature can be enable by using the parameter sinkMode = SinkMode.REPLACE in 
 You can use sinkMode = SinkMode.UPDATE to add to the HBaseTable as usual.
 
 e.g.
+	
 	val eraser = toIBW(input, TABLE_SCHEMA)
 		.write(new HBaseSource( "_TEST.SALT.01", quorum, 'key,
 		TABLE_SCHEMA.tail.map((x: Symbol) => "data"),
 		TABLE_SCHEMA.tail.map((x: Symbol) => new Fields(x.name)), sinkMode = SinkMode.REPLACE ))
+	
 
 All rows with the key will be deleted. This includes all versions too.
 
@@ -332,6 +335,7 @@ This feature can be activated by using inputSplitType = SplitType.REGIONAL
 You can use inputSplitType = SplitType.GRANULAR to use the previous functionality as is.
 
 e.g.
+	
 	val hbase04 = new HBaseSource( "_TEST.SALT.01", quorum, 'key,
 	  TABLE_SCHEMA.tail.map((x: Symbol) => "data"),
 	  TABLE_SCHEMA.tail.map((x: Symbol) => new Fields(x.name)),
@@ -342,3 +346,4 @@ e.g.
 	  .project('testData)
 	  .write(TextLine("saltTesting/ScanRangeNoSalt01"))
 	  .groupAll(group => group.toList[List[List[String]]]('testData -> 'testData))
+	  
