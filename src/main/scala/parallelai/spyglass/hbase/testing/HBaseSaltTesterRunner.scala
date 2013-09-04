@@ -2,6 +2,7 @@ package parallelai.spyglass.hbase.testing
 
 import parallelai.spyglass.base.JobRunner
 import com.twitter.scalding.Args
+import org.apache.log4j.{Level, Logger}
 
 object HBaseSaltTesterRunner extends App {
   
@@ -25,12 +26,18 @@ object HBaseSaltTesterRunner extends App {
   val test = mArgs.getOrElse("test.data", "false").toBoolean
   val delete = mArgs.getOrElse("delete.data", "false").toBoolean
 
+  val isDebug = mArgs.getOrElse("debug", "false").toBoolean
+
+  if( isDebug ) { Logger.getRootLogger.setLevel(Level.DEBUG) }
+
+
   if( make ) {
     JobRunner.main(Array(classOf[HBaseSaltTestSetup].getName,
       "--hdfs",
       "--app.conf.path", appPath,
       "--job.lib.path", jobLibPath,
-      "--quorum", quorum
+      "--quorum", quorum,
+      "--debug", isDebug.toString
     ))
   }
 
@@ -39,7 +46,9 @@ object HBaseSaltTesterRunner extends App {
         "--hdfs",
         "--app.conf.path", appPath,
         "--job.lib.path", jobLibPath,
-        "--quorum", quorum
+        "--quorum", quorum,
+        "--debug", isDebug.toString,
+        "--regional", mArgs.getOrElse("regional", "false")
     ))
   }
 
@@ -48,7 +57,8 @@ object HBaseSaltTesterRunner extends App {
       "--hdfs",
       "--app.conf.path", appPath,
       "--job.lib.path", jobLibPath,
-      "--quorum", quorum
+      "--quorum", quorum,
+      "--debug", isDebug.toString
     ))
   }
 }

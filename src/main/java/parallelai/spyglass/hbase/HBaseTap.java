@@ -12,6 +12,8 @@
 
 package parallelai.spyglass.hbase;
 
+import parallelai.spyglass.hbase.HBaseConstants.SplitType;
+
 import parallelai.spyglass.hbase.HBaseConstants.SourceMode;
 import cascading.flow.FlowProcess;
 import cascading.tap.SinkMode;
@@ -62,6 +64,8 @@ public class HBaseTap extends Tap<JobConf, RecordReader, OutputCollector> {
   private String quorumNames;
   /** Field tableName */
   private String tableName;
+
+  private SplitType splitType = SplitType.GRANULAR;
 
   /**
    * Constructor HBaseTap creates a new HBaseTap instance.
@@ -204,7 +208,7 @@ public class HBaseTap extends Tap<JobConf, RecordReader, OutputCollector> {
       return true;
     }
 
-    LOG.info("creating hbase table: {}", tableName);
+    LOG.info("Creating HBase Table: {}", tableName);
 
     HTableDescriptor tableDescriptor = new HTableDescriptor(tableName);
 
@@ -256,14 +260,29 @@ public class HBaseTap extends Tap<JobConf, RecordReader, OutputCollector> {
 //    process.getID();
 //    
 //    super.getFullIdentifier(conf);
-    
-    HBaseInputFormat.setTableName(conf, tableName);
+
+    switch(splitType) {
+        case GRANULAR:
+            HBaseInputFormatGranular.setTableName(conf, tableName);
+            break;
+
+        case REGIONAL:
+            HBaseInputFormatRegional.setTableName(conf, tableName);
+            break;
+
+        default:
+            LOG.error("Unknown Split Type : " + splitType);
+    }
     
     for( SourceConfig sc : sourceConfigList) {
       sc.configure(conf);
     }
     
     super.sourceConfInit(process, conf);
+  }
+
+  public void setInputSplitType(SplitType sType) {
+      this.splitType = sType;
   }
 
   @Override

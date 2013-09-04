@@ -30,29 +30,29 @@ import org.apache.hadoop.util.StringUtils;
 
 import parallelai.spyglass.hbase.HBaseConstants.SourceMode;
 
-public class HBaseRecordReader_SINGLE implements
-    RecordReader<ImmutableBytesWritable, Result> {
+public class HBaseRecordReaderGranular extends HBaseRecordReaderBase {
 
-  static final Log LOG = LogFactory.getLog(HBaseRecordReader_SINGLE.class);
+  static final Log LOG = LogFactory.getLog(HBaseRecordReaderGranular.class);
 
-  private byte[] startRow;
-  private byte[] endRow;
   private byte[] lastSuccessfulRow;
-  private TreeSet<String> keyList;
-  private SourceMode sourceMode;
-  private Filter trrRowFilter;
   private ResultScanner scanner;
-  private HTable htable;
-  private byte[][] trrInputColumns;
   private long timestamp;
   private int rowcount;
-  private boolean logScannerActivity = false;
-  private int logPerRowCount = 100;
-  private boolean endRowInclusive = true;
-  private int versions = 1;
-  private boolean useSalt = false;
 
-  /**
+    @Override
+    public String toString() {
+        StringBuffer sbuf = new StringBuffer();
+
+        sbuf.append("".format("HBaseRecordReaderRegional : startRow [%s] endRow [%s] lastRow [%s] nextKey [%s] endRowInc [%s] rowCount [%s]",
+                Bytes.toString(startRow), Bytes.toString(endRow), Bytes.toString(lastSuccessfulRow), Bytes.toString(nextKey), endRowInclusive, rowcount));
+        sbuf.append("".format(" sourceMode [%s] salt [%s] versions [%s] ",
+                sourceMode, useSalt, versions));
+
+        return sbuf.toString();
+    }
+
+
+    /**
    * Restart from survivable exceptions by creating a new scanner.
    * 
    * @param firstRow
@@ -96,41 +96,6 @@ public class HBaseRecordReader_SINGLE implements
     }
   }
 
-  public TreeSet<String> getKeyList() {
-    return keyList;
-  }
-
-  public void setKeyList(TreeSet<String> keyList) {
-    this.keyList = keyList;
-  }
-
-  public void setVersions(int versions) {
-    this.versions = versions;
-  }
-  
-  public void setUseSalt(boolean useSalt) {
-    this.useSalt = useSalt;
-  }
-
-  public SourceMode getSourceMode() {
-    return sourceMode;
-  }
-
-  public void setSourceMode(SourceMode sourceMode) {
-    this.sourceMode = sourceMode;
-  }
-
-  public byte[] getEndRow() {
-    return endRow;
-  }
-
-  public void setEndRowInclusive(boolean isInclusive) {
-    endRowInclusive = isInclusive;
-  }
-
-  public boolean getEndRowInclusive() {
-    return endRowInclusive;
-  }
 
   private byte[] nextKey = null;
   private Vector<List<KeyValue>> resultVector = null;
@@ -155,55 +120,6 @@ public class HBaseRecordReader_SINGLE implements
     default:
       throw new IOException(" Unknown source mode : " + sourceMode);
     }
-  }
-
-  byte[] getStartRow() {
-    return this.startRow;
-  }
-
-  /**
-   * @param htable
-   *          the {@link HTable} to scan.
-   */
-  public void setHTable(HTable htable) {
-    Configuration conf = htable.getConfiguration();
-    logScannerActivity = conf.getBoolean(ScannerCallable.LOG_SCANNER_ACTIVITY,
-        false);
-    logPerRowCount = conf.getInt(LOG_PER_ROW_COUNT, 100);
-    this.htable = htable;
-  }
-
-  /**
-   * @param inputColumns
-   *          the columns to be placed in {@link Result}.
-   */
-  public void setInputColumns(final byte[][] inputColumns) {
-    this.trrInputColumns = inputColumns;
-  }
-
-  /**
-   * @param startRow
-   *          the first row in the split
-   */
-  public void setStartRow(final byte[] startRow) {
-    this.startRow = startRow;
-  }
-
-  /**
-   * 
-   * @param endRow
-   *          the last row in the split
-   */
-  public void setEndRow(final byte[] endRow) {
-    this.endRow = endRow;
-  }
-
-  /**
-   * @param rowFilter
-   *          the {@link Filter} to be used.
-   */
-  public void setRowFilter(Filter rowFilter) {
-    this.trrRowFilter = rowFilter;
   }
 
   @Override
@@ -450,7 +366,6 @@ public class HBaseRecordReader_SINGLE implements
 
               String newKey = keyList.pollFirst(); // Bytes.toString(resultKeyValue.getKey());//
 
-              System.out.println("+ New Key => " + newKey);
               nextKey = (newKey == null || newKey.length() == 0) ? null : Bytes
                   .toBytes(newKey);
 

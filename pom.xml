@@ -66,15 +66,17 @@
     <name>Cascading and Scalding wrapper for HBase with advanced features</name>
     <groupId>parallelai</groupId>
     <artifactId>parallelai.spyglass</artifactId>
-    <version>${scala.version}_3.2.0</version>
+    <version>${scala.version}_4.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
+    <!--
     <distributionManagement>
-	    <repository>
-	        <id>repo</id>
-	        <url>https://github.com/ParallelAI/mvn-repo/raw/master/releases</url>
-	    </repository>
+        <repository>
+            <id>conjars</id>
+            <url>scp://repo@conjars.org:</url>
+        </repository>
 	</distributionManagement>
+    -->
 
 	<!-- Repositories -->
 	<repositories>
@@ -372,8 +374,39 @@
 						</lifecycleMappingMetadata>
 					</configuration>
 				</plugin>
-			</plugins>
+                <!--
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>wagon-maven-plugin</artifactId>
+                    <version>1.0-beta-3</version>
+                    <configuration>
+                        <serverId>conjars</serverId>
+                        <fromFile>${project.build.directory}/${project.build.finalName}.jar</fromFile>
+                        <fromFile>${project.build.directory}/pom.xml</fromFile>
+                        <url>scp://repo@conjars.org/</url>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <id>upload-war-to-server</id>
+                            <phase>deploy</phase>
+                            <goals>
+                                <goal>deploy</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                -->
+            </plugins>
 		</pluginManagement>
+        <!--
+        <extensions>
+            <extension>
+                <groupId>org.apache.maven.wagon</groupId>
+                <artifactId>wagon-ssh</artifactId>
+                <version>1.0</version>
+            </extension>
+        </extensions>
+        -->
 	</build>
 
 </project>

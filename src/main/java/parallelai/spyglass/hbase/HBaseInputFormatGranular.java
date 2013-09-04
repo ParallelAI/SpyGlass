@@ -37,17 +37,10 @@ import org.apache.hadoop.util.StringUtils;
 
 import parallelai.spyglass.hbase.HBaseConstants.SourceMode;
 
-public class HBaseInputFormat implements
-		InputFormat<ImmutableBytesWritable, Result>, JobConfigurable {
+public class HBaseInputFormatGranular extends HBaseInputFormatBase {
 
-	private final Log LOG = LogFactory.getLog(HBaseInputFormat.class);
+	private final Log LOG = LogFactory.getLog(HBaseInputFormatGranular.class);
 
-	private final String id = UUID.randomUUID().toString();
-
-	private byte[][] inputColumns;
-	private HTable table;
-	// private HBaseRecordReader tableRecordReader;
-	private Filter rowFilter;
 	// private String tableName = "";
 
 	private HashMap<InetAddress, String> reverseDNSCacheMap = new HashMap<InetAddress, String>();
@@ -56,41 +49,9 @@ public class HBaseInputFormat implements
 
 	// private Scan scan = null;
 
-	private HBaseMultiInputSplit[] convertToMultiSplitArray(
-			List<HBaseTableSplit> splits) throws IOException {
-
-		if (splits == null)
-			throw new IOException("The list of splits is null => " + splits);
-
-		HashMap<String, HBaseMultiInputSplit> regionSplits = new HashMap<String, HBaseMultiInputSplit>();
-
-		for (HBaseTableSplit hbt : splits) {
-			HBaseMultiInputSplit mis = null;
-			if (regionSplits.containsKey(hbt.getRegionLocation())) {
-				mis = regionSplits.get(hbt.getRegionLocation());
-			} else {
-				regionSplits.put(hbt.getRegionLocation(), new HBaseMultiInputSplit(
-						hbt.getRegionLocation()));
-				mis = regionSplits.get(hbt.getRegionLocation());
-			}
-
-			mis.addSplit(hbt);
-			regionSplits.put(hbt.getRegionLocation(), mis);
-		}
-
-		Collection<HBaseMultiInputSplit> outVals = regionSplits.values();
-
-		LOG.debug("".format("Returning array of splits : %s", outVals));
-
-		if (outVals == null)
-			throw new IOException("The list of multi input splits were null");
-
-		return outVals.toArray(new HBaseMultiInputSplit[outVals.size()]);
-	}
-
 	@SuppressWarnings("deprecation")
 	@Override
-	public HBaseMultiInputSplit[] getSplits(JobConf job, int numSplits) throws IOException {
+	public HBaseTableSplitGranular[] getSplits(JobConf job, int numSplits) throws IOException {
 		if (this.table == null) {
 			throw new IOException("No table was provided");
 		}
@@ -99,7 +60,7 @@ public class HBaseInputFormat implements
 			throw new IOException("Expecting at least one column");
 		}
 
-		final Pair<byte[][], byte[][]> keys = table.getStartEndKeys();
+		Pair<byte[][], byte[][]> keys = table.getStartEndKeys();
 
 		if (keys == null || keys.getFirst() == null
 				|| keys.getFirst().length == 0) {
@@ -110,8 +71,8 @@ public class HBaseInputFormat implements
 				throw new IOException("Expecting at least one region.");
 			}
 
-			final List<HBaseTableSplit> splits = new ArrayList<HBaseTableSplit>();
-			HBaseTableSplit split = new HBaseTableSplit(table.getTableName(),
+			List<HBaseTableSplitGranular> splits = new ArrayList<HBaseTableSplitGranular>(1);
+			HBaseTableSplitGranular split = new HBaseTableSplitGranular(table.getTableName(),
 					HConstants.EMPTY_BYTE_ARRAY, HConstants.EMPTY_BYTE_ARRAY, regLoc
 							.getHostnamePort().split(
 									Addressing.HOSTNAME_PORT_SEPARATOR)[0],
@@ -119,8 +80,7 @@ public class HBaseInputFormat implements
 
 			splits.add(split);
 
-			// TODO: Change to HBaseMultiSplit
-			return convertToMultiSplitArray(splits);
+			return splits.toArray(new HBaseTableSplitGranular[splits.size()]);
 		}
 
 		if (keys.getSecond() == null || keys.getSecond().length == 0) {
@@ -206,7 +166,7 @@ public class HBaseInputFormat implements
 				startRow = HConstants.EMPTY_START_ROW;
 				stopRow = HConstants.EMPTY_END_ROW;
 
-				LOG.info(String.format(
+				LOG.debug(String.format(
 						"SCAN ALL: Found start key (%s) and stop key (%s)",
 						Bytes.toString(startRow), Bytes.toString(stopRow)));
 			break;
@@ -217,7 +177,7 @@ public class HBaseInputFormat implements
 				stopRow = (stopKey != null && stopKey.length() != 0) ? Bytes
 						.toBytes(stopKey) : HConstants.EMPTY_END_ROW;
 
-				LOG.info(String.format(
+				LOG.debug(String.format(
 						"SCAN RANGE: Found start key (%s) and stop key (%s)",
 						Bytes.toString(startRow), Bytes.toString(stopRow)));
 			break;
@@ -232,7 +192,7 @@ public class HBaseInputFormat implements
 				// stopRow = (Bytes.compareTo(stopRow, maxKey) > 0) ? maxKey :
 				// stopRow;
 
-				final List<HBaseTableSplit> splits = new ArrayList<HBaseTableSplit>();
+				List<HBaseTableSplitGranular> splits = new ArrayList<HBaseTableSplitGranular>();
 
 				if (!useSalt) {
 
@@ -273,7 +233,7 @@ public class HBaseInputFormat implements
 								(stopRow == HConstants.EMPTY_END_ROW || (Bytes
 										.compareTo(stopRow, rStop) >= 0)), rStop.length));
 
-						HBaseTableSplit split = new HBaseTableSplit(
+						HBaseTableSplitGranular split = new HBaseTableSplitGranular(
 								table.getTableName(), sStart, sStop, regionLocation,
 								SourceMode.SCAN_RANGE, useSalt);
 
@@ -308,7 +268,7 @@ public class HBaseInputFormat implements
 									regions[i], Bytes.toString(pair.getFirst()),
 									Bytes.toString(pair.getSecond())));
 
-							HBaseTableSplit split = new HBaseTableSplit(
+							HBaseTableSplitGranular split = new HBaseTableSplitGranular(
 									table.getTableName(), pair.getFirst(),
 									pair.getSecond(), regions[i], SourceMode.SCAN_RANGE,
 									useSalt);
@@ -320,9 +280,11 @@ public class HBaseInputFormat implements
 				}
 
 				LOG.debug("RETURNED NO OF SPLITS: split -> " + splits.size());
+				for (HBaseTableSplitGranular s : splits) {
+					LOG.debug("RETURNED SPLITS: split -> " + s);
+				}
 
-				// TODO: Change to HBaseMultiSplit
-				return convertToMultiSplitArray(splits);
+				return splits.toArray(new HBaseTableSplitGranular[splits.size()]);
 			}
 
 			case GET_LIST: {
@@ -342,9 +304,9 @@ public class HBaseInputFormat implements
 					keyList = tempKeyList;
 				}
 
-				LOG.info("".format("Splitting Key List (%s)", keyList));
+				LOG.debug("".format("Splitting Key List (%s)", keyList));
 
-				final List<HBaseTableSplit> splits = new ArrayList<HBaseTableSplit>();
+				List<HBaseTableSplitGranular> splits = new ArrayList<HBaseTableSplitGranular>();
 
 				for (int i = 0; i < keys.getFirst().length; i++) {
 
@@ -398,38 +360,15 @@ public class HBaseInputFormat implements
 					LOG.debug(String.format("Regions [%s] has key list <%s>",
 							regions[i], regionKeyList));
 
-					HBaseTableSplit split = new HBaseTableSplit(
+					HBaseTableSplitGranular split = new HBaseTableSplitGranular(
 							table.getTableName(), regionKeyList, versions, regions[i],
 							SourceMode.GET_LIST, useSalt);
 					splits.add(split);
 				}
 
-				// if (splits.isEmpty()) {
-				// LOG.info("GOT EMPTY SPLITS");
+				LOG.debug("RETURNED SPLITS: split -> " + splits);
 
-				// throw new IOException(
-				// "".format("Key List NOT found in any region"));
-
-				// HRegionLocation regLoc = table.getRegionLocation(
-				// HConstants.EMPTY_BYTE_ARRAY, false);
-				//
-				// if (null == regLoc) {
-				// throw new IOException("Expecting at least one region.");
-				// }
-				//
-				// HBaseTableSplit split = new HBaseTableSplit(
-				// table.getTableName(), HConstants.EMPTY_BYTE_ARRAY,
-				// HConstants.EMPTY_BYTE_ARRAY, regLoc.getHostnamePort()
-				// .split(Addressing.HOSTNAME_PORT_SEPARATOR)[0],
-				// SourceMode.EMPTY, false);
-				//
-				// splits.add(split);
-				// }
-
-				LOG.info("RETURNED SPLITS: split -> " + splits);
-
-				// TODO: Change to HBaseMultiSplit
-				return convertToMultiSplitArray(splits);
+				return splits.toArray(new HBaseTableSplitGranular[splits.size()]);
 			}
 
 			default:
@@ -451,19 +390,22 @@ public class HBaseInputFormat implements
 	public RecordReader<ImmutableBytesWritable, Result> getRecordReader(
 			InputSplit split, JobConf job, Reporter reporter) throws IOException {
 
-		if (!(split instanceof HBaseMultiInputSplit))
-			throw new IOException("Table Split is not type HBaseMultiInputSplit");
+        LOG.info("GRANULAR SPLIT -> " + split);
 
-		HBaseMultiInputSplit tSplit = (HBaseMultiInputSplit) split;
+        if (!(split instanceof HBaseTableSplitGranular))
+			throw new IOException("Table Split is not type HBaseTableSplitGranular");
 
-		HBaseRecordReader trr = new HBaseRecordReader(tSplit);
+		HBaseTableSplitGranular tSplit = (HBaseTableSplitGranular) split;
+
+		HBaseRecordReaderGranular trr = new HBaseRecordReaderGranular();
+
+        HBaseConfigUtils.setRecordReaderParms(trr, tSplit);
 
 		trr.setHTable(this.table);
 		trr.setInputColumns(this.inputColumns);
 		trr.setRowFilter(this.rowFilter);
-		trr.setUseSalt(useSalt);
 
-		trr.setNextSplit();
+		trr.init();
 
 		return trr;
 	}
@@ -473,95 +415,6 @@ public class HBaseInputFormat implements
 	/**
 	 * space delimited list of columns
 	 */
-	public static final String COLUMN_LIST = "hbase.tablecolumns";
-
-	/**
-	 * Use this jobconf param to specify the input table
-	 */
-	private static final String INPUT_TABLE = "hbase.inputtable";
-
-	private String startKey = null;
-	private String stopKey = null;
-
-	private SourceMode sourceMode = SourceMode.EMPTY;
-	private TreeSet<String> keyList = null;
-	private int versions = 1;
-	private boolean useSalt = false;
-	private String prefixList = HBaseSalter.DEFAULT_PREFIX_LIST;
-
-	public void configure(JobConf job) {
-		String tableName = getTableName(job);
-		String colArg = job.get(COLUMN_LIST);
-		String[] colNames = colArg.split(" ");
-		byte[][] m_cols = new byte[colNames.length][];
-		for (int i = 0; i < m_cols.length; i++) {
-			m_cols[i] = Bytes.toBytes(colNames[i]);
-		}
-		setInputColumns(m_cols);
-
-		try {
-			setHTable(new HTable(HBaseConfiguration.create(job), tableName));
-		} catch (Exception e) {
-			LOG.error("************* Table could not be created");
-			LOG.error(StringUtils.stringifyException(e));
-		}
-
-		LOG.debug("Entered : " + this.getClass() + " : configure()");
-
-		useSalt = job.getBoolean(
-				String.format(HBaseConstants.USE_SALT, getTableName(job)), false);
-		prefixList = job.get(
-				String.format(HBaseConstants.SALT_PREFIX, getTableName(job)),
-				HBaseSalter.DEFAULT_PREFIX_LIST);
-
-		sourceMode = SourceMode.valueOf(job.get(String.format(
-				HBaseConstants.SOURCE_MODE, getTableName(job))));
-
-		LOG.info(String.format("GOT SOURCE MODE (%s) as (%s) and finally", String
-				.format(HBaseConstants.SOURCE_MODE, getTableName(job)), job
-				.get(String.format(HBaseConstants.SOURCE_MODE, getTableName(job))),
-				sourceMode));
-
-		switch (sourceMode) {
-			case SCAN_RANGE:
-				LOG.info("HIT SCAN_RANGE");
-
-				startKey = getJobProp(job,
-						String.format(HBaseConstants.START_KEY, getTableName(job)));
-				stopKey = getJobProp(job,
-						String.format(HBaseConstants.STOP_KEY, getTableName(job)));
-
-				LOG.info(String.format("Setting start key (%s) and stop key (%s)",
-						startKey, stopKey));
-			break;
-
-			case GET_LIST:
-				LOG.info("HIT GET_LIST");
-
-				Collection<String> keys = job.getStringCollection(String.format(
-						HBaseConstants.KEY_LIST, getTableName(job)));
-				keyList = new TreeSet<String>(keys);
-
-				versions = job.getInt(
-						String.format(HBaseConstants.VERSIONS, getTableName(job)), 1);
-
-				LOG.debug("GOT KEY LIST : " + keys);
-				LOG.debug(String.format("SETTING key list (%s)", keyList));
-
-			break;
-
-			case EMPTY:
-				LOG.info("HIT EMPTY");
-
-				sourceMode = SourceMode.SCAN_ALL;
-			break;
-
-			default:
-				LOG.info("HIT DEFAULT");
-
-			break;
-		}
-	}
 
 	public void validateInput(JobConf job) throws IOException {
 		// expecting exactly one path
@@ -598,45 +451,6 @@ public class HBaseInputFormat implements
 		}
 	}
 
-	/* Getters & Setters */
-	private HTable getHTable() {
-		return this.table;
-	}
-
-	private void setHTable(HTable ht) {
-		this.table = ht;
-	}
-
-	private void setInputColumns(byte[][] ic) {
-		this.inputColumns = ic;
-	}
-
-	private void setJobProp(JobConf job, String key, String value) {
-		if (job.get(key) != null)
-			throw new RuntimeException(String.format(
-					"Job Conf already has key [%s] with value [%s]", key,
-					job.get(key)));
-		job.set(key, value);
-	}
-
-	private String getJobProp(JobConf job, String key) {
-		return job.get(key);
-	}
-
-	public static void setTableName(JobConf job, String tableName) {
-		// Make sure that table has not been set before
-		String oldTableName = getTableName(job);
-		if (oldTableName != null) {
-			throw new RuntimeException("table name already set to: '"
-					+ oldTableName + "'");
-		}
-
-		job.set(INPUT_TABLE, tableName);
-	}
-
-	public static String getTableName(JobConf job) {
-		return job.get(INPUT_TABLE);
-	}
 
 	protected boolean includeRegionInSplit(final byte[] startKey,
 			final byte[] endKey) {
