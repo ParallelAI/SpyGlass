@@ -33,9 +33,20 @@ To use SpyGlass as a dependency use the following repository
 		<dependency>
 			<groupId>parallelai</groupId>
 			<artifactId>parallelai.spyglass</artifactId>
-			<version>2.0.3</version>
+			<version>2.9.3_4.1.0</version>
 		</dependency>
 	</dependencies>
+	
+	or
+	
+	<dependencies>
+		<dependency>
+			<groupId>parallelai</groupId>
+			<artifactId>parallelai.spyglass</artifactId>
+			<version>2.10.2_4.1.0</version>
+		</dependency>
+	</dependencies>
+	
 
 	
 
