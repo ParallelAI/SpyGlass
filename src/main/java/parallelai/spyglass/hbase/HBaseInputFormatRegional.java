@@ -9,7 +9,6 @@ import org.apache.hadoop.mapred.*;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -28,12 +27,17 @@ public class HBaseInputFormatRegional extends HBaseInputFormatBase {
         granular.configure(job);
         HBaseTableSplitGranular[] gSplits = granular.getSplits(job, numSplits);
 
-        HBaseTableSplitRegional[] splits = convertToMultiSplitArray( gSplits );
+        HBaseTableSplitRegional[] splits = convertToRegionalSplitArray(gSplits);
 
         if( splits == null ) throw new IOException("Not sure WTF is going on? splits is NULL");
 
-        LOG.info("GRANULAR => " + gSplits);
-        LOG.info("REGIONAL => " + splits);
+        for(HBaseTableSplitGranular g : gSplits) {
+            LOG.info("GRANULAR => " + g);
+        }
+
+        for(HBaseTableSplitRegional r : splits ) {
+            LOG.info("REGIONAL => " + r);
+        }
 
         return splits;
     }
@@ -43,9 +47,9 @@ public class HBaseInputFormatRegional extends HBaseInputFormatBase {
         if (!(inputSplit instanceof HBaseTableSplitRegional))
             throw new IOException("Table Split is not type HBaseTableSplitRegional");
 
-        LOG.info("REGIONAL SPLIT -> " + inputSplit);
-
         HBaseTableSplitRegional tSplit = (HBaseTableSplitRegional)inputSplit;
+
+        LOG.info("REGIONAL SPLIT -> " + tSplit);
 
         HBaseRecordReaderRegional trr = new HBaseRecordReaderRegional();
 
@@ -60,7 +64,7 @@ public class HBaseInputFormatRegional extends HBaseInputFormatBase {
         return trr;
     }
 
-    private HBaseTableSplitRegional[] convertToMultiSplitArray(
+    private HBaseTableSplitRegional[] convertToRegionalSplitArray(
             HBaseTableSplitGranular[] splits) throws IOException {
 
         if (splits == null)
@@ -70,16 +74,16 @@ public class HBaseInputFormatRegional extends HBaseInputFormatBase {
 
         for (HBaseTableSplitGranular hbt : splits) {
             HBaseTableSplitRegional mis = null;
-            if (regionSplits.containsKey(hbt.getRegionLocation())) {
-                mis = regionSplits.get(hbt.getRegionLocation());
+            if (regionSplits.containsKey(hbt.getRegionName())) {
+                mis = regionSplits.get(hbt.getRegionName());
             } else {
-                regionSplits.put(hbt.getRegionLocation(), new HBaseTableSplitRegional(
-                        hbt.getRegionLocation()));
-                mis = regionSplits.get(hbt.getRegionLocation());
+                regionSplits.put(hbt.getRegionName(), new HBaseTableSplitRegional(
+                        hbt.getRegionLocation(), hbt.getRegionName()));
+                mis = regionSplits.get(hbt.getRegionName());
             }
 
             mis.addSplit(hbt);
-            regionSplits.put(hbt.getRegionLocation(), mis);
+            regionSplits.put(hbt.getRegionName(), mis);
         }
 
 //        for(String region : regionSplits.keySet() ) {

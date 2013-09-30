@@ -24,6 +24,7 @@ public abstract class HBaseRecordReaderBase implements
         RecordReader<ImmutableBytesWritable, Result> {
 
     protected TreeSet<String> keyList;
+    protected long initialNoOfKeys = 0;
     protected HBaseConstants.SourceMode sourceMode;
     protected boolean endRowInclusive = true;
     protected int versions = 1;
@@ -39,6 +40,7 @@ public abstract class HBaseRecordReaderBase implements
 
     protected boolean logScannerActivity = false;
     protected int logPerRowCount = 100;
+    protected int noOfLogCount = 0;
 
     @Override
     public String toString() {
@@ -107,6 +109,7 @@ public abstract class HBaseRecordReaderBase implements
 
     public void setKeyList(TreeSet<String> keyList) {
         this.keyList = keyList;
+        initialNoOfKeys = (this.keyList == null) ? 0 : this.keyList.size();
     }
 
     public void setVersions(int versions) {

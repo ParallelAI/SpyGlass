@@ -26,8 +26,9 @@ public class HBaseTableSplitRegional extends HBaseTableSplitBase {
 
 	}
 
-	public HBaseTableSplitRegional(String regionLocation) {
+	public HBaseTableSplitRegional(String regionLocation, String regionName) {
 		this.m_regionLocation = regionLocation;
+        this.m_regionName = regionName;
 	}
 
 	@Override
@@ -69,6 +70,8 @@ public class HBaseTableSplitRegional extends HBaseTableSplitBase {
 		str.append("HBaseTableSplitRegional : ");
 
         str.append(super.toString());
+
+        str.append(" REGIONAL => Region Location (" + m_regionLocation + ") Name (" + m_regionName + ")" );
 
         str.append(" GRANULAR = > ");
 
@@ -114,14 +117,20 @@ public class HBaseTableSplitRegional extends HBaseTableSplitBase {
     }
 
     private Iterator<HBaseTableSplitGranular> splitIterator = null;
+    private int currSplitCount = 0;
 
     public HBaseTableSplitGranular getNextSplit() {
         splitIterator = (splitIterator == null) ? splits.listIterator() : splitIterator;
 
         if( splitIterator.hasNext() ) {
+            currSplitCount ++;
             return splitIterator.next();
         } else {
             return null;
         }
+    }
+
+    public int getCurrSplitCount() {
+        return currSplitCount;
     }
 }

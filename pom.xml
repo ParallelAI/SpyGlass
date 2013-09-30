@@ -42,9 +42,9 @@
 
 		<!-- Scala/Scalding/Cascading properties -->
         <!-- can be 2.9.3 and 2.10.2 -->
-        <scala.version>2.9.3</scala.version>
+        <scala.version>2.10.2</scala.version>
         <!-- 2.10 for Scala 2.10.2 and 2.9.3 for Scala version 2.9.3 -->
-        <scalding.scala.version>2.9.3</scalding.scala.version>
+        <scalding.scala.version>2.10</scalding.scala.version>
         <scalding.version>0.8.6</scalding.version>
 		<cascading.version>2.1.6</cascading.version>
 		<scalding-commons.version>0.2.0</scalding-commons.version>
@@ -53,7 +53,7 @@
 		<trove4j.version>3.0.3</trove4j.version>
 		<maple.version>0.2.8</maple.version>
         <!-- 2.1.1 for Scala 2.10.2 and 1.12.4.1 for Scala 2.9.3-->
-		<specs2.version>1.12.4.1</specs2.version>
+		<specs2.version>2.1.1</specs2.version>
 		<typesafe.config.version>1.0.0</typesafe.config.version>
 
         <!-- Other libraries properties -->
@@ -69,7 +69,7 @@
     <name>Cascading and Scalding wrapper for HBase with advanced features</name>
     <groupId>parallelai</groupId>
     <artifactId>parallelai.spyglass</artifactId>
-    <version>${scala.version}_4.1.0</version>
+    <version>2.10.2_4.1.1</version>
     <packaging>jar</packaging>
 
 	<!-- Repositories -->

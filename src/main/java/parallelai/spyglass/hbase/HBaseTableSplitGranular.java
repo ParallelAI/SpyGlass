@@ -21,7 +21,7 @@ public class HBaseTableSplitGranular extends HBaseTableSplitBase {
     /** default constructor */
     public HBaseTableSplitGranular() {
         this(HConstants.EMPTY_BYTE_ARRAY, HConstants.EMPTY_BYTE_ARRAY,
-                HConstants.EMPTY_BYTE_ARRAY, "", HBaseConstants.SourceMode.EMPTY, false);
+                HConstants.EMPTY_BYTE_ARRAY, "", "", HBaseConstants.SourceMode.EMPTY, false);
     }
 
     /**
@@ -33,24 +33,26 @@ public class HBaseTableSplitGranular extends HBaseTableSplitBase {
      * @param location
      */
     public HBaseTableSplitGranular(final byte[] tableName, final byte[] startRow,
-                               final byte[] endRow, final String location,
+                               final byte[] endRow, final String location, final String regionName,
                                final HBaseConstants.SourceMode sourceMode, final boolean useSalt) {
         this.m_tableName = tableName;
         this.m_startRow = startRow;
         this.m_endRow = endRow;
         this.m_regionLocation = location;
+        this.m_regionName = regionName;
         this.m_sourceMode = sourceMode;
         this.m_useSalt = useSalt;
     }
 
     public HBaseTableSplitGranular(final byte[] tableName,
-                               final TreeSet<String> keyList, int versions, final String location,
+                               final TreeSet<String> keyList, int versions, final String location, final String regionName,
                                final HBaseConstants.SourceMode sourceMode, final boolean useSalt) {
         this.m_tableName = tableName;
         this.m_keyList = keyList;
         this.m_versions = versions;
         this.m_sourceMode = sourceMode;
         this.m_regionLocation = location;
+        this.m_regionName = regionName;
         this.m_useSalt = useSalt;
     }
 
@@ -67,8 +69,8 @@ public class HBaseTableSplitGranular extends HBaseTableSplitBase {
 	public String toString() {
 		return String
 				.format(
-						"Table Name (%s) Region (%s) Source Mode (%s) Start Key (%s) Stop Key (%s) Key List Size (%s) Versions (%s) Use Salt (%s)",
-						Bytes.toString(m_tableName), m_regionLocation, m_sourceMode,
+						"Table Name (%s) Region Location (%s) Name (%s) Source Mode (%s) Start Key (%s) Stop Key (%s) Key List Size (%s) Versions (%s) Use Salt (%s)",
+						Bytes.toString(m_tableName), m_regionLocation, m_regionName, m_sourceMode,
 						Bytes.toString(m_startRow), Bytes.toString(m_endRow),
 						(m_keyList != null) ? m_keyList.size() : "EMPTY", m_versions,
 						m_useSalt);

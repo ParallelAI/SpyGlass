@@ -90,12 +90,15 @@ public class HBaseRecordReaderRegional extends HBaseRecordReaderBase {
         boolean nextFlag = currentRecordReader.next(ibw, result);
 
         while(nextFlag == false && multiSplit.hasMoreSplits() ) {
+            totalPos += currentRecordReader.getPos();
             setNextSplit();
             nextFlag = currentRecordReader.next(ibw, result);
         }
 
         return nextFlag;
     }
+
+    long totalPos = 0;
 
     @Override
     public ImmutableBytesWritable createKey() {
@@ -109,7 +112,8 @@ public class HBaseRecordReaderRegional extends HBaseRecordReaderBase {
 
     @Override
     public long getPos() throws IOException {
-        return currentRecordReader.getPos();
+        long pos = totalPos + currentRecordReader.getPos();
+        return pos;
     }
 
     @Override
@@ -119,6 +123,8 @@ public class HBaseRecordReaderRegional extends HBaseRecordReaderBase {
 
     @Override
     public float getProgress() throws IOException {
-        return currentRecordReader.getProgress();
+        // ( current count + percent of next count ) / max count
+        float prog = ((multiSplit.getCurrSplitCount() + currentRecordReader.getProgress()) / multiSplit.getLength());
+        return prog;
     }
 }

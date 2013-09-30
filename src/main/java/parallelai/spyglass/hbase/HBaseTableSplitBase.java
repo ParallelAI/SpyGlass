@@ -29,6 +29,7 @@ public abstract class HBaseTableSplitBase implements InputSplit,
     protected byte[] m_startRow = null;
     protected byte[] m_endRow = null;
     protected String m_regionLocation = null;
+    protected String m_regionName = null;
     protected TreeSet<String> m_keyList = null;
     protected HBaseConstants.SourceMode m_sourceMode = HBaseConstants.SourceMode.EMPTY;
     protected boolean m_endRowInclusive = true;
@@ -90,6 +91,10 @@ public abstract class HBaseTableSplitBase implements InputSplit,
         return new String[] { this.m_regionLocation };
     }
 
+    public String getRegionName() {
+        return this.m_regionName;
+    }
+
 
     public void copy(HBaseTableSplitBase that) {
         this.m_endRow = that.m_endRow;
@@ -100,6 +105,8 @@ public abstract class HBaseTableSplitBase implements InputSplit,
         this.m_tableName = that.m_tableName;
         this.m_useSalt = that.m_useSalt;
         this.m_versions = that.m_versions;
+        this.m_regionLocation = that.m_regionLocation;
+        this.m_regionName = that.m_regionName;
     }
 
     @Override
@@ -108,6 +115,7 @@ public abstract class HBaseTableSplitBase implements InputSplit,
 
         this.m_tableName = Bytes.readByteArray(in);
         this.m_regionLocation = Bytes.toString(Bytes.readByteArray(in));
+        this.m_regionName = Bytes.toString(Bytes.readByteArray(in));
         this.m_sourceMode = HBaseConstants.SourceMode.valueOf(Bytes.toString(Bytes
                 .readByteArray(in)));
         this.m_useSalt = Bytes.toBoolean(Bytes.readByteArray(in));
@@ -140,6 +148,7 @@ public abstract class HBaseTableSplitBase implements InputSplit,
 
         Bytes.writeByteArray(out, this.m_tableName);
         Bytes.writeByteArray(out, Bytes.toBytes(this.m_regionLocation));
+        Bytes.writeByteArray(out, Bytes.toBytes(this.m_regionName));
         Bytes.writeByteArray(out, Bytes.toBytes(this.m_sourceMode.name()));
         Bytes.writeByteArray(out, Bytes.toBytes(this.m_useSalt));
 

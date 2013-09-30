@@ -32,33 +32,33 @@ object HBaseSaltTesterRunner extends App {
 
 
   if( make ) {
-    JobRunner.main(Array(classOf[HBaseSaltTestSetup].getName,
+    JobRunner.main((List(classOf[HBaseSaltTestSetup].getName,
       "--hdfs",
       "--app.conf.path", appPath,
       "--job.lib.path", jobLibPath,
       "--quorum", quorum,
       "--debug", isDebug.toString
-    ))
+    ) ::: mArgs.toList).toArray)
   }
 
   if( test ) {
-    JobRunner.main(Array(classOf[HBaseSaltTester].getName,
+    JobRunner.main((List(classOf[HBaseSaltTester].getName,
         "--hdfs",
         "--app.conf.path", appPath,
         "--job.lib.path", jobLibPath,
         "--quorum", quorum,
         "--debug", isDebug.toString,
         "--regional", mArgs.getOrElse("regional", "false")
-    ))
+    )::: mArgs.toList).toArray)
   }
 
   if( delete ) {
-    JobRunner.main(Array(classOf[HBaseSaltTestShutdown].getName,
+    JobRunner.main((List(classOf[HBaseSaltTestShutdown].getName,
       "--hdfs",
       "--app.conf.path", appPath,
       "--job.lib.path", jobLibPath,
       "--quorum", quorum,
       "--debug", isDebug.toString
-    ))
+    )::: mArgs.toList).toArray)
   }
 }

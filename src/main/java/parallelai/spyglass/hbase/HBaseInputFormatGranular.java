@@ -75,7 +75,7 @@ public class HBaseInputFormatGranular extends HBaseInputFormatBase {
 			HBaseTableSplitGranular split = new HBaseTableSplitGranular(table.getTableName(),
 					HConstants.EMPTY_BYTE_ARRAY, HConstants.EMPTY_BYTE_ARRAY, regLoc
 							.getHostnamePort().split(
-									Addressing.HOSTNAME_PORT_SEPARATOR)[0],
+									Addressing.HOSTNAME_PORT_SEPARATOR)[0], regLoc.getRegionInfo().getRegionNameAsString(),
 					SourceMode.EMPTY, false);
 
 			splits.add(split);
@@ -100,6 +100,7 @@ public class HBaseInputFormatGranular extends HBaseInputFormatBase {
 		byte[][] regStartKeys = keys.getFirst();
 		byte[][] regStopKeys = keys.getSecond();
 		String[] regions = new String[regStartKeys.length];
+        String[] regionNames = new String[regStartKeys.length];
 
 		for (int i = 0; i < regStartKeys.length; i++) {
 			minKey = (regStartKeys[i] != null && regStartKeys[i].length != 0)
@@ -109,10 +110,9 @@ public class HBaseInputFormatGranular extends HBaseInputFormatBase {
 					&& (Bytes.compareTo(regStopKeys[i], maxKey) > 0) ? regStopKeys[i]
 					: maxKey;
 
-			HServerAddress regionServerAddress = table.getRegionLocation(
-					keys.getFirst()[i]).getServerAddress();
-			InetAddress regionAddress = regionServerAddress.getInetSocketAddress()
-					.getAddress();
+			HRegionLocation regionLoc = table.getRegionLocation(keys.getFirst()[i]);
+            HServerAddress regionServerAddress = regionLoc.getServerAddress();
+			InetAddress regionAddress = regionServerAddress.getInetSocketAddress().getAddress();
 			String regionLocation;
 			try {
 				regionLocation = reverseDNS(regionAddress);
@@ -122,23 +122,7 @@ public class HBaseInputFormatGranular extends HBaseInputFormatBase {
 				regionLocation = regionServerAddress.getHostname();
 			}
 
-			// HServerAddress regionServerAddress =
-			// table.getRegionLocation(keys.getFirst()[i]).getServerAddress();
-			// InetAddress regionAddress =
-			// regionServerAddress.getInetSocketAddress().getAddress();
-			//
-			// String regionLocation;
-			//
-			// try {
-			// regionLocation = reverseDNS(regionAddress);
-			// } catch (NamingException e) {
-			// LOG.error("Cannot resolve the host name for " + regionAddress +
-			// " because of " + e);
-			// regionLocation = regionServerAddress.getHostname();
-			// }
-
-			// String regionLocation =
-			// table.getRegionLocation(keys.getFirst()[i]).getHostname();
+            regionNames[i] = regionLoc.getRegionInfo().getRegionNameAsString();
 
 			LOG.debug("***** " + regionLocation);
 
@@ -219,7 +203,9 @@ public class HBaseInputFormatGranular extends HBaseInputFormatBase {
 							regionLocation = regionServerAddress.getHostname();
 						}
 
-						byte[] sStart = (startRow == HConstants.EMPTY_START_ROW
+                        String regionName = cRegion.getRegionInfo().getRegionNameAsString();
+
+                        byte[] sStart = (startRow == HConstants.EMPTY_START_ROW
 								|| (Bytes.compareTo(startRow, rStart) <= 0) ? rStart
 								: startRow);
 						byte[] sStop = (stopRow == HConstants.EMPTY_END_ROW
@@ -234,7 +220,7 @@ public class HBaseInputFormatGranular extends HBaseInputFormatBase {
 										.compareTo(stopRow, rStop) >= 0)), rStop.length));
 
 						HBaseTableSplitGranular split = new HBaseTableSplitGranular(
-								table.getTableName(), sStart, sStop, regionLocation,
+								table.getTableName(), sStart, sStop, regionLocation, regionName,
 								SourceMode.SCAN_RANGE, useSalt);
 
 						split.setEndRowInclusive(currentRegion == maxRegions);
@@ -270,7 +256,7 @@ public class HBaseInputFormatGranular extends HBaseInputFormatBase {
 
 							HBaseTableSplitGranular split = new HBaseTableSplitGranular(
 									table.getTableName(), pair.getFirst(),
-									pair.getSecond(), regions[i], SourceMode.SCAN_RANGE,
+									pair.getSecond(), regions[i], regionNames[i], SourceMode.SCAN_RANGE,
 									useSalt);
 
 							split.setEndRowInclusive(true);
@@ -361,7 +347,7 @@ public class HBaseInputFormatGranular extends HBaseInputFormatBase {
 							regions[i], regionKeyList));
 
 					HBaseTableSplitGranular split = new HBaseTableSplitGranular(
-							table.getTableName(), regionKeyList, versions, regions[i],
+							table.getTableName(), regionKeyList, versions, regions[i], regionNames[i],
 							SourceMode.GET_LIST, useSalt);
 					splits.add(split);
 				}
