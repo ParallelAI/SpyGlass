@@ -36,7 +36,7 @@ class JdbcSourceShouldReadWrite (args: Args) extends JobBase(args) {
   val jdbcSourceRead = new JDBCSource(
     "TABLE_01",
     "com.mysql.jdbc.Driver",
-    "jdbc:mysql://localhost:3306/sky_db?zeroDateTimeBehavior=convertToNull",
+    "jdbc:mysql://localhost:3306/db?zeroDateTimeBehavior=convertToNull",
     "root",
     "password",
     List("ID", "TEST_COLUMN1", "TEST_COLUMN2", "TEST_COLUMN3"),
@@ -49,7 +49,7 @@ class JdbcSourceShouldReadWrite (args: Args) extends JobBase(args) {
   val jdbcSourceWrite = new JDBCSource(
     "TABLE_01",
     "com.mysql.jdbc.Driver",
-    "jdbc:mysql://localhost:3306/sky_db?zeroDateTimeBehavior=convertToNull",
+    "jdbc:mysql://localhost:3306/db?zeroDateTimeBehavior=convertToNull",
     "root",
     "password",
     List("ID", "TEST_COLUMN1", "TEST_COLUMN2", "TEST_COLUMN3"),
@@ -93,7 +93,7 @@ class JdbcSourceShouldReadWrite (args: Args) extends JobBase(args) {
   val jdbcSourceReadUpdated = new JDBCSource(
     "TABLE_02",
     "com.mysql.jdbc.Driver",
-    "jdbc:mysql://localhost:3306/sky_db?zeroDateTimeBehavior=convertToNull",
+    "jdbc:mysql://localhost:3306/db?zeroDateTimeBehavior=convertToNull",
     "root",
     "password",
     List("ID", "TEST_COLUMN1", "TEST_COLUMN2", "TEST_COLUMN3"),

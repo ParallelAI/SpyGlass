@@ -32,14 +32,14 @@ import org.junit.Test;
  * in file HBaseSourceShouldRead.scala
  * 
  * Run with:
- * mvn -Dtest=bskyb.commons.hbase.skybase.GenerateTestingHTables test
+ * mvn -Dtest=parallelai.spyglass.hbase.skybase.GenerateTestingHTables test
  * 
  * @author Antwnis@gmail.com
  */
 public class GenerateTestingHTables {
 
 	private static Configuration config = HBaseConfiguration.create();
-	private static final String QUORUM = "cldmgr.prod.bigdata.bskyb.com";
+	private static final String QUORUM = "cldmgr.test.server.com";
 	private static final String QUORUM_PORT = "2181";
 	private static final Long STARTING_TIMESTAMP = 1260000000000L;
 
