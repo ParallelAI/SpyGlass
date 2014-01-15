@@ -19,6 +19,19 @@ class HBasePipeWrapper (pipe: Pipe) {
       }
     }
 
+    def toHBaseOperation(f: Fields): Pipe = {
+      asList(f)
+        .foldLeft(pipe){ (p, f) => {
+          p.map(f.toString -> f.toString){ from: String => from match {
+            case "__DELETE_COLUMN__" => HBaseOperation.DELETE_COLUMN
+            case "__DELETE_FAMILY__" => HBaseOperation.DELETE_FAMILY
+            case "__DELETE_ROW__" => HBaseOperation.DELETE_ROW
+            case null => HBaseOperation.NO_OP
+            case x => new HBaseOperation.PutColumn(new ImmutableBytesWritable(Bytes.toBytes(x)))
+          }}
+        }}
+    }
+
 //   def toBytesWritable : Pipe = {
 //	  asList(Fields.ALL.asInstanceOf[TupleEntry].getFields()).foldLeft(pipe){ (p, f) => {
 //	    p.map(f.toString -> f.toString){ from: String => {

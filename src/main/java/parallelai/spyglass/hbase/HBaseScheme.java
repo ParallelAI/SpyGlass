@@ -22,8 +22,10 @@ import cascading.tuple.Fields;
 import cascading.tuple.Tuple;
 import cascading.tuple.TupleEntry;
 import cascading.util.Util;
+import org.apache.hadoop.hbase.client.Mutation;
 import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.client.Result;
+import org.apache.hadoop.hbase.client.Delete;
 import org.apache.hadoop.hbase.io.ImmutableBytesWritable;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.apache.hadoop.mapred.JobConf;
@@ -249,31 +251,68 @@ public class HBaseScheme
     } else {
       put = new Put(keyBytes.get(), this.timeStamp);
     }
+
+    Delete delete;
+    if (this.timeStamp == 0L) {
+      delete = new Delete(keyBytes.get());
+    } else {
+      delete = new Delete(keyBytes.get(), this.timeStamp);
+    }
+    boolean deleteRow = false;
     
     for (int i = 0; i < valueFields.length; i++) {
       Fields fieldSelector = valueFields[i];
       TupleEntry values = tupleEntry.selectEntry(fieldSelector);
+      Fields fields = values.getFields();
+      Tuple tuple = values.getTuple();
 
       for (int j = 0; j < values.getFields().size(); j++) {
-        Fields fields = values.getFields();
-        Tuple tuple = values.getTuple();
-
-        ImmutableBytesWritable valueBytes = (ImmutableBytesWritable) tuple.getObject(j);
-        if (valueBytes != null)
-            put.add(Bytes.toBytes(familyNames[i]), Bytes.toBytes((String) fields.get(j)), valueBytes.get());
+        Object item = tuple.getObject(j);
+        if (item instanceof ImmutableBytesWritable) {
+          put.add(Bytes.toBytes(familyNames[i]), Bytes.toBytes((String) fields.get(j)), ((ImmutableBytesWritable) item).get());
+        } else if (item != null) {
+          HBaseOperation op = (HBaseOperation) item;
+          switch(op.getType()) {
+          case PUT_COLUMN:
+            put.add(Bytes.toBytes(familyNames[i]), Bytes.toBytes((String) fields.get(j)), ((HBaseOperation.PutColumn) item).getBytes());
+            break;
+          case DELETE_COLUMN:
+            delete.deleteColumns(Bytes.toBytes(familyNames[i]), Bytes.toBytes((String) fields.get(j)));
+            break;
+          case DELETE_FAMILY:
+            delete.deleteFamily(Bytes.toBytes(familyNames[i]));
+            break;
+          case DELETE_ROW:
+            deleteRow = true;
+            break;
+          case NO_OP:
+            break;
+          }
+        }
       }
     }
-
-    outputCollector.collect(null, put);
+    
+    if (put.size() > 0) {
+      outputCollector.collect(null, put);
+    }
+    if (delete.size() > 0) {
+      outputCollector.collect(null, delete);
+    }
+    if (deleteRow == true) {
+      if (put.size() > 0 || delete.size() > 0) {
+        throw new RuntimeException("can not combine row delete with any other operations on row");
+      }
+      outputCollector.collect(null, delete);
+    }
   }
-
+  
   @Override
   public void sinkConfInit(FlowProcess<JobConf> process,
       Tap<JobConf, RecordReader, OutputCollector> tap, JobConf conf) {
     conf.setOutputFormat(HBaseOutputFormat.class);
 
     conf.setOutputKeyClass(ImmutableBytesWritable.class);
-    conf.setOutputValueClass(Put.class);
+    conf.setOutputValueClass(Mutation.class);
     
     String tableName = conf.get(HBaseOutputFormat.OUTPUT_TABLE);
     useSalt = conf.getBoolean(String.format(HBaseConstants.USE_SALT, tableName), false);
