@@ -7,11 +7,11 @@ import org.scalatest.junit.JUnitRunner
 import org.slf4j.LoggerFactory
 import org.apache.hadoop.hbase.io.ImmutableBytesWritable
 import cascading.tuple.{Tuple, Fields}
-import parallelai.spyglass.hbase.HBaseConstants.SourceMode
 import org.apache.hadoop.hbase.util.Bytes
 import scala._
-import parallelai.spyglass.hbase.HBaseSource
 import com.twitter.scalding.Tsv
+import parallelai.spyglass.hbase.HBaseSource
+import parallelai.spyglass.hbase.HBaseConstants.SourceMode
 
 /**
  * Example of how to define tests for HBaseSource

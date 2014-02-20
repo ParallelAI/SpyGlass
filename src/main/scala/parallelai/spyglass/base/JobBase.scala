@@ -6,12 +6,13 @@ import org.apache.hadoop.fs.Path
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.FileSystem
 import org.apache.hadoop.filecache.DistributedCache
-import com.twitter.scalding.Mode
 import com.twitter.scalding.HadoopMode
 import com.typesafe.config.ConfigFactory
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import com.twitter.scalding.NullSource
+import parallelai.spyglass.base._
+import com.twitter.scalding.Mode
 
 class JobBase(args: Args) extends Job(args) {
   def getOrElseString(key: String, default: String): String = {
@@ -46,14 +47,14 @@ class JobBase(args: Args) extends Job(args) {
   val log = LoggerFactory.getLogger(getOrElseString("app.log.name", this.getClass().getName()))
   
   def modeString(): String = {
-      Mode.mode match {
+      Mode.getMode(args) match {
         case x:HadoopMode  => "--hdfs"
         case _ => "--local"
     }
   }
   
   // Execute at instantiation
-  Mode.mode match {
+  Mode.getMode(args) match {
     case x:HadoopMode => {
       log.info("In Hadoop Mode")
       JobLibLoader.loadJars(getString("job.lib.path"), AppConfig.jobConfig);

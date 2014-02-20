@@ -6,27 +6,56 @@ import org.apache.log4j.{Level, Logger}
 import parallelai.spyglass.hbase.{HBasePipeConversions, HBaseSource}
 import parallelai.spyglass.hbase.HBaseConstants.SourceMode
 import cascading.tuple.Fields
+import com.twitter.scalding.IterableSource
 
 /**
   * Simple example of HBaseSource usage
   */
 class SimpleHBaseSourceExample(args: Args) extends JobBase(args) with HBasePipeConversions {
 
-   val isDebug: Boolean = args("debug").toBoolean
-
-   if (isDebug) Logger.getRootLogger.setLevel(Level.DEBUG)
+   //val isDebug: Boolean = args("debug").toBoolean
+   //if (isDebug) Logger.getRootLogger.setLevel(Level.DEBUG)
 
    val output = args("output")
 
-   val hbs = new HBaseSource(
-     "table_name",
-     "quorum_name:2181",
+   val hbsOut = new HBaseSource(
+     "spyglass.hbase.test",
+     "cldmgr.prod.bigdata.bskyb.com:2181",
      new Fields("key"),
-     List("column_family"),
-     List(new Fields("column_name1", "column_name2")),
-     sourceMode = SourceMode.GET_LIST, keyList = List("1", "2", "3"))
-     .read
-     .fromBytesWritable(new Fields("key", "column_name1", "column_name2"))
-     .write(Tsv(output format "get_list"))
+     List("data", "data"),
+     List(new Fields("test1", "test2")))   
+   
+  val data = List(
+    ("100", 1, "A"),
+    ("101", 2,  "B"),
+    ("102" , 3 , "C"),
+    ("103" , 4 , "D"),
+    ("104" , 5 , "E"),
+    ("104" , 6 , "F"))
+   
+  val testDataPipe =
+    IterableSource[(String, Int, String)](data, ('key, 'test1, 'test2))
+      .debug
+      .toBytesWritable(List('key, 'test1, 'test2))
+      
+   val writer = testDataPipe   
+   writer.write(hbsOut)    
+    
+   val hbs = new HBaseSource(
+	     "spyglass.hbase.test",
+	     "cldmgr.prod.bigdata.bskyb.com:2181",
+	     new Fields("key"),
+	     List("data", "data"),
+	     List(new Fields("test1", "test2")),
+	     sourceMode = SourceMode.SCAN_ALL)
+	     .read
+	     .fromBytesWritable(new Fields("key", "test1", "test2"))
 
+	val fileWriter = hbs     
+	fileWriter.write(Tsv("scan_all.txt"))
+
+  
+  
+	
+   
  }
