@@ -30,7 +30,7 @@ class SimpleHBaseSourceExampleTest extends FunSpec with TupleConversions {
   )
 
   JobTest("parallelai.spyglass.hbase.example.SimpleHBaseSourceExample")
-    .arg("local", "")
+    .arg("test", "")
     .arg("app.conf.path", "app.conf")
     .arg("output", output)
     .arg("debug", "true")

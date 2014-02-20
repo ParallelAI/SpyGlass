@@ -6,6 +6,8 @@ import org.apache.log4j.{Level, Logger}
 import parallelai.spyglass.hbase.{HBasePipeConversions, HBaseSource}
 import parallelai.spyglass.hbase.HBaseConstants.SourceMode
 import cascading.tuple.Fields
+import cascading.property.AppProps
+import java.util.Properties
 
 /**
   * Simple example of HBaseSource usage
@@ -17,7 +19,10 @@ class SimpleHBaseSourceExample(args: Args) extends JobBase(args) with HBasePipeC
    if (isDebug) Logger.getRootLogger.setLevel(Level.DEBUG)
 
    val output = args("output")
-
+   
+   val properties = new Properties()
+   AppProps.setApplicationJarClass( properties, classOf[SimpleHBaseSourceExample] );
+   
    val hbs = new HBaseSource(
      "table_name",
      "quorum_name:2181",
