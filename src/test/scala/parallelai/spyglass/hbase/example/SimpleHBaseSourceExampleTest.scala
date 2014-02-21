@@ -48,6 +48,7 @@ class SimpleHBaseSourceExampleTest extends FunSpec with TupleConversions {
         log.debug("Output => " + outputBuffer)
 
         it("should return the test data provided.") {
+          println("outputBuffer.size => " + outputBuffer.size)
           assert(outputBuffer.size === 3)
         }
     }

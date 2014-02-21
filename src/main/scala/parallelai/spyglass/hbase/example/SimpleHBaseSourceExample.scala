@@ -20,8 +20,8 @@ class SimpleHBaseSourceExample(args: Args) extends JobBase(args) with HBasePipeC
 
    val output = args("output")
    
-   val properties = new Properties()
-   AppProps.setApplicationJarClass( properties, classOf[SimpleHBaseSourceExample] );
+//   val properties = new Properties()
+//   AppProps.setApplicationJarClass( properties, classOf[SimpleHBaseSourceExample] );
    
    val hbs = new HBaseSource(
      "table_name",
@@ -31,6 +31,7 @@ class SimpleHBaseSourceExample(args: Args) extends JobBase(args) with HBasePipeC
      List(new Fields("column_name1", "column_name2")),
      sourceMode = SourceMode.GET_LIST, keyList = List("1", "2", "3"))
      .read
+     .debug
      .fromBytesWritable(new Fields("key", "column_name1", "column_name2"))
      .write(Tsv(output format "get_list"))
 
