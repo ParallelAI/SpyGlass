@@ -47,7 +47,7 @@ case class JDBCSource(
       case _ => throw new ClassCastException("Failed casting from Scheme to JDBCScheme")
     }
     mode match {
-      case hdfsMode @ Hdfs(_, _) => readOrWrite match {
+      case Hdfs(_, _) => readOrWrite match {
         case Read => {
           val tableDesc = new TableDesc(tableName, columnNames.toArray, columnDefs.toArray, primaryKeys.toArray)
           val jdbcTap = new JDBCTap(connectionString, userId, password, driverName, tableDesc, jdbcScheme)
@@ -60,7 +60,7 @@ case class JDBCSource(
           jdbcTap.asInstanceOf[Tap[_,_,_]]
         }
       }
-      case testMode @ Test(buffer) => readOrWrite match {
+      case Test(buffer) => readOrWrite match {
         
         case Read => { 
           val hbt = new MemoryTap[InputStream, OutputStream](localScheme, buffer.apply(this).get)
@@ -76,10 +76,6 @@ case class JDBCSource(
   }
   
   def createEmptyTap(readOrWrite : AccessMode)(mode : Mode) : Tap[_,_,_] = {
-    mode match {
-      case _ => {
-        throw new RuntimeException("Source: (" + toString + ") doesn't support mode: " + mode.toString)
-      }
-    }
-  }    
+    throw new RuntimeException("Source: (" + toString + ") doesn't support mode: " + mode.toString)
+  }
 }

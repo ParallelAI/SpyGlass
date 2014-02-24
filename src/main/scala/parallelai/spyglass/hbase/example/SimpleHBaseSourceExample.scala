@@ -19,10 +19,7 @@ class SimpleHBaseSourceExample(args: Args) extends JobBase(args) with HBasePipeC
    if (isDebug) Logger.getRootLogger.setLevel(Level.DEBUG)
 
    val output = args("output")
-   
-//   val properties = new Properties()
-//   AppProps.setApplicationJarClass( properties, classOf[SimpleHBaseSourceExample] );
-   
+
    val hbs = new HBaseSource(
      "table_name",
      "quorum_name:2181",

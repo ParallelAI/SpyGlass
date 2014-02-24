@@ -19,14 +19,6 @@ class HBasePipeWrapper (pipe: Pipe) {
       }
     }
 
-//   def toBytesWritable : Pipe = {
-//	  asList(Fields.ALL.asInstanceOf[TupleEntry].getFields()).foldLeft(pipe){ (p, f) => {
-//	    p.map(f.toString -> f.toString){ from: String => {
-//	      new ImmutableBytesWritable(Bytes.toBytes(from))
-//	    }}
-//	  }} 
-//	}
-
 	def fromBytesWritable(f: Fields): Pipe = {
 	  asList(f)
 	    .foldLeft(pipe) { (p, fld) => {
@@ -35,15 +27,6 @@ class HBasePipeWrapper (pipe: Pipe) {
           }
         }}
     }
-
-//	def fromBytesWritable : Pipe = {
-//	  asList(Fields.ALL.asInstanceOf[TupleEntry].getFields()).foldLeft(pipe) { (p, fld) =>
-//	    p.map(fld.toString -> fld.toString) { from: ImmutableBytesWritable => {
-//	    	Bytes.toString(from.get)
-//	      }
-//	    }
-//	  }
-//	}
 }
 
 trait HBasePipeConversions {

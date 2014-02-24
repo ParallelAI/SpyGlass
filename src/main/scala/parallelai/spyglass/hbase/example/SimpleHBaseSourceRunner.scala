@@ -10,17 +10,16 @@ object SimpleHBaseSourceRunner extends App {
 
   val log = LoggerFactory.getLogger(this.getClass.getName)
 
-
-
   log.info("Starting HBaseSource Import Process Test...")
 
   val start1 = System.currentTimeMillis
 
-  JobRunner.main((classOf[SimpleHBaseSourceExample].getName :: mArgs.toList).toArray)
+  try {
+    JobRunner.main((classOf[SimpleHBaseSourceExample].getName :: mArgs.toList).toArray)
+  } finally {
+    val end = System.currentTimeMillis
 
-  val end = System.currentTimeMillis
-
-  log.info("HBaseSource Import process finished successfully.")
-  log.info("HBaseSource Import process : " + (end - start1) + " milliseconds to complete")
-  
+    log.info("HBaseSource Import process finished successfully.")
+    log.info("HBaseSource Import process : " + (end - start1) + " milliseconds to complete")
+  }
 }
