@@ -31,6 +31,7 @@ class HBasePipeWrapper (pipe: Pipe) {
 
 trait HBasePipeConversions {
   implicit def pipeWrapper(pipe: Pipe) = new HBasePipeWrapper(pipe) 
+  implicit def richPipeWrapper(rp: RichPipe) = new HBasePipeWrapper(rp.pipe)
 }
 
 
