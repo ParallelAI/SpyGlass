@@ -2,7 +2,6 @@ package parallelai.spyglass.hbase;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.hadoop.hbase.HConstants;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.apache.hadoop.mapred.InputSplit;
 
@@ -35,6 +34,7 @@ public abstract class HBaseTableSplitBase implements InputSplit,
     protected boolean m_endRowInclusive = true;
     protected int m_versions = 1;
     protected boolean m_useSalt = false;
+    protected long m_timestamp = -1L;
 
 
     /** @return table name */
@@ -95,6 +95,13 @@ public abstract class HBaseTableSplitBase implements InputSplit,
         return this.m_regionName;
     }
 
+    public long getTimestamp() {
+        return m_timestamp;
+    }
+
+    public void setTimestamp(long m_timestamp) {
+        this.m_timestamp = m_timestamp;
+    }
 
     public void copy(HBaseTableSplitBase that) {
         this.m_endRow = that.m_endRow;
@@ -107,6 +114,7 @@ public abstract class HBaseTableSplitBase implements InputSplit,
         this.m_versions = that.m_versions;
         this.m_regionLocation = that.m_regionLocation;
         this.m_regionName = that.m_regionName;
+        this.m_timestamp = that.m_timestamp;
     }
 
     @Override
@@ -139,6 +147,8 @@ public abstract class HBaseTableSplitBase implements InputSplit,
                 break;
         }
 
+        this.m_timestamp = Bytes.toLong(Bytes.readByteArray(in));
+
         LOG.debug("READ and CREATED : " + this);
     }
 
@@ -168,6 +178,8 @@ public abstract class HBaseTableSplitBase implements InputSplit,
                 }
                 break;
         }
+
+        Bytes.writeByteArray(out, Bytes.toBytes(m_timestamp));
 
         LOG.debug("WROTE : " + out.toString());
     }

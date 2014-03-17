@@ -27,6 +27,7 @@ public class HBaseConfigUtils {
                 trr.setEndRow(tSplit.getEndRow());
                 trr.setEndRowInclusive(tSplit.getEndRowInclusive());
                 trr.setUseSalt(tSplit.getUseSalt());
+                trr.setTimestamp(tSplit.getTimestamp());
             }
 
             break;

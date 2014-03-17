@@ -41,6 +41,7 @@ public abstract class HBaseRecordReaderBase implements
     protected boolean logScannerActivity = false;
     protected int logPerRowCount = 100;
     protected int noOfLogCount = 0;
+    protected long timestamp = -1;
 
     @Override
     public String toString() {
@@ -115,6 +116,8 @@ public abstract class HBaseRecordReaderBase implements
     public void setVersions(int versions) {
         this.versions = versions;
     }
+
+    public void setTimestamp(long timestamp) {this.timestamp = timestamp; }
 
     public void setUseSalt(boolean useSalt) {
         this.useSalt = useSalt;
