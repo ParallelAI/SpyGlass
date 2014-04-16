@@ -8,19 +8,25 @@
 		<url>http://www.parallelai.com</url>
 	</organization>
 
+    	<name>Cascading and Scalding wrapper for HBase with advanced features</name>
+    	<groupId>parallelai</groupId>
+    	<artifactId>parallelai.spyglass</artifactId>
+    	<version>2.10.2_4.2</version>
+    	<packaging>jar</packaging>
+
 
 	<properties>
-		<!-- Java compilation level -->
-		<maven.compiler.source>1.6</maven.compiler.source>
-		<maven.compiler.target>1.6</maven.compiler.target>
-		<maven-compiler-plugin.version>3.0</maven-compiler-plugin.version>
-		<maven-scala-plugin.version>2.15.2</maven-scala-plugin.version>
-		<maven-war-plugin.version>2.3</maven-war-plugin.version>
+	<!-- Java compilation level -->
+	<maven.compiler.source>1.6</maven.compiler.source>
+	<maven.compiler.target>1.6</maven.compiler.target>
+	<maven-compiler-plugin.version>3.0</maven-compiler-plugin.version>
+	<maven-scala-plugin.version>2.15.2</maven-scala-plugin.version>
+	<maven-war-plugin.version>2.3</maven-war-plugin.version>
 
-		<!-- UTF-8 Encoding settings -->
-		<encoding>UTF-8</encoding>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+	<!-- UTF-8 Encoding settings -->
+	<encoding>UTF-8</encoding>
+	<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
         <cdh.version>cdh4.5.0</cdh.version>
 
@@ -40,37 +46,31 @@
         <whirr.version>0.8.0-${cdh.version}</whirr.version>
         <zookeeper.version>3.4.5-${cdh.version}</zookeeper.version>
 
-		<!-- Scala/Scalding/Cascading properties -->
+	<!-- Scala/Scalding/Cascading properties -->
         <!-- can be 2.9.3 and 2.10.2 -->
         <scala.version>2.10.2</scala.version>
         <!-- 2.10 for Scala 2.10.2 and 2.9.3 for Scala version 2.9.3 -->
         <scalding.scala.version>2.10</scalding.scala.version>
-        <scalding.version>0.9.0rc4</scalding.version>
-		<cascading.version>2.2.1</cascading.version>
-		<scalding-commons.version>0.2.0</scalding-commons.version>
-		<scalatest.version>1.9.1</scalatest.version>
+        <scalding.version>0.9.1</scalding.version>
+	<cascading.version>2.5.3</cascading.version>
+	<scalding-commons.version>0.9.1</scalding-commons.version>
+	<scalatest.version>1.9.1</scalatest.version>
 
-		<trove4j.version>3.0.3</trove4j.version>
-		<maple.version>0.2.8</maple.version>
+	<trove4j.version>3.0.3</trove4j.version>
         <!-- 2.1.1 for Scala 2.10.2 and 1.12.4.1 for Scala 2.9.3-->
-		<specs2.version>2.1.1</specs2.version>
-		<typesafe.config.version>1.0.0</typesafe.config.version>
+	<specs2.version>2.1.1</specs2.version>
+	<typesafe.config.version>1.0.0</typesafe.config.version>
 
         <!-- Other libraries properties -->
-		<junit.version>4.10</junit.version>
-		<slf4j.version>1.7.2</slf4j.version>
-		<trove4j.version>3.0.3</trove4j.version>
-		<javax.servlet.version>2.5</javax.servlet.version>
-		<uncommons-maths.version>1.2.2a</uncommons-maths.version>
-		<maven.surefire.plugin.version>2.12.3</maven.surefire.plugin.version>
+	<junit.version>4.10</junit.version>
+	<slf4j.version>1.7.2</slf4j.version>
+	<trove4j.version>3.0.3</trove4j.version>
+	<javax.servlet.version>2.5</javax.servlet.version>
+	<uncommons-maths.version>1.2.2a</uncommons-maths.version>
+	<maven.surefire.plugin.version>2.12.3</maven.surefire.plugin.version>
 
 	</properties>
 
-    <name>Cascading and Scalding wrapper for HBase with advanced features</name>
-    <groupId>parallelai</groupId>
-    <artifactId>parallelai.spyglass</artifactId>
-    <version>2.10.2_4.2rc2</version>
-    <packaging>jar</packaging>
 
 	<!-- Repositories -->
 	<repositories>
@@ -153,56 +153,56 @@
 
 
         <!-- Hadoop -->
-		<dependency>
-			<groupId>org.apache.hadoop</groupId>
-			<artifactId>hadoop-core</artifactId>
-			<version>${hadoop.core.version}</version>
-		</dependency>
+	<dependency>
+		<groupId>org.apache.hadoop</groupId>
+		<artifactId>hadoop-core</artifactId>
+		<version>${hadoop.core.version}</version>
+	</dependency>
 
-		<dependency>
-			<groupId>org.apache.hadoop</groupId>
-			<artifactId>hadoop-common</artifactId>
-			<version>${hadoop.version}</version>
-		</dependency>
+	<dependency>
+		<groupId>org.apache.hadoop</groupId>
+		<artifactId>hadoop-common</artifactId>
+		<version>${hadoop.version}</version>
+	</dependency>
 
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<version>${slf4j.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.twitter</groupId>
-			<artifactId>scalding-core_${scalding.scala.version}</artifactId>
-			<version>${scalding.version}</version>
-		</dependency>
+	<dependency>
+		<groupId>org.slf4j</groupId>
+		<artifactId>slf4j-api</artifactId>
+		<version>${slf4j.version}</version>
+	</dependency>
+	<dependency>
+		<groupId>com.twitter</groupId>
+		<artifactId>scalding-core_${scalding.scala.version}</artifactId>
+		<version>${scalding.version}</version>
+	</dependency>
 
-		<dependency>
-			<groupId>org.apache.hbase</groupId>
-			<artifactId>hbase</artifactId>
-			<version>${hbase.version}</version>
-		</dependency>
-		<!-- Three dependencies for ScalaSpec -->
-		<dependency>
-			<groupId>org.scala-lang</groupId>
-			<artifactId>scala-library</artifactId>
-			<version>${scala.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.typesafe</groupId>
-			<artifactId>config</artifactId>
-			<version>${typesafe.config.version}</version>
-		</dependency>
+	<dependency>
+		<groupId>org.apache.hbase</groupId>
+		<artifactId>hbase</artifactId>
+		<version>${hbase.version}</version>
+	</dependency>
+	<!-- Three dependencies for ScalaSpec -->
+	<dependency>
+		<groupId>org.scala-lang</groupId>
+		<artifactId>scala-library</artifactId>
+		<version>${scala.version}</version>
+	</dependency>
+	<dependency>
+		<groupId>com.typesafe</groupId>
+		<artifactId>config</artifactId>
+		<version>${typesafe.config.version}</version>
+	</dependency>
 
-		<dependency>
-			<groupId>com.twitter.elephantbird</groupId>
-			<artifactId>elephant-bird-core</artifactId>
-			<version>4.1</version>
-		</dependency>
-		<dependency>
-			<groupId>com.twitter.elephantbird</groupId>
-			<artifactId>elephant-bird-hadoop-compat</artifactId>
-			<version>4.1</version>
-		</dependency>
+	<dependency>
+		<groupId>com.twitter.elephantbird</groupId>
+		<artifactId>elephant-bird-core</artifactId>
+		<version>4.1</version>
+	</dependency>
+	<dependency>
+		<groupId>com.twitter.elephantbird</groupId>
+		<artifactId>elephant-bird-hadoop-compat</artifactId>
+		<version>4.1</version>
+	</dependency>
 
         <!-- Testing dependencies (ScalaSpec / ScalaTest / JUnit) -->
         <dependency>
