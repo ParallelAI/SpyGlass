@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <name>SpyGlass</name>
+    <description>Cascading and Scalding wrapper for HBase with advanced features</description>
+    <groupId>parallelai</groupId>
+    <artifactId>parallelai.spyglass</artifactId>
+    <version>2.10.2_4.2rc2</version>
+    <packaging>jar</packaging>
+
+    <organization>
+        <name>Parallel AI</name>
+        <url>http://www.parallelai.com</url>
+    </organization>
+    <url>http://www.parallelai.com</url>
+    
+    <licenses>
+        <license>
+            <name>Apache 2</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+            <comments>A business-friendly OSS license</comments>
+        </license>
+    </licenses>
+    <developers>
+        <developer>
+            <id>crajah</id>
+            <name>Chandan Rajah</name>
+        </developer>
+        <developer>
+            <id>saad373</id>
+            <name>Saad Rashid</name>
+        </developer>
+        <developer>
+            <id>galarragas</id>
+            <name>Stefano Galarraga</name>
+        </developer>
+        <developer>
+            <id>antwnis</id>
+            <name>Antonios Chalkiopoulos</name>
+        </developer>
+    </developers>
+
+    <repositories>
+        <repository>
+            <id>conjars</id>
+            <name>Conjars Repository</name>
+            <url>http://conjars.org/repo</url>
+        </repository>
+        <repository>
+            <id>scala-tools.org</id>
+            <name>Scala Tools</name>
+            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+        </repository>
+        <repository>
+            <id>cloudera-cdh4</id>
+            <name>Cloudera CDH4</name>
+            <url>https://repository.cloudera.com/artifactory/cloudera-repos/</url>
+        </repository>
+    </repositories>
+
+   <properties>
+        <cdh.version>cdh4.5.0</cdh.version>
+        <datafu.version>0.0.4-${cdh.version}</datafu.version>
+        <flume.version>1.3.0-${cdh.version}</flume.version>
+        <hadoop.version>2.0.0-${cdh.version}</hadoop.version>
+        <hadoop.core.version>2.0.0-mr1-${cdh.version}</hadoop.core.version>
+        <hbase.version>0.94.6-${cdh.version}</hbase.version>
+        <hive.version>0.10.0-${cdh.version}</hive.version>
+        <mapreduce.version>2.0.0-mr1-${cdh.version}</mapreduce.version>
+        <scala.version>2.10.2</scala.version>
+        <scalding.scala.version>2.10</scalding.scala.version>
+        <scalding.version>0.9.1</scalding.version>
+        <cascading.version>2.5.3</cascading.version>
+        <scalding-commons.version>0.9.1</scalding-commons.version>
+        <trove4j.version>3.0.3</trove4j.version>
+        <typesafe.config.version>1.0.0</typesafe.config.version>
+        <slf4j.version>1.7.2</slf4j.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>cascading</groupId>
+            <artifactId>cascading-core</artifactId>
+            <version>${cascading.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>cascading</groupId>
+            <artifactId>cascading-hadoop</artifactId>
+            <version>${cascading.version}</version>
+        </dependency>
+        <!-- Hadoop -->
+        <dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-core</artifactId>
+            <version>${hadoop.core.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-common</artifactId>
+            <version>${hadoop.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.twitter</groupId>
+            <artifactId>scalding-core_${scalding.scala.version}</artifactId>
+            <version>${scalding.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.hbase</groupId>
+            <artifactId>hbase</artifactId>
+            <version>${hbase.version}</version>
+        </dependency>
+        
+        <!-- <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala-library</artifactId>
+            <version>${scala.version}</version>
+        </dependency> -->
+        <dependency>
+            <groupId>com.typesafe</groupId>
+            <artifactId>config</artifactId>
+            <version>${typesafe.config.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.twitter.elephantbird</groupId>
+            <artifactId>elephant-bird-core</artifactId>
+            <version>4.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.twitter.elephantbird</groupId>
+            <artifactId>elephant-bird-hadoop-compat</artifactId>
+            <version>4.1</version>
+        </dependency>
+    </dependencies>
+
+
+</project>
