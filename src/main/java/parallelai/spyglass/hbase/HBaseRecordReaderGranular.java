@@ -26,7 +26,7 @@ public class HBaseRecordReaderGranular extends HBaseRecordReaderBase {
 
   private byte[] lastSuccessfulRow;
   private ResultScanner scanner;
-  private long timestamp;
+  private long timestamp = -1;
   private int rowcount = 0;
 
     @Override
