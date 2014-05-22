@@ -5,6 +5,7 @@
 .project
 .settings
 .cache
+.DS_Store
 /target
 /outputs
 /bin
