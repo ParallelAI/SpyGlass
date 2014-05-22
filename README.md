@@ -23,17 +23,17 @@ Building
 	
 To use SpyGlass as a dependency use the following repository
 
-	<repositories>
+        <repositories>
             <repository>
                 <id>conjars.org</id>
                 <url>http://conjars.org/repo</url>
             </repository>
-	</repositories>
+        </repositories>
 
 	For Scalding 0.10.0 use :
 
         <dependencies> 
-  	    <dependency>
+            <dependency>
                 <groupId>parallelai</groupId>
                 <artifactId>parallelai.spyglass</artifactId>
                 <version>2.10_0.10_4.3</version>
@@ -382,3 +382,104 @@ e.g.
 	  .write(TextLine("saltTesting/ScanRangeNoSalt01"))
 	  .groupAll(group => group.toList[List[List[String]]]('testData -> 'testData))
 	  
+9. Complete example
+===================
+
+If using Maven - create a pom.xml
+
+	<?xml version="1.0" encoding="UTF-8"?>
+	<project xmlns="http://maven.apache.org/POM/4.0.0"
+	         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	    <modelVersion>4.0.0</modelVersion>
+
+	    <groupId>mygroup</groupId>
+	    <artifactId>myartifact</artifactId>
+	    <version>1.0-SNAPSHOT</version>
+	    <name>myname</name>
+	
+	    <repositories>
+	        <repository>
+	            <id>conjars.org</id>
+	            <url>http://conjars.org/repo</url>
+	        </repository>
+	    </repositories>
+
+	    <dependencies>
+	        <dependency>
+	            <groupId>parallelai</groupId>
+	            <artifactId>parallelai.spyglass</artifactId>
+	            <!-- Scala: 2.10 | Scalding: 0.10.0 | SpyGlass: 4.3 -->
+	            <version>2.10_0.10_4.3</version>
+	        </dependency>
+	    </dependencies>
+	
+	    <build>
+	        <plugins>
+	            <plugin>
+	                <groupId>org.scala-tools</groupId>
+	                <artifactId>maven-scala-plugin</artifactId>
+	                <version>2.15.2</version>
+	                <executions>
+	                    <execution>
+	                        <id>scala-compile</id>
+	                        <goals>
+	                            <goal>compile</goal>
+	                            <goal>testCompile</goal>
+	                        </goals>
+	                        <configuration>
+	                            <args>
+	                                <arg>-make:transitive</arg>
+	                                <arg>-dependencyfile</arg>
+	                                <arg>${project.build.directory}/.scala_dependencies</arg>
+	                            </args>
+	                        </configuration>
+	                    </execution>
+	                </executions>
+	            </plugin>
+	        </plugins>
+	    </build>
+
+	</project>
+
+A single dependency brings in Scalding 0.10.0 (in this example) 
+
+	import com.twitter.scalding.{TextLine, Job, Args}
+	import parallelai.spyglass.hbase.{HBaseSource, HBasePipeConversions}
+	import cascading.tuple.Fields
+	import parallelai.spyglass.hbase.HBaseConstants.SourceMode
+
+	/**
+	 * Before executing this example, have a working HBase
+	 * (see https://github.com/kijiproject/kiji-bento for a standalone zero-configuration HBase micro-cluster)
+	 * , and
+	 *
+	 * $ hbase shell
+	 *
+	 * hbase(main):003:0> create 'spyglass.hbase.test1' , 'data'
+	 * hbase(main):006:0> put 'spyglass.hbase.test1' , 'row1' , 'data:column1' , 'value1'
+	 * hbase(main):007:0> put 'spyglass.hbase.test1' , 'row2' , 'data:column1' , 'value2'
+	 * hbase(main):008:0> put 'spyglass.hbase.test1' , 'row3' , 'data:column1' , 'value3'
+	 * hbase(main):009:0> scan 'spyglass.hbase.test1'
+	 *
+	 */
+	class HBaseTest(args: Args) extends Job(args) with HBasePipeConversions {
+	
+	  val SCHEMA = List('key, 'column1)
+	  val tableName = "spyglass.hbase.test1"
+	  val hbaseHost = "localhost:2181"
+	
+	  val data = new HBaseSource(
+	    tableName,
+	    hbaseHost,
+	    SCHEMA.head,
+	    SCHEMA.tail.map((x: Symbol) => "data"),
+	    SCHEMA.tail.map((x: Symbol) => new Fields(x.name)),
+	    sourceMode = SourceMode.SCAN_ALL)
+	    .read
+	    .fromBytesWritable(SCHEMA)
+	    .debug
+	    .write(TextLine("test_hbase"))
+
+	}
+
