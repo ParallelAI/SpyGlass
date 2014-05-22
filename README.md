@@ -32,7 +32,7 @@ To use SpyGlass as a dependency use the following repository
 
 	For Scalding 0.10.0 use :
 
-	<dependencies> 
+        <dependencies> 
   	    <dependency>
                 <groupId>parallelai</groupId>
                 <artifactId>parallelai.spyglass</artifactId>
@@ -40,35 +40,35 @@ To use SpyGlass as a dependency use the following repository
             </dependency>
         </dependencies>
 
-	For Scalding 0.9.1 use :
+        For Scalding 0.9.1 use :
 
-	<dependencies> 
-  	    <dependency>
+        <dependencies> 
+            <dependency>
                 <groupId>parallelai</groupId>
                 <artifactId>parallelai.spyglass</artifactId>
                 <version>2.10_0.9_4.3</version>
             </dependency>
         </dependencies>
 
-	or for earlier versions : 
+        or for earlier versions : 
 	
-	<dependencies>
-		<dependency>
-			<groupId>parallelai</groupId>
-			<artifactId>parallelai.spyglass</artifactId>
-			<version>2.9.3_4.1.0</version>
-		</dependency>
-	</dependencies>
+        <dependencies>
+            <dependency>
+                <groupId>parallelai</groupId>
+                <artifactId>parallelai.spyglass</artifactId>
+                <version>2.9.3_4.1.0</version>
+            </dependency>
+        </dependencies>
 	
-	and
+        and
 	
-	<dependencies>
-		<dependency>
-			<groupId>parallelai</groupId>
-			<artifactId>parallelai.spyglass</artifactId>
-			<version>2.10.2_4.1.0</version>
-		</dependency>
-	</dependencies>
+        <dependencies>
+            <dependency>
+                <groupId>parallelai</groupId>
+                <artifactId>parallelai.spyglass</artifactId>
+                <version>2.10.2_4.1.0</version>
+            </dependency>
+        </dependencies>
 	
 
 	
