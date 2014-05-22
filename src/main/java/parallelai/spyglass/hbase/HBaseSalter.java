@@ -1,7 +1,6 @@
 package parallelai.spyglass.hbase;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -13,6 +12,21 @@ import org.apache.hadoop.hbase.io.ImmutableBytesWritable;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.apache.hadoop.hbase.util.Pair;
 
+/**
+ * Use this Salter if you want maximum efficiency and speed when writing new data into HBase
+ *
+ * The 'Region Hot Spot' problem occurs when we are writing in an HBase table data,
+ * where the key is in sequential order.
+ *
+ * http://www.appfirst.com/blog/best-practices-for-managing-hbase-in-a-high-write-environment/
+ *
+ * By using this salter we can prefix the keys with a character followed by an _
+ * i.e.
+ *
+ * SCALDING -> G_SCALDING
+ *
+ * and thus distribute better the write load in the HBase cluster
+ */
 public class HBaseSalter {
   private static final Log LOG = LogFactory.getLog(HBaseSalter.class);
 
@@ -151,12 +165,10 @@ public class HBaseSalter {
 	  char[] prefixArray = prefixList.toCharArray();
 
       return getAllKeysWithStartStop(originalKey, prefixList, (byte)prefixArray[0], stopKey);
-//	  return getAllKeysWithStartStop(originalKey, prefixList, (byte)prefixArray[0], (byte)(stopKey - 1));
   }
 
   public static byte[][] getAllKeysInRange(byte[] originalKey, String prefixList, byte startPrefix, byte stopPrefix) {
       return getAllKeysWithStartStop(originalKey, prefixList, startPrefix, stopPrefix);
-//	  return getAllKeysWithStartStop(originalKey, prefixList, startPrefix, (byte)(stopPrefix - 1));
   }
   
   private static byte[][] getAllKeysWithStartStop(byte[] originalKey, String prefixList, byte startPrefix, byte stopPrefix) {

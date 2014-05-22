@@ -18,11 +18,11 @@ import java.util.TreeSet;
 import java.util.UUID;
 
 /**
- * Created with IntelliJ IDEA.
- * User: chand_000
- * Date: 29/08/13
- * Time: 12:43
- * To change this template use File | Settings | File Templates.
+ * For reading from HBase this class provides all the wiring
+ *
+ * The idea is before a Tap is created the parameters populate the JobConf
+ * In this class we pick up the parameters from the JobConf and set up our logic,
+ * i.e. which HBase columns to read, what is the start/stop key etc
  */
 public abstract class HBaseInputFormatBase implements InputFormat<ImmutableBytesWritable, Result>, JobConfigurable {
 
@@ -33,11 +33,11 @@ public abstract class HBaseInputFormatBase implements InputFormat<ImmutableBytes
     protected HTable table;
     protected Filter rowFilter;
 
-    public static final String COLUMN_LIST = "hbase.tablecolumns";
-
     /**
-     * Use this jobconf param to specify the input table
+     * Use the following two mappings to specify table columns and input table to the jobconf
+     * Later on we can pick them up with job.get(COLUMN_LIST)
      */
+    public static final String COLUMN_LIST = "hbase.tablecolumns";
     protected static final String INPUT_TABLE = "hbase.inputtable";
 
     protected String startKey = null;
@@ -48,8 +48,6 @@ public abstract class HBaseInputFormatBase implements InputFormat<ImmutableBytes
     protected int versions = 1;
     protected boolean useSalt = false;
     protected String prefixList = HBaseSalter.DEFAULT_PREFIX_LIST;
-
-
 
     @Override
     public void configure(JobConf job) {
@@ -65,7 +63,7 @@ public abstract class HBaseInputFormatBase implements InputFormat<ImmutableBytes
         try {
             setHTable(new HTable(HBaseConfiguration.create(job), tableName));
         } catch (Exception e) {
-            LOG.error("************* Table could not be created");
+            LOG.error("************* HBase table " + tableName + " is not accessible");
             LOG.error(StringUtils.stringifyException(e));
         }
 
@@ -166,7 +164,7 @@ public abstract class HBaseInputFormatBase implements InputFormat<ImmutableBytes
         return job.get(INPUT_TABLE);
     }
 
-    protected void setParms(HBaseRecordReaderBase trr) {
+//    protected void setParms(HBaseRecordReaderBase trr) {
+//    }
 
-    }
 }

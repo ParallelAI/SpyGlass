@@ -12,11 +12,7 @@ import java.io.Serializable;
 import java.util.TreeSet;
 
 /**
- * Created with IntelliJ IDEA.
- * User: chand_000
- * Date: 29/08/13
- * Time: 16:18
- * To change this template use File | Settings | File Templates.
+ * Split table logic
  */
 public abstract class HBaseTableSplitBase implements InputSplit,
         Comparable<HBaseTableSplitBase>, Serializable {

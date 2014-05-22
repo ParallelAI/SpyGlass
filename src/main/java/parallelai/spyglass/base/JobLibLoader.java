@@ -15,7 +15,6 @@ public class JobLibLoader {
 	
 	public static void loadJars(String libPathStr, Configuration config) {
 		
-
 		try {
 			Path libPath = new Path(libPathStr);
 

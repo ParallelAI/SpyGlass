@@ -3,12 +3,8 @@ package parallelai.spyglass.hbase
 import java.io.IOException
 import org.apache.hadoop.hbase.io.ImmutableBytesWritable
 import org.apache.hadoop.hbase.util.Bytes
-import com.twitter.scalding.AccessMode
-import com.twitter.scalding.Hdfs
-import com.twitter.scalding.Mode
-import com.twitter.scalding.Read
-import com.twitter.scalding.Write
-import parallelai.spyglass.hbase.HBaseConstants.{SplitType, SourceMode}
+import com.twitter.scalding._
+import parallelai.spyglass.hbase.HBaseConstants.SplitType
 import cascading.scheme.{NullScheme, Scheme}
 import cascading.tap.SinkMode
 import cascading.tap.Tap
@@ -17,13 +13,11 @@ import org.apache.hadoop.mapred.RecordReader
 import org.apache.hadoop.mapred.OutputCollector
 import org.apache.hadoop.mapred.JobConf
 import parallelai.spyglass.hbase.HBaseConstants.SourceMode
-import com.twitter.scalding.Source
-import com.twitter.scalding.TestMode
-import com.twitter.scalding.Test
-import com.twitter.scalding.MemoryTap
 import java.io.InputStream
 import java.io.OutputStream
 import java.util.Properties
+import com.twitter.scalding.Hdfs
+import com.twitter.scalding.Test
 
 object Conversions {
   implicit def bytesToString(bytes: Array[Byte]): String = Bytes.toString(bytes)
@@ -96,7 +90,7 @@ case class HBaseSource(
           val hbt = new HBaseTap(quorumNames, tableName, hBaseScheme, sinkMode)
           
           hbt.setUseSaltInSink(useSalt)
-          
+
           hbt.asInstanceOf[Tap[_,_,_]]
         }
       }

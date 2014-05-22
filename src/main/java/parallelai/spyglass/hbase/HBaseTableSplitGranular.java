@@ -1,19 +1,15 @@
 package parallelai.spyglass.hbase;
 
-import java.io.DataInput;
-import java.io.DataOutput;
-import java.io.IOException;
-import java.io.Serializable;
 import java.util.TreeSet;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.hbase.HConstants;
 import org.apache.hadoop.hbase.util.Bytes;
-import org.apache.hadoop.mapred.InputSplit;
 
-import parallelai.spyglass.hbase.HBaseConstants.SourceMode;
-
+/**
+ * Split table logic
+ */
 public class HBaseTableSplitGranular extends HBaseTableSplitBase {
 
 	private final Log LOG = LogFactory.getLog(HBaseTableSplitGranular.class);

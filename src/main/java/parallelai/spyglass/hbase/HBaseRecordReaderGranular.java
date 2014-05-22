@@ -20,6 +20,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
+/**
+ * It builds the scanner in method init() and ALL the logic is in method next()
+ * At the reader level - our Job is parallelised in multiple Map phases ;-)
+ */
 public class HBaseRecordReaderGranular extends HBaseRecordReaderBase {
 
   static final Log LOG = LogFactory.getLog(HBaseRecordReaderGranular.class);
@@ -28,9 +32,10 @@ public class HBaseRecordReaderGranular extends HBaseRecordReaderBase {
   private ResultScanner scanner;
   private long timestamp = -1;
   private int rowcount = 0;
+  private final int scanCaching = 1000;
 
-    @Override
-    public String toString() {
+  @Override
+  public String toString() {
         StringBuffer sbuf = new StringBuffer();
 
         sbuf.append("".format("HBaseRecordReaderRegional : startRow [%s] endRow [%s] lastRow [%s] nextKey [%s] endRowInc [%s] rowCount [%s]",
@@ -39,12 +44,9 @@ public class HBaseRecordReaderGranular extends HBaseRecordReaderBase {
                 sourceMode, useSalt, versions));
 
         return sbuf.toString();
-    }
+  }
 
-    private final int scanCaching = 1000;
-
-
-    /**
+  /**
    * Restart from survivable exceptions by creating a new scanner.
    * 
    * @param firstRow

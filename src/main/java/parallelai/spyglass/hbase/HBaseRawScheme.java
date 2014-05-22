@@ -41,12 +41,25 @@ import cascading.tuple.TupleEntry;
 import cascading.util.Util;
 
 /**
-* The HBaseRawScheme class is a {@link Scheme} subclass. It is used in conjunction
-* with the {@HBaseRawTap} to allow for the reading and writing of data
-* to and from a HBase cluster.
-*
-* @see HBaseRawTap
-*/
+ * It provides the wiring between Fields and Columns and Column families
+ * In effect to write to cf:column
+ *
+ * data:name data:surname address: street
+ *  name1      surname1       address1
+ *
+ * We will initialize the HBaseSource with
+ *   ("data","data","data")
+ *   ("name","surname","address")
+ *   Data:
+ *   ("name1","surname1","address1")
+ *   ...
+ *
+ * The HBaseRawScheme class is a {@link Scheme} subclass. It is used in conjunction
+ * with the {@HBaseRawTap} to allow for the reading and writing of data
+ * to and from a HBase cluster.
+ *
+ * @see HBaseRawTap
+ */
 @SuppressWarnings({ "rawtypes", "deprecation" })
 public class HBaseRawScheme extends Scheme<JobConf, RecordReader, OutputCollector, Object[], Object[]> {
 	/**
@@ -67,13 +80,8 @@ public class HBaseRawScheme extends Scheme<JobConf, RecordReader, OutputCollecto
 
 	/**
 	 * Constructor HBaseScheme creates a new HBaseScheme instance.
-	 *
-	 * @param keyFields
-	 *            of type Fields
 	 * @param familyName
 	 *            of type String
-	 * @param valueFields
-	 *            of type Fields
 	 */
 	public HBaseRawScheme(String familyName) {
 		this(new String[] { familyName });
@@ -235,6 +243,7 @@ public class HBaseRawScheme extends Scheme<JobConf, RecordReader, OutputCollecto
 	@Override
 	public void sourceConfInit(FlowProcess<JobConf> process, Tap<JobConf, RecordReader, OutputCollector> tap,
 			JobConf conf) {
+
 		DeprecatedInputFormatWrapper.setInputFormat(org.apache.hadoop.hbase.mapreduce.TableInputFormat.class, conf,
 				ValueCopier.class);
 		if (null != familyNames) {

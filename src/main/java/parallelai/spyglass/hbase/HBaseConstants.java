@@ -2,6 +2,9 @@ package parallelai.spyglass.hbase;
 
 import org.apache.hadoop.conf.Configuration;
 
+/**
+ * Static enums , strings
+ */
 public class HBaseConstants {
 
     public enum SourceMode {

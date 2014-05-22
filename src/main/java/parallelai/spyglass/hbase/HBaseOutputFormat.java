@@ -14,7 +14,7 @@ import org.apache.hadoop.mapred.*;
 import org.apache.hadoop.util.Progressable;
 
 /**
- * Convert Map/Reduce output and write it to an HBase table
+ * For writing Map/Reduce output into an HBase table
  */
 public class HBaseOutputFormat extends
 FileOutputFormat<ImmutableBytesWritable, Put> implements JobConfigurable {
@@ -35,7 +35,6 @@ FileOutputFormat<ImmutableBytesWritable, Put> implements JobConfigurable {
         )
       );
   }
-
 
   @Override
   @SuppressWarnings("unchecked")
@@ -61,7 +60,7 @@ FileOutputFormat<ImmutableBytesWritable, Put> implements JobConfigurable {
 
   @Override
   public void checkOutputSpecs(FileSystem ignored, JobConf job)
-  throws FileAlreadyExistsException, InvalidJobConfException, IOException {
+  throws IOException {
 
     String tableName = job.get(OUTPUT_TABLE);
     if(tableName == null) {

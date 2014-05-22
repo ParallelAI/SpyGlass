@@ -11,16 +11,19 @@ import java.util.Collection;
 import java.util.HashMap;
 
 /**
- * Created with IntelliJ IDEA.
- * User: chand_000
- * Date: 29/08/13
- * Time: 12:24
- * To change this template use File | Settings | File Templates.
+ * An HBase table can be split across multiple regions
+ *
+ * Regional - is where we get the information
+ *   'Hey this table exists in a Region at Location (10.139.8.10) and another one at (10.139.8.11)'
+ *
+ * Granular on the other hand is when we go deep at a specific region
+ *
+ * Note: An HBase table can exist in multiple regions / region server as well
  */
 public class HBaseInputFormatRegional extends HBaseInputFormatBase {
+
     private HBaseInputFormatGranular granular = new HBaseInputFormatGranular();
     private final Log LOG = LogFactory.getLog(HBaseInputFormatRegional.class);
-
 
     @Override
     public HBaseTableSplitRegional[] getSplits(JobConf job, int numSplits) throws IOException {
