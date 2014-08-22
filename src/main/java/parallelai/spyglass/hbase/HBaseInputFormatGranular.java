@@ -14,7 +14,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.hbase.HConstants;
 import org.apache.hadoop.hbase.HRegionLocation;
-import org.apache.hadoop.hbase.HServerAddress;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.io.ImmutableBytesWritable;
 import org.apache.hadoop.hbase.util.Addressing;
@@ -110,26 +109,26 @@ public class HBaseInputFormatGranular extends HBaseInputFormatBase {
 					: maxKey;
 
 			HRegionLocation regionLoc = table.getRegionLocation(keys.getFirst()[i]);
-            HServerAddress regionServerAddress = regionLoc.getServerAddress();
-			InetAddress regionAddress = regionServerAddress.getInetSocketAddress().getAddress();
-			String regionLocation;
-			try {
-				regionLocation = reverseDNS(regionAddress);
-			} catch (NamingException e) {
-				LOG.error("Cannot resolve the host name for " + regionAddress
-						+ " because of " + e);
-				regionLocation = regionServerAddress.getHostname();
-			}
+            //HServerAddress regionServerAddress = regionLoc.getServerAddress();
+//			InetAddress regionAddress = regionServerAddress.getInetSocketAddress().getAddress();
+//			String regionLocation;
+//			try {
+//				regionLocation = reverseDNS(regionAddress);
+//			} catch (NamingException e) {
+//				LOG.error("Cannot resolve the host name for " + regionAddress
+//						+ " because of " + e);
+//				regionLocation = regionLoc.getHostname();
+//			}
 
             regionNames[i] = regionLoc.getRegionInfo().getRegionNameAsString();
 
-			LOG.debug("***** " + regionLocation);
+			LOG.debug("***** " + regionLoc.getHostname());
 
-			if (regionLocation == null || regionLocation.length() == 0)
-				throw new IOException("The region info for regiosn " + i
+			if (regionLoc.getHostname() == null || regionLoc.getHostname().length() == 0)
+				throw new IOException("The region info for region " + i
 						+ " is null or empty");
 
-			regions[i] = regionLocation;
+			regions[i] = regionLoc.getHostname();
 
 			LOG.debug(String.format(
 					"Region (%s) has start key (%s) and stop key (%s)", regions[i],
@@ -189,18 +188,19 @@ public class HBaseInputFormatGranular extends HBaseInputFormatBase {
 						byte[] rStart = cRegion.getRegionInfo().getStartKey();
 						byte[] rStop = cRegion.getRegionInfo().getEndKey();
 
-						HServerAddress regionServerAddress = cRegion
-								.getServerAddress();
-						InetAddress regionAddress = regionServerAddress
-								.getInetSocketAddress().getAddress();
-						String regionLocation;
-						try {
-							regionLocation = reverseDNS(regionAddress);
-						} catch (NamingException e) {
-							LOG.error("Cannot resolve the host name for "
-									+ regionAddress + " because of " + e);
-							regionLocation = regionServerAddress.getHostname();
-						}
+//						HServerAddress regionServerAddress = cRegion
+//								.getServerAddress();
+//						InetAddress regionAddress = regionServerAddress
+//								.getInetSocketAddress().getAddress();
+//						String regionLocation;
+//						try {
+//							regionLocation = reverseDNS(regionAddress);
+//                            regionLocation = cRegion.
+//						} catch (NamingException e) {
+//							LOG.error("Cannot resolve the host name for "
+//									+ regionAddress + " because of " + e);
+//							regionLocation = cRegion.getHostname();
+//						}
 
                         String regionName = cRegion.getRegionInfo().getRegionNameAsString();
 
@@ -219,7 +219,7 @@ public class HBaseInputFormatGranular extends HBaseInputFormatBase {
 										.compareTo(stopRow, rStop) >= 0)), rStop.length));
 
 						HBaseTableSplitGranular split = new HBaseTableSplitGranular(
-								table.getTableName(), sStart, sStop, regionLocation, regionName,
+								table.getTableName(), sStart, sStop, cRegion.getHostname(), regionName,
 								SourceMode.SCAN_RANGE, useSalt);
 
 						split.setEndRowInclusive(currentRegion == maxRegions);

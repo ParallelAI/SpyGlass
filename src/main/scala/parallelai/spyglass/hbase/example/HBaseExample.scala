@@ -1,10 +1,5 @@
 package parallelai.spyglass.hbase.example
 
-import org.apache.hadoop.conf.Configuration
-import org.apache.hadoop.hbase.HBaseConfiguration
-import org.apache.hadoop.hbase.client.HConnectionManager
-import org.apache.hadoop.hbase.client.HTable
-import org.apache.hadoop.hbase.util.Bytes
 import org.apache.log4j.Level
 import org.apache.log4j.Logger
 import com.twitter.scalding._
@@ -12,8 +7,6 @@ import com.twitter.scalding.Args
 import parallelai.spyglass.base.JobBase
 import parallelai.spyglass.hbase.HBaseSource
 import parallelai.spyglass.hbase.HBaseConstants.SourceMode
-import org.apache.hadoop.hbase.client.Put
-import parallelai.spyglass.hbase.HBaseSalter
 
 class HBaseExample(args: Args) extends JobBase(args) {
 

@@ -1,14 +1,9 @@
 package parallelai.spyglass.hbase.example
 
-import com.twitter.scalding.Tool
-import org.joda.time.format.DateTimeFormat
-import java.util.Formatter.DateTime
 import parallelai.spyglass.base.JobRunner
 import org.apache.hadoop.conf.Configuration
-import org.apache.hadoop.hbase.{HColumnDescriptor, HTableDescriptor, HBaseConfiguration}
-import org.apache.hadoop.hbase.client.{Put, HTable, HConnectionManager, HBaseAdmin}
-import org.apache.hadoop.hbase.io.hfile.Compression
-import org.apache.hadoop.hbase.regionserver.StoreFile
+import org.apache.hadoop.hbase.HBaseConfiguration
+import org.apache.hadoop.hbase.client.{Put, HTable, HConnectionManager}
 import org.apache.hadoop.hbase.util.Bytes
 import parallelai.spyglass.hbase.HBaseSalter
 

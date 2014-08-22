@@ -29,11 +29,11 @@
         <maven-scala-plugin.version>2.15.2</maven-scala-plugin.version>
         <maven.surefire.plugin.version>2.12.3</maven.surefire.plugin.version>
 
-        <cdh.version>cdh4.5.0</cdh.version>
+        <cdh.version>cdh5.1.0</cdh.version>
 
-        <hadoop.version>2.0.0-${cdh.version}</hadoop.version>
-        <hadoop.core.version>2.0.0-mr1-${cdh.version}</hadoop.core.version>
-        <hbase.version>0.94.6-${cdh.version}</hbase.version>
+        <hadoop.version>2.3.0-${cdh.version}</hadoop.version>
+        <hadoop.core.version>2.3.0-mr1-${cdh.version}</hadoop.core.version>
+        <hbase.version>0.98.1-${cdh.version}</hbase.version>
 
         <!-- Scala/Scalding/Cascading properties -->
         <!-- can be 2.9.3 and 2.10.2 -->
@@ -63,7 +63,7 @@
         <repository>
             <id>cloudera-cdh4</id>
             <name>Cloudera CDH4</name>
-            <url>https://repository.cloudera.com/artifactory/cloudera-repos/</url>
+            <url>http://repository.cloudera.com/artifactory/cloudera-repos/</url>
         </repository>
         <repository>
             <id>conjars</id>
@@ -153,7 +153,17 @@
         <!-- HBase -->
         <dependency>
             <groupId>org.apache.hbase</groupId>
-            <artifactId>hbase</artifactId>
+            <artifactId>hbase-server</artifactId>
+            <version>${hbase.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.hbase</groupId>
+            <artifactId>hbase-common</artifactId>
+            <version>${hbase.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.hbase</groupId>
+            <artifactId>hbase-client</artifactId>
             <version>${hbase.version}</version>
         </dependency>
 
