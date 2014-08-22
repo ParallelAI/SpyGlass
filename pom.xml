@@ -41,7 +41,7 @@
         <!-- 2.10 for Scala 2.10.2 and 2.9.3 for Scala version 2.9.3 -->
         <scalding.scala.version>2.10</scalding.scala.version>
         <scalding.version>0.10.0</scalding.version>
-        <scalatest.version>1.9.1</scalatest.version>
+        <scalatest.version>2.2.0</scalatest.version>
 
         <!-- 2.1.1 for Scala 2.10.2 and 1.12.4.1 for Scala 2.9.3-->
         <specs2.version>2.1.1</specs2.version>
