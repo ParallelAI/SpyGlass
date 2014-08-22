@@ -1,4 +1,4 @@
-package parallelai.spyglass.hbase;
+package parallelai.spyglass.hbase.example;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -155,7 +155,6 @@ public class GenerateTestingHTables {
 		if (testingTable == TestingTable.TABLE_01) {
 			HColumnDescriptor meta = new HColumnDescriptor("data");
 			meta.setMaxVersions(3)
- 		        .setCompressionType(Compression.Algorithm.NONE)
 			    .setInMemory(HColumnDescriptor.DEFAULT_IN_MEMORY)
 				.setBlockCacheEnabled(HColumnDescriptor.DEFAULT_BLOCKCACHE)
 				.setTimeToLive(HColumnDescriptor.DEFAULT_TTL);
@@ -165,7 +164,6 @@ public class GenerateTestingHTables {
 		} else if (testingTable == TestingTable.TABLE_02) {
 			HColumnDescriptor meta = new HColumnDescriptor("data".getBytes());
 			meta.setMaxVersions(3)
-		        .setCompressionType(Compression.Algorithm.NONE)
 		        .setInMemory(HColumnDescriptor.DEFAULT_IN_MEMORY)
 			    .setBlockCacheEnabled(HColumnDescriptor.DEFAULT_BLOCKCACHE)
 			    .setTimeToLive(HColumnDescriptor.DEFAULT_TTL);
