@@ -19,7 +19,6 @@ import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.ResultScanner;
 import org.apache.hadoop.hbase.client.Scan;
-import org.apache.hadoop.hbase.io.hfile.Compression;
 import org.apache.hadoop.hbase.regionserver.StoreFile;
 import org.apache.hadoop.hbase.util.Bytes;
 import junit.framework.Assert;
@@ -159,8 +158,7 @@ public class GenerateTestingHTables {
  		        .setCompressionType(Compression.Algorithm.NONE)
 			    .setInMemory(HColumnDescriptor.DEFAULT_IN_MEMORY)
 				.setBlockCacheEnabled(HColumnDescriptor.DEFAULT_BLOCKCACHE)
-				.setTimeToLive(HColumnDescriptor.DEFAULT_TTL)
-				.setBloomFilterType(StoreFile.BloomType.NONE);
+				.setTimeToLive(HColumnDescriptor.DEFAULT_TTL);
 
 			newTable.addFamily(meta);
 			// Table2
@@ -170,8 +168,7 @@ public class GenerateTestingHTables {
 		        .setCompressionType(Compression.Algorithm.NONE)
 		        .setInMemory(HColumnDescriptor.DEFAULT_IN_MEMORY)
 			    .setBlockCacheEnabled(HColumnDescriptor.DEFAULT_BLOCKCACHE)
-			    .setTimeToLive(HColumnDescriptor.DEFAULT_TTL)
-			    .setBloomFilterType(StoreFile.BloomType.NONE);
+			    .setTimeToLive(HColumnDescriptor.DEFAULT_TTL);
 
 //			HColumnDescriptor prefix = new HColumnDescriptor("account".getBytes());
 //			newTable.addFamily(prefix);
