@@ -10,10 +10,7 @@ import org.apache.hadoop.hbase.util.Bytes;
 import org.apache.hadoop.hbase.util.Pair;
 import org.junit.Test;
 
-import parallelai.spyglass.hbase.HBaseSalter;
-
-
-public class HBaseSalterTester {
+public class HBaseSalterTest {
 
 	@Test
 	public void addSaltPrefix() throws IOException {
@@ -484,12 +481,6 @@ public class HBaseSalterTester {
 		assertEquals(expectedPairs.length, actualPairs.length);
 		
 		for( int i = 0; i < expectedPairs.length; i++ ) {
-//			System.out.println("".format("FIRST: EXPECTED: (%s) ACTUAL: (%s)", 
-//					Bytes.toString(expectedPairs[i].getFirst()), Bytes.toString(actualPairs[i].getFirst()) ));
-//
-//			System.out.println("".format("SECOND: EXPECTED: (%s) ACTUAL: (%s)", 
-//					Bytes.toString(expectedPairs[i].getSecond()), Bytes.toString(actualPairs[i].getSecond()) ));
-
 			assertArrayEquals(expectedPairs[i].getFirst(), actualPairs[i].getFirst());
 			assertArrayEquals(expectedPairs[i].getSecond(), actualPairs[i].getSecond());
 		}
