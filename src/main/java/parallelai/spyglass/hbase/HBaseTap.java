@@ -12,6 +12,11 @@
 
 package parallelai.spyglass.hbase;
 
+import cascading.tap.TapException;
+import org.apache.hadoop.hbase.security.User;
+import org.apache.hadoop.security.Credentials;
+import org.apache.hadoop.security.UserGroupInformation;
+import org.apache.hadoop.security.token.Token;
 import parallelai.spyglass.hbase.HBaseConstants.SplitType;
 
 import parallelai.spyglass.hbase.HBaseConstants.SourceMode;
@@ -179,8 +184,28 @@ public class HBaseTap extends Tap<JobConf, RecordReader, OutputCollector> {
     for( SinkConfig sc : sinkConfigList) {
         sc.configure(conf);
     }
-    
+    obtainToken(conf);
+
     super.sinkConfInit(process, conf);
+  }
+
+  private void obtainToken(JobConf conf) {
+    if (User.isHBaseSecurityEnabled(conf)) {
+      String user = conf.getUser();
+      LOG.info("obtaining HBase token for: {}", user);
+      try {
+        UserGroupInformation currentUser = UserGroupInformation.getCurrentUser();
+        user = currentUser.getUserName();
+        Credentials credentials = conf.getCredentials();
+        for (Token t : currentUser.getTokens()) {
+          LOG.debug("Token {} is available", t);
+          if ("HBASE_AUTH_TOKEN".equalsIgnoreCase(t.getKind().toString()))
+            credentials.addToken(t.getKind(), t);
+        }
+      } catch (IOException e) {
+        throw new TapException("Unable to obtain HBase auth token for " + user, e);
+      }
+    }
   }
 
   @Override
@@ -277,6 +302,7 @@ public class HBaseTap extends Tap<JobConf, RecordReader, OutputCollector> {
     for( SourceConfig sc : sourceConfigList) {
       sc.configure(conf);
     }
+    obtainToken(conf);
     
     super.sourceConfInit(process, conf);
   }
