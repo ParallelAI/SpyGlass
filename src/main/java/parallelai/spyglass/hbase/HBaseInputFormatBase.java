@@ -78,7 +78,7 @@ public abstract class HBaseInputFormatBase implements InputFormat<ImmutableBytes
         sourceMode = HBaseConstants.SourceMode.valueOf(job.get(String.format(
                 HBaseConstants.SOURCE_MODE, getTableName(job))));
 
-        LOG.info(String.format("GOT SOURCE MODE (%s) as (%s) and finally", String
+        LOG.info(String.format("GOT SOURCE MODE (%s) as (%s) and finally (%s)", String
                 .format(HBaseConstants.SOURCE_MODE, getTableName(job)), job
                 .get(String.format(HBaseConstants.SOURCE_MODE, getTableName(job))),
                 sourceMode));

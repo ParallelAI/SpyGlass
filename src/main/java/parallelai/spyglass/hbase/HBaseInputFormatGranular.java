@@ -1,15 +1,5 @@
 package parallelai.spyglass.hbase;
 
-import java.io.IOException;
-import java.net.InetAddress;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
-
-import javax.naming.NamingException;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.hbase.HConstants;
@@ -25,8 +15,16 @@ import org.apache.hadoop.mapred.JobConf;
 import org.apache.hadoop.mapred.RecordReader;
 import org.apache.hadoop.mapred.Reporter;
 import org.apache.hadoop.net.DNS;
-
 import parallelai.spyglass.hbase.HBaseConstants.SourceMode;
+
+import javax.naming.NamingException;
+import java.io.IOException;
+import java.net.InetAddress;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * See HBaseInputFormatRegional first (!)
@@ -187,20 +185,6 @@ public class HBaseInputFormatGranular extends HBaseInputFormatBase {
 					for (HRegionLocation cRegion : validRegions) {
 						byte[] rStart = cRegion.getRegionInfo().getStartKey();
 						byte[] rStop = cRegion.getRegionInfo().getEndKey();
-
-//						HServerAddress regionServerAddress = cRegion
-//								.getServerAddress();
-//						InetAddress regionAddress = regionServerAddress
-//								.getInetSocketAddress().getAddress();
-//						String regionLocation;
-//						try {
-//							regionLocation = reverseDNS(regionAddress);
-//                            regionLocation = cRegion.
-//						} catch (NamingException e) {
-//							LOG.error("Cannot resolve the host name for "
-//									+ regionAddress + " because of " + e);
-//							regionLocation = cRegion.getHostname();
-//						}
 
                         String regionName = cRegion.getRegionInfo().getRegionNameAsString();
 

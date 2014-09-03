@@ -3,7 +3,10 @@ package parallelai.spyglass.base
 import org.apache.hadoop.conf.Configuration
 import com.twitter.scalding.Tool
 import org.apache.hadoop
- 
+import org.apache.hadoop.hbase.security.token.TokenUtil
+import org.apache.hadoop.security.UserGroupInformation
+import org.apache.hadoop.hbase.security.User
+
 object JobRunner {
   def main(args : Array[String]) {
     val conf: Configuration = new Configuration
@@ -17,6 +20,11 @@ object JobRunner {
     }
      
     AppConfig.jobConfig = conf
+
+    if (User.isHBaseSecurityEnabled(conf)) {
+      println("Obtaining token for HBase security.");
+      TokenUtil.obtainAndCacheToken(conf, UserGroupInformation.getCurrentUser());
+    }
      
     hadoop.util.ToolRunner.run(conf, new Tool, args);
   }
