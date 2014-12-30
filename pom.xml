@@ -2,58 +2,38 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
          http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
     <organization>
         <name>Parallel AI</name>
         <url>http://www.parallelai.com</url>
     </organization>
-
     <name>Cascading and Scalding wrapper for HBase with advanced features</name>
     <groupId>parallelai</groupId>
     <artifactId>parallelai.spyglass</artifactId>
-    <version>2.10_0.10_CDH5_4.4</version>
+    <version>2.10_0.10_CDH5.2.1</version>
     <packaging>jar</packaging>
 
     <properties>
-        <!-- UTF-8 Encoding settings -->
         <encoding>UTF-8</encoding>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-
-        <!-- Java compilation level -->
-        <maven.compiler.source>1.6</maven.compiler.source>
-        <maven.compiler.target>1.6</maven.compiler.target>
-
-        <!-- Maven -->
+        <maven.compiler.source>1.7</maven.compiler.source>
+        <maven.compiler.target>1.7</maven.compiler.target>
         <maven-compiler-plugin.version>3.0</maven-compiler-plugin.version>
         <maven-scala-plugin.version>2.15.2</maven-scala-plugin.version>
         <maven.surefire.plugin.version>2.12.3</maven.surefire.plugin.version>
-
-        <cdh.version>cdh5.1.0</cdh.version>
-
-        <hadoop.version>2.3.0-${cdh.version}</hadoop.version>
-        <hadoop.core.version>2.3.0-mr1-${cdh.version}</hadoop.core.version>
-        <hbase.version>0.98.1-${cdh.version}</hbase.version>
-
-        <!-- Scala/Scalding/Cascading properties -->
-        <!-- can be 2.9.3 and 2.10.2 -->
+        <cdh.version>cdh5.2.1</cdh.version>
+        <hadoop.version>2.5.0-${cdh.version}</hadoop.version>
+        <hbase.version>0.98.6-${cdh.version}</hbase.version>
         <scala.version>2.10.3</scala.version>
-        <!-- 2.10 for Scala 2.10.2 and 2.9.3 for Scala version 2.9.3 -->
         <scalding.scala.version>2.10</scalding.scala.version>
         <scalding.version>0.10.0</scalding.version>
         <scalatest.version>2.2.0</scalatest.version>
-
-        <!-- 2.1.1 for Scala 2.10.2 and 1.12.4.1 for Scala 2.9.3-->
         <specs2.version>2.1.1</specs2.version>
         <typesafe.config.version>1.0.0</typesafe.config.version>
-
-        <!-- Other libraries properties -->
         <junit.version>4.10</junit.version>
         <slf4j.version>1.7.2</slf4j.version>
-
     </properties>
 
-    <!-- Repositories -->
     <repositories>
         <repository>
             <id>scala-tools.org</id>
@@ -72,113 +52,42 @@
         </repository>
     </repositories>
 
-    <!-- Profiles
-    <profiles>
-        <profile>
-            <id>windows_profile</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-                <os>
-                    <family>Windows</family>
-                </os>
-            </activation>
-            <properties>
-                <toolsjar>${JAVA_HOME}\\lib\\tools.jar</toolsjar>
-            </properties>
-            <dependencies>
-                <dependency>
-                    <groupId>jdk.tools</groupId>
-                    <artifactId>jdk.tools</artifactId>
-                    <version>1.6</version>
-                    <scope>system</scope>
-                    <systemPath>${toolsjar}</systemPath>
-                </dependency>
-            </dependencies>
-        </profile>
-        <profile>
-            <id>osx_profile</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-                <os>
-                    <family>mac</family>
-                </os>
-            </activation>
-            <properties>
-                <toolsjar>${java.home}/../Classes/classes.jar</toolsjar>
-            </properties>
-            <dependencies>
-                <dependency>
-                    <groupId>jdk.tools</groupId>
-                    <artifactId>jdk.tools</artifactId>
-                    <version>1.6</version>
-                    <scope>system</scope>
-                    <systemPath>${toolsjar}</systemPath>
-                </dependency>
-            </dependencies>
-        </profile>
-    </profiles>-->
-
-
     <dependencies>
         <dependency>
             <groupId>org.scala-lang</groupId>
             <artifactId>scala-library</artifactId>
             <version>${scala.version}</version>
         </dependency>
-
-        <!-- Scalding -->
         <dependency>
             <groupId>com.twitter</groupId>
             <artifactId>scalding-core_${scalding.scala.version}</artifactId>
             <version>${scalding.version}</version>
         </dependency>
-
-        <!-- Hadoop -->
         <dependency>
             <groupId>org.apache.hadoop</groupId>
-            <artifactId>hadoop-core</artifactId>
-            <version>${hadoop.core.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.hadoop</groupId>
-            <artifactId>hadoop-common</artifactId>
+            <artifactId>hadoop-client</artifactId>
             <version>${hadoop.version}</version>
         </dependency>
-
-        <!-- HBase -->
         <dependency>
             <groupId>org.apache.hbase</groupId>
             <artifactId>hbase-server</artifactId>
             <version>${hbase.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.apache.hbase</groupId>
-            <artifactId>hbase-common</artifactId>
-            <version>${hbase.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.hbase</groupId>
-            <artifactId>hbase-client</artifactId>
-            <version>${hbase.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.hbase</groupId>
-            <artifactId>hbase-protocol</artifactId>
-            <version>${hbase.version}</version>
-        </dependency>
-
-        <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>${slf4j.version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>com.jcraft</groupId>
+            <artifactId>jsch</artifactId>
+            <version>0.1.51</version>
+        </dependency>
         <dependency>
             <groupId>com.typesafe</groupId>
             <artifactId>config</artifactId>
             <version>${typesafe.config.version}</version>
         </dependency>
-
         <dependency>
             <groupId>com.twitter.elephantbird</groupId>
             <artifactId>elephant-bird-core</artifactId>
@@ -188,9 +97,7 @@
             <groupId>com.twitter.elephantbird</groupId>
             <artifactId>elephant-bird-hadoop-compat</artifactId>
             <version>4.1</version>
-        </dependency> 
-
-        <!-- Testing dependencies (ScalaSpec / ScalaTest / JUnit) -->
+        </dependency>
         <dependency>
             <groupId>org.specs2</groupId>
             <artifactId>specs2_${scalding.scala.version}</artifactId>
@@ -215,7 +122,6 @@
     <build>
         <sourceDirectory>src/main/java</sourceDirectory>
         <testSourceDirectory>src/test/scala</testSourceDirectory>
-        <!-- From https://wiki.scala-lang.org/display/SIW/ScalaEclipseMaven -->
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -287,7 +193,6 @@
                         </goals>
                         <configuration>
                             <outputDirectory>./alternateLocation</outputDirectory>
-                            <!-- ${project.build.directory} -->
                             <overWriteReleases>false</overWriteReleases>
                             <overWriteSnapshots>false</overWriteSnapshots>
                             <overWriteIfNewer>true</overWriteIfNewer>
@@ -298,7 +203,6 @@
         </plugins>
         <pluginManagement>
             <plugins>
-                <!--Run with : mvn dependency:copy-dependencies -->
                 <plugin>
                     <groupId>org.eclipse.m2e</groupId>
                     <artifactId>lifecycle-mapping</artifactId>
@@ -371,5 +275,4 @@
             </plugins>
         </pluginManagement>
     </build>
-
 </project>
