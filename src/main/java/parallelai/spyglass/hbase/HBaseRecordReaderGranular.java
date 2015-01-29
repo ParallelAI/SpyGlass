@@ -249,9 +249,10 @@ public class HBaseRecordReaderGranular extends HBaseRecordReaderBase {
           } else {
             key.set(result.getRow());
           }
-          
+
           lastSuccessfulRow = key.get();
-          Writables.copyWritable(result, value);
+          value.copyFrom(result);
+          //Writables.copyWritable(result, value); // src , targer
           return true;
         }
         return false;
@@ -302,7 +303,8 @@ public class HBaseRecordReaderGranular extends HBaseRecordReaderBase {
               key.set(result.getRow());
             }
             lastSuccessfulRow = key.get();
-            Writables.copyWritable(result, value);
+            value.copyFrom(result);
+//            Writables.copyWritable(result, value);
             
             return true;
           } else {
@@ -352,7 +354,8 @@ public class HBaseRecordReaderGranular extends HBaseRecordReaderBase {
             key.set(result.getRow());
           }
           lastSuccessfulRow = key.get();
-          Writables.copyWritable(result, value);
+          value.copyFrom(result);
+//          Writables.copyWritable(result, value);
 
           return true;
         } else {
@@ -408,7 +411,8 @@ public class HBaseRecordReaderGranular extends HBaseRecordReaderBase {
                 key.set(result.getRow());
               }
               lastSuccessfulRow = key.get();
-              Writables.copyWritable(result, value);
+              value.copyFrom(result);
+//              Writables.copyWritable(result, value);
               return true;
             } else {
               LOG.debug(String.format("+ Key (%s) return an EMPTY result. Get (%s)", Bytes.toString(nextKey), theGet.getId()) ); //alg0

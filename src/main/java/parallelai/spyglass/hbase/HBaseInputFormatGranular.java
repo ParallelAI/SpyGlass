@@ -14,7 +14,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.hbase.HConstants;
 import org.apache.hadoop.hbase.HRegionLocation;
-import org.apache.hadoop.hbase.HServerAddress;
+//import org.apache.hadoop.hbase.HServerAddress;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.io.ImmutableBytesWritable;
 import org.apache.hadoop.hbase.util.Addressing;
@@ -110,16 +110,16 @@ public class HBaseInputFormatGranular extends HBaseInputFormatBase {
 					: maxKey;
 
 			HRegionLocation regionLoc = table.getRegionLocation(keys.getFirst()[i]);
-            HServerAddress regionServerAddress = regionLoc.getServerAddress();
-			InetAddress regionAddress = regionServerAddress.getInetSocketAddress().getAddress();
-			String regionLocation;
-			try {
-				regionLocation = reverseDNS(regionAddress);
-			} catch (NamingException e) {
-				LOG.error("Cannot resolve the host name for " + regionAddress
-						+ " because of " + e);
-				regionLocation = regionServerAddress.getHostname();
-			}
+//            HServerAddress regionServerAddress = regionLoc.getServerName().getHostname();
+//			InetAddress regionAddress = regionServerAddress.getInetSocketAddress().getAddress();
+			String regionLocation = regionLoc.getServerName().getHostname();
+//			try {
+//				regionLocation = reverseDNS(regionAddress);
+//			} catch (NamingException e) {
+//				LOG.error("Cannot resolve the host name for " + regionAddress
+//						+ " because of " + e);
+//				regionLocation = regionServerAddress.getHostname();
+//			}
 
             regionNames[i] = regionLoc.getRegionInfo().getRegionNameAsString();
 
@@ -189,18 +189,18 @@ public class HBaseInputFormatGranular extends HBaseInputFormatBase {
 						byte[] rStart = cRegion.getRegionInfo().getStartKey();
 						byte[] rStop = cRegion.getRegionInfo().getEndKey();
 
-						HServerAddress regionServerAddress = cRegion
-								.getServerAddress();
-						InetAddress regionAddress = regionServerAddress
-								.getInetSocketAddress().getAddress();
-						String regionLocation;
-						try {
-							regionLocation = reverseDNS(regionAddress);
-						} catch (NamingException e) {
-							LOG.error("Cannot resolve the host name for "
-									+ regionAddress + " because of " + e);
-							regionLocation = regionServerAddress.getHostname();
-						}
+//						HServerAddress regionServerAddress = cRegion
+//								.getServerAddress();
+//						InetAddress regionAddress = regionServerAddress
+//								.getInetSocketAddress().getAddress();
+						String regionLocation = cRegion.getHostname();
+//						try {
+//							regionLocation = reverseDNS(regionAddress);
+//						} catch (NamingException e) {
+//							LOG.error("Cannot resolve the host name for "
+//									+ regionAddress + " because of " + e);
+//							regionLocation = regionServerAddress.getHostname();
+//						}
 
                         String regionName = cRegion.getRegionInfo().getRegionNameAsString();
 
