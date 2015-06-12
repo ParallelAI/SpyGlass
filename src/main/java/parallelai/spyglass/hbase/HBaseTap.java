@@ -404,9 +404,11 @@ public class HBaseTap extends Tap<JobConf, RecordReader, OutputCollector> {
   private static class SinkConfig implements Serializable {
 	  public String tableName = null;
 	  public boolean useSalt = false;
+	  public boolean autoFlush = false;
 	  
 	  public void configure(Configuration jobConf) {
           jobConf.setBoolean(String.format(HBaseConstants.USE_SALT, tableName), useSalt);
+          jobConf.setBoolean(String.format(HBaseConstants.AUTO_FLUSH, tableName), autoFlush);
 	  }
   }
   
@@ -457,6 +459,14 @@ public class HBaseTap extends Tap<JobConf, RecordReader, OutputCollector> {
     sc.tableName = tableName;
     sc.useSalt = useSalt;
 	
+    sinkConfigList.add(sc);
+  }
+
+  public void setHBaseSinkParms( boolean useSalt, boolean autoFlush ) {
+    SinkConfig sc = new SinkConfig();
+    sc.tableName = tableName;
+    sc.autoFlush = autoFlush;
+    sc.useSalt = useSalt;
     sinkConfigList.add(sc);
   }
   

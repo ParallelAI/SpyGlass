@@ -26,6 +26,7 @@ public class HBaseConstants {
     public static final String VERSIONS = "hbase.%s.versions";
     public static final String USE_SALT = "hbase.%s.use.salt";
     public static final String SALT_PREFIX = "hbase.%s.salt.prefix";
+    public static final String AUTO_FLUSH = "hbase.%s.auto_flush";
 
     public static final String SINK_MODE = "hbase.%s.sink.mode";
 }

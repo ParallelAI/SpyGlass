@@ -40,6 +40,7 @@ case class HBaseSource(
     versions: Int = 1,
     useSalt: Boolean = false,
     prefixList: String = null,
+    autoFlush: Boolean = true,
     sinkMode: SinkMode = SinkMode.UPDATE,
     inputSplitType: SplitType = SplitType.GRANULAR
   ) extends Source {
@@ -89,7 +90,7 @@ case class HBaseSource(
         case Write => {
           val hbt = new HBaseTap(quorumNames, tableName, hBaseScheme, sinkMode)
           
-          hbt.setUseSaltInSink(useSalt)
+          hbt.setHBaseSinkParms(useSalt, autoFlush)
 
           hbt.asInstanceOf[Tap[_,_,_]]
         }

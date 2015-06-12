@@ -30,6 +30,9 @@ public class HBaseRecordWriter
 
   public void close(Reporter reporter)
     throws IOException {
+    if (!m_table.isAutoFlush()) {
+        m_table.flushCommits();
+    }
     m_table.close();
   }
 
