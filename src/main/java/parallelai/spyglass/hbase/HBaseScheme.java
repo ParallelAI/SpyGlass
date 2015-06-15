@@ -22,7 +22,9 @@ import cascading.tuple.Fields;
 import cascading.tuple.Tuple;
 import cascading.tuple.TupleEntry;
 import cascading.util.Util;
+import org.apache.hadoop.hbase.client.Mutation;
 import org.apache.hadoop.hbase.client.Put;
+import org.apache.hadoop.hbase.client.Delete;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.io.ImmutableBytesWritable;
 import org.apache.hadoop.hbase.util.Bytes;
@@ -36,6 +38,9 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashSet;
 
+import parallelai.spyglass.hbase.HBaseOperation.DeleteColumn;
+import parallelai.spyglass.hbase.HBaseOperation.DeleteFamily;
+import parallelai.spyglass.hbase.HBaseOperation.PutColumn;
 /**
  * The HBaseScheme class is a {@link Scheme} subclass. It is used in conjunction with the {@HBaseTap} to
  * allow for the reading and writing of data to and from a HBase cluster.
@@ -251,22 +256,60 @@ public class HBaseScheme
     } else {
       put = new Put(keyBytes.get(), this.timeStamp);
     }
-    
+
+    Delete delete;
+    if (this.timeStamp == 0L) {
+      delete = new Delete(keyBytes.get());
+    } else {
+      delete = new Delete(keyBytes.get(), this.timeStamp);
+    }
+    boolean deleteRow = false;
+
     for (int i = 0; i < valueFields.length; i++) {
       Fields fieldSelector = valueFields[i];
       TupleEntry values = tupleEntry.selectEntry(fieldSelector);
-
+      Fields fields = values.getFields();
+      Tuple tuple = values.getTuple();
       for (int j = 0; j < values.getFields().size(); j++) {
-        Fields fields = values.getFields();
-        Tuple tuple = values.getTuple();
-
-        ImmutableBytesWritable valueBytes = (ImmutableBytesWritable) tuple.getObject(j);
-        if (valueBytes != null)
-            put.add(Bytes.toBytes(familyNames[i]), Bytes.toBytes((String) fields.get(j)), valueBytes.get());
+        Object item = tuple.getObject(j);
+        if (item instanceof ImmutableBytesWritable) {
+          put.add(Bytes.toBytes(familyNames[i]), Bytes.toBytes((String) fields.get(j)), ((ImmutableBytesWritable) item).get());
+        } else if (item != null) {
+          HBaseOperation op = (HBaseOperation) item;
+          switch(op.getType()) {
+            case PUT_COLUMN:
+              PutColumn opp = (PutColumn) op;
+              put.add(Bytes.toBytes(opp.getFamily()), Bytes.toBytes(opp.getColumn()), opp.getBytes());
+              break;
+            case DELETE_COLUMN:
+              DeleteColumn opc = (DeleteColumn) op;
+              delete.deleteColumns(Bytes.toBytes(opc.getFamily()), Bytes.toBytes(opc.getColumn()));
+              break;
+            case DELETE_FAMILY:
+              DeleteFamily opf = (DeleteFamily) op;
+              delete.deleteFamily(Bytes.toBytes(opf.getFamily()));
+              break;
+            case DELETE_ROW:
+              deleteRow = true;
+              break;
+            case NO_OP:
+              break;
+          }
+        }
       }
     }
-
-    outputCollector.collect(null, put);
+    if (put.size() > 0) {
+      outputCollector.collect(null, put);
+    }
+    if (delete.size() > 0) {
+      outputCollector.collect(null, delete);
+    }
+    if (deleteRow == true) {
+      if (put.size() > 0 || delete.size() > 0) {
+        throw new RuntimeException("can not combine row delete with any other operations on row");
+      }
+      outputCollector.collect(null, delete);
+    }
   }
 
   @Override
@@ -275,7 +318,7 @@ public class HBaseScheme
     conf.setOutputFormat(HBaseOutputFormat.class);
 
     conf.setOutputKeyClass(ImmutableBytesWritable.class);
-    conf.setOutputValueClass(Put.class);
+    conf.setOutputValueClass(Mutation.class);
     
     String tableName = conf.get(HBaseOutputFormat.OUTPUT_TABLE);
     useSalt = conf.getBoolean(String.format(HBaseConstants.USE_SALT, tableName), false);
