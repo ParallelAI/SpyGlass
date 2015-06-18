@@ -51,8 +51,7 @@ FileOutputFormat<ImmutableBytesWritable, Put> implements JobConfigurable {
       LOG.error(e);
       throw e;
     }
-    // TODO: Should Autoflush be set to true ???? - DONE
-    table.setAutoFlush(true);
+    table.setAutoFlush(job.getBoolean(String.format(HBaseConstants.AUTO_FLUSH, tableName),false));
     HBaseRecordWriter recordWriter = new HBaseRecordWriter(table);
     recordWriter.setSinkMode(sinkMode);
     return recordWriter;
