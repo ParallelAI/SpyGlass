@@ -23,15 +23,18 @@ Building
 	
 To use SpyGlass as a dependency use the following repository
 
+```xml
         <repositories>
             <repository>
                 <id>conjars.org</id>
                 <url>http://conjars.org/repo</url>
             </repository>
         </repositories>
+```
 
 	For Scalding 0.10.0 use :
 
+```xml
         <dependencies> 
             <dependency>
                 <groupId>parallelai</groupId>
@@ -39,9 +42,11 @@ To use SpyGlass as a dependency use the following repository
                 <version>2.10_0.10_4.3</version>
             </dependency>
         </dependencies>
+```
 
         For Scalding 0.9.1 use :
 
+```xml
         <dependencies> 
             <dependency>
                 <groupId>parallelai</groupId>
@@ -49,9 +54,11 @@ To use SpyGlass as a dependency use the following repository
                 <version>2.10_0.9_4.3</version>
             </dependency>
         </dependencies>
+```
 
         or for earlier versions : 
-	
+
+```xml	
         <dependencies>
             <dependency>
                 <groupId>parallelai</groupId>
@@ -59,9 +66,11 @@ To use SpyGlass as a dependency use the following repository
                 <version>2.9.3_4.1.0</version>
             </dependency>
         </dependencies>
+```
 	
         and
-	
+
+```xml	
         <dependencies>
             <dependency>
                 <groupId>parallelai</groupId>
@@ -69,7 +78,7 @@ To use SpyGlass as a dependency use the following repository
                 <version>2.10.2_4.1.0</version>
             </dependency>
         </dependencies>
-	
+```
 
 	
 
@@ -88,6 +97,7 @@ Requires the **_keyList_** parameter to be specified as well.
 
 (e.g.)
 
+```scala
 	val hbs2 = new HBaseSource(
 	    "table_name",
 	    "quorum_name:2181",
@@ -95,12 +105,13 @@ Requires the **_keyList_** parameter to be specified as well.
 	    Array("column_family"),
 	    Array('column_name),
 	    sourceMode = SourceMode.GET_LIST, keyList = List("5003914", "5000687", "5004897"))
-	    
+```
 	    
 Additionally, the **_versions_** parameter can be used to retrieve more than one version of the row. 
 
 (e.g.)
 
+```scala
 	val hbs2 = new HBaseSource(
 	    "table_name",
 	    "quorum_name:2181",
@@ -110,7 +121,7 @@ Additionally, the **_versions_** parameter can be used to retrieve more than one
 	    sourceMode = SourceMode.GET_LIST,
 	    versions = 5, 
 	    keyList = List("5003914", "5000687", "5004897"))
-	
+```
 	    
 SCAN_RANGE
 ----------
@@ -123,6 +134,7 @@ if:
  
 (e.g.)
 
+```scala
 	  val hbs4 = new HBaseSource(
 	    "table_name",
 	    "quorum_name:2181",
@@ -152,7 +164,7 @@ if:
 	    sourceMode = SourceMode.SCAN_RANGE, startKey = "5003914", stopKey = "5004897")
 	    .read
 	    .write(Tsv(output.format("scan_range_between")))
- 
+```
  
 SCAN_ALL
 --------
@@ -160,6 +172,7 @@ Returns all rows in the table
 
 (e.g.)
 
+```scala
 	val hbs2 = new HBaseSource(
 	    "table_name",
 	    "quorum_name:2181",
@@ -167,7 +180,7 @@ Returns all rows in the table
 	    Array("column_family"),
 	    Array('column_name),
 	    sourceMode = SourceMode.SCAN_ALL)
-
+```
 
 2. Write Mode Features
 ======================
@@ -177,14 +190,16 @@ HBaseSource supports writing at a particular time stamp i.e. a version.
 The time dimension can be added to the row by using the **_timestamp_** parameter. If the parameter is not present the current time is used.
 
 (e.g.)
-   
+
+```scala
 	pipe.write(new HBaseSource( "table_name",
 		"quorum_name:2181",
 		'key,  
 	   TABLE_SCHEMA.tail.map((x: Symbol) => "data").toArray, 
 	   TABLE_SCHEMA.tail.map((x: Symbol) => new Fields(x.name)).toArray,
 	   timestamp = Platform.currentTime ))
-	
+```
+
 
 3. Region Hot Spot Prevention
 =============================
@@ -194,9 +209,11 @@ The row key is prefixed with the last byte followed by a '_' (underscore) charac
 
 (e.g.)
 
+```
 	Original Row Key   ->  Becomes
 	SPYGLASS           ->  S_SPYGLASS
 	12345678           ->  8_12345678
+```
 
 Conversion to and from salted keys is done automatically.
 
@@ -242,6 +259,7 @@ Add the trait to the job class and start using the conversions in the pipe direc
 
 (e.g.)
 
+```scala
 	class HBaseSaltTester (args: Args) extends JobBase(args) with HBasePipeConversions {
 	  val TABLE_SCHEMA = List('key, 'salted, 'unsalted)
 
@@ -267,7 +285,9 @@ Add the trait to the job class and start using the conversions in the pipe direc
 	          TABLE_SCHEMA.tail.map((x: Symbol) => "data").toArray, 
 	          TABLE_SCHEMA.tail.map((x: Symbol) => new Fields(x.name)).toArray,
 	          useSalt = true ))
-	} 
+	}
+```
+
 
 5. Raw HBase Tap and Source
 ===========================
@@ -277,15 +297,17 @@ HBaseRawSource is an alternative HBase source implementation that provides two m
 
 **Passing a scan object**
 
-HBaseRawSource object provides a helper function to encode a scan object as a base64 string, which you can pass to the source.
+`HBaseRawSource` object provides a helper function to encode a scan object as a base64 string, which you can pass to the source.
 e.g.
-	
+
+```
 	val scan = new Scan
 	val key = "my_key_prefix"
 	scan.setStartRow(Bytes.toBytes(key))
 	scan.setFilter(new PrefixFilter(Bytes.toBytes(key)))
 	val scanner = HBaseRawSource.convertScanToString(scan)
 	val hbaseSource = new HBaseRawSource("MY-TABLE", "hbase-local", Array("col-family"), base64Scan = scanner)
+```
 
 **Processing the rows**
 
@@ -295,7 +317,8 @@ The sink expects a rowkey field in the tuple it gets to use as a row key (it doe
 It will then write the output fields (except the rowkey) as columns under the provided family, using the field name as the column name.   
 You can also provide the field name as a full qualifier (family:column) to specify a different family than was declared in the source.  
 e.g.
-	
+
+```scala
 	val hbaseOut = new HBaseRawSource("MY_RESULTS", "hbase-local", Array("out-family"), writeNulls=false, sinkMode = SinkMode.REPLACE)
 	hbaseSource.read
 	.mapTo(('rowkey, 'row) -> ('rowkey, "different_family:col1", 'col2)) {
@@ -308,6 +331,7 @@ e.g.
 		}
 	}
 	.write(hbaseOut)
+```
 
 6. Jdbc Tap and Source
 ===========================
@@ -315,7 +339,8 @@ e.g.
 To be added soon.
 
 e.g.
-	
+
+```scala
 	val jdbcSourceRead = new JDBCSource(
 		"TABLE_01",
 		"com.mysql.jdbc.Driver",
@@ -341,7 +366,7 @@ e.g.
 		new Fields("key", "column1", "column2", "column3"),
 		null, null, null
 		)
-	
+```
 
 7. HBase Delete Functionality
 =============================
@@ -352,12 +377,13 @@ The feature can be enable by using the parameter sinkMode = SinkMode.REPLACE in 
 You can use sinkMode = SinkMode.UPDATE to add to the HBaseTable as usual.
 
 e.g.
-	
+
+```scala	
 	val eraser = toIBW(input, TABLE_SCHEMA)
 		.write(new HBaseSource( "_TEST.SALT.01", quorum, 'key,
 		TABLE_SCHEMA.tail.map((x: Symbol) => "data"),
 		TABLE_SCHEMA.tail.map((x: Symbol) => new Fields(x.name)), sinkMode = SinkMode.REPLACE ))
-	
+```
 
 All rows with the key will be deleted. This includes all versions too.
 
@@ -370,7 +396,8 @@ This feature can be activated by using inputSplitType = SplitType.REGIONAL
 You can use inputSplitType = SplitType.GRANULAR to use the previous functionality as is.
 
 e.g.
-	
+
+```scala
 	val hbase04 = new HBaseSource( "_TEST.SALT.01", quorum, 'key,
 	  TABLE_SCHEMA.tail.map((x: Symbol) => "data"),
 	  TABLE_SCHEMA.tail.map((x: Symbol) => new Fields(x.name)),
@@ -381,12 +408,14 @@ e.g.
 	  .project('testData)
 	  .write(TextLine("saltTesting/ScanRangeNoSalt01"))
 	  .groupAll(group => group.toList[List[List[String]]]('testData -> 'testData))
-	  
+```
+
 9. Complete example
 ===================
 
 If using Maven - create a pom.xml
 
+```xml
 	<?xml version="1.0" encoding="UTF-8"?>
 	<project xmlns="http://maven.apache.org/POM/4.0.0"
 	         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -441,9 +470,11 @@ If using Maven - create a pom.xml
 	    </build>
 
 	</project>
+```
 
 A single dependency brings in Scalding 0.10.0 (in this example) 
 
+```scala
 	import com.twitter.scalding.{TextLine, Job, Args}
 	import parallelai.spyglass.hbase.{HBaseSource, HBasePipeConversions}
 	import cascading.tuple.Fields
@@ -482,4 +513,4 @@ A single dependency brings in Scalding 0.10.0 (in this example)
 	    .write(TextLine("test_hbase"))
 
 	}
-
+```
