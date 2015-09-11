@@ -7,7 +7,7 @@ Prevent Hot Spotting by the use of transparent key prefixes.
 
 Changes
 =======
-- Compatible with Scalding 0.9.1 since version 4.2rc2
+- Compatible with Scalding 0.12.0 and later
 - Added JDBC Tap Functionality
 - Added Delete Functionality
 - Added Region grouping of splits
@@ -32,31 +32,19 @@ To use SpyGlass as a dependency use the following repository
 </repositories>
 ```
 
-For Scalding 0.10.0 use :
+For Scalding 0.12.0 on CDH 5.3 use :
 
 ```xml
 <dependencies>
   <dependency>
     <groupId>parallelai</groupId>
     <artifactId>parallelai.spyglass</artifactId>
-    <version>2.10_0.10_4.3</version>
+    <version>2.10_0.12_0_5.3</version>
   </dependency>
 </dependencies>
 ```
 
-For Scalding 0.9.1 use :
-
-```xml
-<dependencies>
-  <dependency>
-    <groupId>parallelai</groupId>
-    <artifactId>parallelai.spyglass</artifactId>
-    <version>2.10_0.9_4.3</version>
-  </dependency>
-</dependencies>
-```
-
-or for earlier versions :
+or use any earlier versions :
 
 ```xml
 <dependencies>
@@ -64,18 +52,6 @@ or for earlier versions :
     <groupId>parallelai</groupId>
     <artifactId>parallelai.spyglass</artifactId>
     <version>2.9.3_4.1.0</version>
-  </dependency>
-</dependencies>
-```
-
-and
-
-```xml
-<dependencies>
-  <dependency>
-    <groupId>parallelai</groupId>
-    <artifactId>parallelai.spyglass</artifactId>
-    <version>2.10.2_4.1.0</version>
   </dependency>
 </dependencies>
 ```
