@@ -10,7 +10,6 @@ import org.apache.hadoop.hbase.client.Scan;
 import org.apache.hadoop.hbase.io.ImmutableBytesWritable;
 import org.apache.hadoop.hbase.mapreduce.TableInputFormat;
 import org.apache.hadoop.hbase.util.Bytes;
-import org.apache.hadoop.hbase.util.Writables;
 import org.apache.hadoop.util.StringUtils;
 
 import java.io.IOException;
@@ -251,7 +250,7 @@ public class HBaseRecordReaderGranular extends HBaseRecordReaderBase {
           }
           
           lastSuccessfulRow = key.get();
-          Writables.copyWritable(result, value);
+          value.copyFrom(result);
           return true;
         }
         return false;
@@ -302,8 +301,8 @@ public class HBaseRecordReaderGranular extends HBaseRecordReaderBase {
               key.set(result.getRow());
             }
             lastSuccessfulRow = key.get();
-            Writables.copyWritable(result, value);
-            
+            value.copyFrom(result);
+
             return true;
           } else {
             LOG.debug(" Key ("+ Bytes.toString(nextKey)+ ") return an EMPTY result. Get ("+theGet.getId()+")" ); //alg0
@@ -352,7 +351,7 @@ public class HBaseRecordReaderGranular extends HBaseRecordReaderBase {
             key.set(result.getRow());
           }
           lastSuccessfulRow = key.get();
-          Writables.copyWritable(result, value);
+          value.copyFrom(result);
 
           return true;
         } else {
@@ -408,7 +407,7 @@ public class HBaseRecordReaderGranular extends HBaseRecordReaderBase {
                 key.set(result.getRow());
               }
               lastSuccessfulRow = key.get();
-              Writables.copyWritable(result, value);
+              value.copyFrom(result);
               return true;
             } else {
               LOG.debug(String.format("+ Key (%s) return an EMPTY result. Get (%s)", Bytes.toString(nextKey), theGet.getId()) ); //alg0
